@@ -3,22 +3,20 @@ import express from "express";
 import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
-import { renderPdf } from "./pdf.js";           // <- make sure this is your actual renderer
-import { sendWithGmail } from "./email.js";
-import enrichBarFormData from '../mapping/bar-data-enricher.js';
+import { renderPdf } from "./pdf.js";           // your renderer
+import { sendWithGmail } from "./email.js";     // your Gmail sender
+// NOTE: removed Bar-specific enricher; keep a no-op so the rest of your code stays the same.
+const enrichFormData = (d) => d || {};
 
 const FILENAME_MAP = {
-  Society_FieldNames: "Society-Supplement.pdf",
-  BarAccord125: "ACORD-125.pdf",
-  BarAccord126: "ACORD-126.pdf",
-  BarAccord140: "ACORD-140.pdf",
-  WCBarform: "WC-Application.pdf",
-  
+  RoofingAccord125: "ACORD-125.pdf",
+  RoofingAccord126: "ACORD-126.pdf",
+  RoofingAccord140: "ACORD-140.pdf",
+  WCRoofingForm:    "RoofingForm.pdf", // Society roofing supplemental
 };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 const APP = express();
 APP.use(express.json({ limit: "20mb" }));
@@ -39,44 +37,35 @@ const MAP_DIR = path.join(__dirname, "..", "mapping");
 // --- Health check ---
 APP.get("/healthz", (_req, res) => res.status(200).send("ok"));
 
-// --- Optional: apply mapping/<template>.json if present ---
-// --- Optional: apply mapping/<template>.json if present (NON-DESTRUCTIVE) ---
+// --- Optional mapping: mapping/<template>.json (NON-DESTRUCTIVE) ---
 async function maybeMapData(templateName, rawData) {
   try {
     const mapPath = path.join(MAP_DIR, `${templateName}.json`);
     const mapping = JSON.parse(await fs.readFile(mapPath, "utf8"));
-
-    // Build only the mapped keys...
     const mapped = {};
     for (const [tplKey, formKey] of Object.entries(mapping)) {
       mapped[tplKey] = rawData?.[formKey] ?? "";
     }
-
-    // ...then merge over the original data so NOTHING gets dropped.
-    // Templates can use either the original field names or the mapped aliases.
     return { ...rawData, ...mapped };
   } catch {
-    // No mapping file? Just pass the raw form data through.
     return rawData;
   }
 }
 
-
-// --- Core: render all PDFs (strict, sequential) and optionally email ---
+// --- Core: render all PDFs (sequential) and optionally email ---
 async function renderBundleAndRespond({ templates, email }, res) {
   if (!Array.isArray(templates) || templates.length === 0) {
     return res.status(400).json({ ok: false, error: "NO_TEMPLATES" });
   }
 
-  const results = []; // single declaration ONLY
+  const results = [];
 
-  // Render templates sequentially (stable & low-memory)
   for (const t of templates) {
     const name     = t.name;
     const htmlPath = path.join(TPL_DIR, name, "index.ejs");
-    const cssPath  = path.join(TPL_DIR, name, "styles.css");
+    const cssPath  = path.join(TPL_DIR, name, "styles.css"); // optional
     const rawData  = t.data || {};
-    const unified  = await maybeMapData(name, rawData); // mapping enabled
+    const unified  = await maybeMapData(name, rawData);
 
     try {
       const buffer = await renderPdf({ htmlPath, cssPath, data: unified });
@@ -101,13 +90,13 @@ async function renderBundleAndRespond({ templates, email }, res) {
   const attachments = results.map(r => r.value);
 
   if (email?.to?.length) {
-  await sendWithGmail({
-    to: email.to,
-    subject: email.subject || "Submission Packet",
-    formData: email.formData,  // Pass formData for formatted email
-    html: email.bodyHtml,       // Fallback if no formData
-    attachments
-  });
+    await sendWithGmail({
+      to: email.to,
+      subject: email.subject || "Roofing Submission Packet",
+      formData: email.formData,            // preferred: render email from form data
+      html: email.bodyHtml,                // fallback
+      attachments
+    });
     return res.json({ ok: true, success: true, sent: true, count: attachments.length });
   }
 
@@ -115,7 +104,6 @@ async function renderBundleAndRespond({ templates, email }, res) {
   res.setHeader("Content-Disposition", `attachment; filename="${attachments[0].filename}"`);
   res.send(attachments[0].buffer);
 }
-
 
 // --- Public routes ---
 
@@ -133,9 +121,9 @@ APP.post("/render-bundle", async (req, res) => {
 APP.post("/submit-quote", async (req, res) => {
   try {
     let { formData = {}, segments = [], email } = req.body || {};
-    formData = enrichBarFormData(formData);
+    formData = enrichFormData(formData);
 
-    // Build from front-end `segments` (folder names must match)
+    // segments must exactly match template folder names
     const templates = (segments || []).map((name) => ({
       name,
       filename: FILENAME_MAP[name] || `${name}.pdf`,
@@ -145,17 +133,17 @@ APP.post("/submit-quote", async (req, res) => {
       return res.status(400).json({ ok: false, success: false, error: "NO_VALID_SEGMENTS" });
     }
 
-    // Default email (so /submit-quote responds JSON, not a PDF stream)
-const defaultTo = process.env.CARRIER_EMAIL || process.env.GMAIL_USER;
-const emailBlock = email?.to?.length
-  ? email
-  : {
-      to: [defaultTo].filter(Boolean),
-      subject: `New Submission — ${formData.applicant_name || ""}`,
-      formData: formData,  // Pass formData instead of bodyHtml
-    };
+    // Default email block so /submit-quote returns JSON (not a PDF stream)
+    const defaultTo = process.env.CARRIER_EMAIL || process.env.GMAIL_USER;
+    const emailBlock = email?.to?.length
+      ? email
+      : {
+          to: [defaultTo].filter(Boolean),
+          subject: `New Roofing Submission — ${formData.businessName || formData.applicant_name || ""}`,
+          formData,
+        };
 
-await renderBundleAndRespond({ templates, email: emailBlock }, res);
+    await renderBundleAndRespond({ templates, email: emailBlock }, res);
   } catch (e) {
     console.error(e);
     res.status(500).json({ ok: false, success: false, error: e.message });
@@ -165,4 +153,3 @@ await renderBundleAndRespond({ templates, email: emailBlock }, res);
 // --- Start server ---
 const PORT = process.env.PORT || 8080;
 APP.listen(PORT, () => console.log(`PDF service listening on ${PORT}`));
-
