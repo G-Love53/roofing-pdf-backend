@@ -12,7 +12,7 @@ const FILENAME_MAP = {
   RoofingAccord125: "ACORD-125.pdf",
   RoofingAccord126: "ACORD-126.pdf",
   RoofingAccord140: "ACORD-140.pdf",
-  WCRoofingForm:    "RoofingForm.pdf", // Society roofing supplemental
+  RoofingForm:    "RoofingForm.pdf", // Society roofing supplemental
 };
 
 const __filename = fileURLToPath(import.meta.url);
