@@ -68,7 +68,7 @@ function generateEmailSummary(formData) {
       <div class="footer">
         <strong>Commercial Insurance Direct LLC</strong><br/>
         Phone: (303) 932-1700<br/>
-        Email: <a href="mailto:quote@barinsurancedirect.com">quote@barinsurancedirect.com</a>
+        Email: <a href="mailto:quote@roofingcontractorinsurancedirect.com">quote@roofingcontractorinsurancedirect.com</a>
       </div>
     </body>
     </html>
