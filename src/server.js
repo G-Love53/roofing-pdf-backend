@@ -87,23 +87,31 @@ async function renderBundleAndRespond({ templates, email }, res) {
     });
   }
 
+    // ...
   const attachments = results.map(r => r.value);
 
   if (email?.to?.length) {
-    await sendWithGmail({
-      to: email.to,
-      subject: email.subject || "Roofing Submission Packet",
-      formData: email.formData,            // preferred: render email from form data
-      html: email.bodyHtml,                // fallback
-      attachments
-    });
-    return res.json({ ok: true, success: true, sent: true, count: attachments.length });
+    try {
+      await sendWithGmail({
+        to: email.to,
+        subject: email.subject || "Roofing Submission Packet",
+        formData: email.formData,   // preferred: render email from form data
+        html: email.bodyHtml,       // fallback
+        attachments
+      });
+      return res.json({ ok: true, success: true, sent: true, count: attachments.length });
+    } catch (err) {
+      console.error("EMAIL_SEND_FAILED", err);
+      // 502 = Bad Gateway (good fit for “upstream service failed”)
+      return res.status(502).json({
+        ok: false,
+        success: false,
+        error: "EMAIL_SEND_FAILED",
+        detail: String(err?.message || err)
+      });
+    }
   }
 
-  res.setHeader("Content-Type", "application/pdf");
-  res.setHeader("Content-Disposition", `attachment; filename="${attachments[0].filename}"`);
-  res.send(attachments[0].buffer);
-}
 
 // --- Public routes ---
 
@@ -150,6 +158,27 @@ APP.post("/submit-quote", async (req, res) => {
   }
 });
 
-// --- Start server ---
-const PORT = process.env.PORT || 8080;
-APP.listen(PORT, () => console.log(`PDF service listening on ${PORT}`));
+// --- start server (use Render's PORT or fallback) ---
+const PORT = process.env.PORT || 10000;
+
+// Capture the server instance so we can close it on shutdown
+const server = APP.listen(PORT, () => {
+  console.log(`PDF service listening on ${PORT}`);
+});
+
+// --- graceful shutdown so npm doesn't log SIGTERM as an "error" ---
+function shutdown(signal) {
+  console.log(`Received ${signal}, shutting down gracefully...`);
+  server.close(() => {
+    console.log("HTTP server closed.");
+    process.exit(0);
+  });
+  // Safety timeout in case connections hang
+  setTimeout(() => process.exit(0), 5000).unref();
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
+
+
+
