@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+const SITE_URL = "https://roofingcontractorinsurancedirect.com/";
 
 // Generate formatted HTML email summary
 function generateEmailSummary(formData) {
@@ -20,7 +21,19 @@ function generateEmailSummary(formData) {
       <div class="header">
         <h1>Commercial Insurance Quote Request</h1>
       </div>
-      
+      <div class="header">
+  <h1>Commercial Insurance Quote Request</h1>
+</div>
+
+  <!-- CTA to open the Roofing form -->
+  <div style="text-align:center; padding:16px 0 24px;">
+  <a href="${SITE_URL}" target="_blank" rel="noopener"
+     style="display:inline-block; padding:12px 18px; background:#0ea5e9; color:#fff;
+            text-decoration:none; border-radius:6px; font-weight:600;">
+    Start / View the Roofing Form
+   </a>
+   </div>
+
       <div class="content">
         <h3>Applicant Information:</h3>
         
