@@ -1,1 +1,110 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>COMMERCIAL GENERAL LIABILITY SECTION</title>
+<style>
+:root{--ink:#0e1222}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);font-size:10pt}
+.page{width:816px;min-height:1056px;margin:0 auto;padding:12pt 14pt;box-sizing:border-box}
+.headerbar{display:grid;grid-template-columns:1fr auto auto;align-items:center;border-bottom:1pt solid #000;padding-bottom:6pt;margin-bottom:8pt}
+.acord{font-weight:700;letter-spacing:1pt}
+.title{font-size:12pt;font-weight:700;text-align:center}
+.formno{font-size:18pt;font-weight:800}
+.block{border:1pt solid #000;margin:6pt 0}
+.row{display:grid;grid-template-columns:repeat(20,1fr)}
+.cell{border-right:1pt solid #000;border-bottom:1pt solid #000;padding:3pt}
+.cell.label{background:#f2f2f2;font-weight:700}
+.w20{grid-column:span 20}.w16{grid-column:span 16}.w12{grid-column:span 12}.w10{grid-column:span 10}.w8{grid-column:span 8}.w6{grid-column:span 6}.w4{grid-column:span 4}.w2{grid-column:span 2}
+.small{font-size:9pt;color:#374151}
+</style>
+<style><%= styles %></style>
+</head><body>
+<div class="page">
+  <div class="headerbar">
+    <div class="acord">ACORD</div>
+    <div class="title">COMMERCIAL GENERAL LIABILITY SECTION</div>
+    <div class="formno">126</div>
+  </div>
 
+  <div class="block">
+    <div class="row">
+      <div class="cell label w4">BUSINESS NAME</div>
+      <div class="cell w16"><%= data.businessName || data.applicant_name || "" %></div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">DBA</div>
+      <div class="cell w16"><%= data.dba || "" %></div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">ADDRESS</div>
+      <div class="cell w16"><%= [data.address, data.address2, (data.city||""), (data.state||""), (data.zip||"")].filter(Boolean).join(" ") %></div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">CONTACT</div>
+      <div class="cell w6"><%= data.contactName || "" %></div>
+      <div class="cell label w4">PHONE</div>
+      <div class="cell w6"><%= data.phone || data.inspection_phone || "" %></div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">TRADE</div>
+      <div class="cell w6"><%= data.trade || "Roofing" %></div>
+      <div class="cell label w4">NAICS / SIC</div>
+      <div class="cell w6"><%= (data.naics || "238160") + " / " + (data.sic || "1761") %></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="row">
+      <div class="cell label w4">WORK MIX</div>
+      <div class="cell w16">
+        Res <%= data.workMix && data.workMix.residentialPct || "" %>%,
+        Com <%= data.workMix && data.workMix.commercialPct || "" %>%,
+        New <%= data.workMix && data.workMix.newConstructionPct || "" %>%,
+        Repair <%= data.workMix && data.workMix.repairReroofPct || "" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">HEIGHT / STORIES</div>
+      <div class="cell w6"><%= (data.heightLimitFeet||"") + " ft / " + (data.maxStories||"") %></div>
+      <div class="cell label w4">STEEP / FLAT</div>
+      <div class="cell w6"><%= (data.steepSlopePct||"") + "% / " + (data.flatRoofPct||"") + "%" %></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="row">
+      <div class="cell label w4">HOT WORK</div>
+      <div class="cell w16">
+        Torch Down <%= data.hotWork && data.hotWork.torchDownPct || 0 %>%,
+        Hot Tar <%= data.hotWork && data.hotWork.hotTarPct || 0 %>%,
+        Open Flame <%= helpers.yn(data.hotWork && data.hotWork.openFlameUsed) %>,
+        Permit <%= helpers.yn(data.hotWork && data.hotWork.hotWorkPermitProcedure) %>,
+        Fire Watch <%= (data.hotWork && data.hotWork.fireWatchMinutes) || "" %> min,
+        Extinguishers <%= helpers.yn(data.hotWork && data.hotWork.extinguishersOnSite) %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="cell label w4">FALL PROTECTION</div>
+      <div class="cell w16">
+        PFAS <%= helpers.yn(data.fallProtection && data.fallProtection.pfas) %>,
+        Guardrails <%= helpers.yn(data.fallProtection && data.fallProtection.guardrails) %>,
+        Warning Lines <%= helpers.yn(data.fallProtection && data.fallProtection.warningLines) %>,
+        Daily JHAs <%= helpers.yn(data.fallProtection && data.fallProtection.dailyJHAs) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="row">
+      <div class="cell label w4">SUBCONTRACTING</div>
+      <div class="cell w16">
+        Uses Subs <%= helpers.yn(data.subcontracting && data.subcontracting.usesSubs) %>,
+        % Work <%= data.subcontracting && data.subcontracting.subPctOfWork || "" %>%,
+        H/H <%= helpers.yn(data.subcontracting && data.subcontracting.holdHarmlessFromSubs) %>,
+        AI & WOS <%= helpers.yn(data.subcontracting && data.subcontracting.requireAIandWOS) %>,
+        Min GL <%= helpers.money(data.subcontracting && data.subcontracting.minSubGL) %>,
+        COIs <%= helpers.yn(data.subcontracting && data.subcontracting.collectCOIs) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="small">Starter template • Replace with your production layout and fields.</div>
+</div></body></html>
