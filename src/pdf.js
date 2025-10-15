@@ -50,6 +50,30 @@ const __dirname = path.dirname(__filename);
 export async function renderPdf({ htmlPath, cssPath, data = {} }) {
   console.log("PDF Render - htmlPath:", htmlPath);
   console.log("PDF Render - cssPath:", cssPath);
+
+  // In your pdf.js, update the EJS render call:
+html = await ejs.render(
+  templateStr,
+  {
+    ...data,
+    data,
+    formData: data,
+    styles: cssStr,
+    
+    // Add helpers object
+    helpers: {
+      yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
+    },
+    
+    // Keep individual helpers too for backwards compatibility
+    yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
+  },
+  {
+    async: true,
+    filename: htmlPath,
+    compileDebug: true
+  }
+);
   
   // Load template + CSS
   const templateStr = await fs.readFile(htmlPath, "utf8");
