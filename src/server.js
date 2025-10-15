@@ -1,3 +1,4 @@
+// src/server.js
 import express from "express";
 import path from "path";
 import fs from "fs/promises";
@@ -5,16 +6,19 @@ import { fileURLToPath } from "url";
 import { renderPdf } from "./pdf.js";
 import { sendWithGmail } from "./email.js";
 
-// no-op enricher to keep shape
+/* ----------------------------- helpers & consts ---------------------------- */
+
+// keep shape if no enricher is needed
 const enrichFormData = (d) => d || {};
 
 const FILENAME_MAP = {
   RoofingAccord125: "ACORD-125.pdf",
   RoofingAccord126: "ACORD-126.pdf",
   RoofingAccord140: "ACORD-140.pdf",
-  RoofingForm: "RoofingForm.pdf",
+  RoofingForm:      "RoofingForm.pdf",
 };
-// add near FILENAME_MAP in src/server.js
+
+// allow friendlier names from callers
 const TEMPLATE_ALIASES = {
   Accord125: "RoofingAccord125",
   Accord126: "RoofingAccord126",
@@ -22,18 +26,23 @@ const TEMPLATE_ALIASES = {
   RoofingAccord125: "RoofingAccord125",
   RoofingAccord126: "RoofingAccord126",
   RoofingAccord140: "RoofingAccord140",
-  RoofingForm: "RoofingForm",
+  RoofingForm:      "RoofingForm",
 };
-const resolveTemplate = (n) => TEMPLATE_ALIASES[n] || n;
+const resolveTemplate = (name) => TEMPLATE_ALIASES[name] || name;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname  = path.dirname(__filename);
 
+/* --------------------------------- express -------------------------------- */
 const APP = express();
 APP.use(express.json({ limit: "20mb" }));
 
-// CORS (allow your sites)
-const allowed = (process.env.CORS_ORIGINS || "").split(",").map(s => s.trim()).filter(Boolean);
+// CORS (limit to configured origins if provided)
+const allowed = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map(s => s.trim())
+  .filter(Boolean);
+
 APP.use((req, res, next) => {
   const origin = req.headers.origin;
   if (!allowed.length || (origin && allowed.includes(origin))) {
@@ -45,92 +54,79 @@ APP.use((req, res, next) => {
   next();
 });
 
-// --- Directories ---
+/* --------------------------------- dirs ----------------------------------- */
 const TPL_DIR = path.join(__dirname, "..", "templates");
 const MAP_DIR = path.join(__dirname, "..", "mapping");
 
-// --- Health check ---
+/* -------------------------------- routes ---------------------------------- */
+
+// health
 APP.get("/healthz", (_req, res) => res.status(200).send("ok"));
 
-// --- Optional mapping: mapping/<template>.json ---
-async function maybeMapData(templateName, rawData) {
+// optional mapping: mapping/<template>.json
+async function maybeMapData(templateName, raw) {
   try {
     const mapPath = path.join(MAP_DIR, `${templateName}.json`);
     const mapping = JSON.parse(await fs.readFile(mapPath, "utf8"));
     const mapped = {};
     for (const [tplKey, formKey] of Object.entries(mapping)) {
-      mapped[tplKey] = rawData?.[formKey] ?? "";
+      mapped[tplKey] = raw?.[formKey] ?? "";
     }
-    return { ...rawData, ...mapped };
+    return { ...raw, ...mapped };
   } catch {
-    return rawData;
+    // no mapping file, pass through
+    return raw;
   }
 }
 
-// --- Core: render PDFs and optionally email ---
+// core renderer that both endpoints use
 async function renderBundleAndRespond({ templates, email }, res) {
   if (!Array.isArray(templates) || templates.length === 0) {
     return res.status(400).json({ ok: false, error: "NO_TEMPLATES" });
   }
 
   const results = [];
+
   for (const t of templates) {
-    const name = t.name;
-    console.log("RENDERING", name);
+    const name = resolveTemplate(t.name);
     const htmlPath = path.join(TPL_DIR, name, "index.ejs");
-    const cssPath = path.join(TPL_DIR, name, "styles.css"); // optional
-    const rawData = t.data || {};
-    const unified = await maybeMapData(name, rawData);
+    const cssPath  = path.join(TPL_DIR, name, "styles.css"); // optional
+    const rawData  = t.data || {};
+    const unified  = await maybeMapData(name, rawData);
 
     try {
       const buffer = await renderPdf({ htmlPath, cssPath, data: unified });
-      const prettyName = FILENAME_MAP[name] || t.filename || `${name}.pdf`;
-      results.push({ status: "fulfilled", value: { filename: prettyName, buffer } });
+      const filename = t.filename || FILENAME_MAP[name] || `${name}.pdf`;
+      results.push({ status: "fulfilled", value: { filename, buffer } });
     } catch (err) {
       results.push({ status: "rejected", reason: err });
     }
   }
-  // /render-bundle
-APP.post("/render-bundle", async (req, res) => {
-  try {
-    const body = req.body || {};
-    body.templates = (body.templates || []).map(t => ({
-      ...t,
-      name: resolveTemplate(t.name),
-    }));
-    await renderBundleAndRespond(body, res);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
 
   const failures = results.filter(r => r.status === "rejected");
   if (failures.length) {
     console.error("RENDER_FAILURES", failures.map(f => String(f.reason)));
     return res.status(500).json({
-  ok: false,
-  success: false,
-  error: "ONE_OR_MORE_ATTACHMENTS_FAILED",
-  failedCount: failures.length,
-  details: failures.map(f => String(f.reason))
-});
-
+      ok: false,
+      success: false,
+      error: "ONE_OR_MORE_ATTACHMENTS_FAILED",
+      failedCount: failures.length,
+      details: failures.map(f => String(f.reason)),
+    });
   }
 
   const attachments = results.map(r => r.value);
 
-  // Email branch (with try/catch)
+  // Email branch
   if (email?.to?.length) {
     try {
       await sendWithGmail({
         to: email.to,
         cc: email.cc,
         subject: email.subject || "Roofing Submission Packet",
-        formData: email.formData,     // preferred: render email from form data
-        html: email.bodyHtml,         // fallback
-        attachments
+        formData: email.formData, // preferred for template-based emails
+        html: email.bodyHtml,     // fallback body
+        attachments,
       });
       return res.json({ ok: true, success: true, sent: true, count: attachments.length });
     } catch (err) {
@@ -139,7 +135,7 @@ APP.post("/render-bundle", async (req, res) => {
         ok: false,
         success: false,
         error: "EMAIL_SEND_FAILED",
-        detail: String(err?.message || err)
+        detail: String(err?.message || err),
       });
     }
   }
@@ -150,7 +146,7 @@ APP.post("/render-bundle", async (req, res) => {
   return res.send(attachments[0].buffer);
 }
 
-// --- Public routes ---
+/* ------------------------------- public APIs ------------------------------- */
 
 // JSON API: { templates:[{name,filename?,data}], email? }
 APP.post("/render-bundle", async (req, res) => {
@@ -168,21 +164,19 @@ APP.post("/submit-quote", async (req, res) => {
     let { formData = {}, segments = [], email } = req.body || {};
     formData = enrichFormData(formData);
 
-       // /submit-quote
-const templates = (segments || []).map((name) => ({
-  name,
-  filename: FILENAME_MAP[name] || `${name}.pdf`,
-  data: formData,
-}));
+    const templates = (segments || [])
+      .map((n) => resolveTemplate(n))
+      .map((name) => ({
+        name,
+        filename: FILENAME_MAP[name] || `${name}.pdf`,
+        data: formData,
+      }));
 
-    }));
-    if (templates.length === 0) {
+    if (!templates.length) {
       return res.status(400).json({ ok: false, success: false, error: "NO_VALID_SEGMENTS" });
     }
- 
 
-
-    // Default email block so /submit-quote returns JSON (not a PDF stream)
+    // default email so this endpoint returns JSON (not a PDF stream)
     const defaultTo = process.env.CARRIER_EMAIL || process.env.GMAIL_USER;
     const cc = (process.env.UW_EMAIL || "")
       .split(",")
@@ -205,24 +199,22 @@ const templates = (segments || []).map((name) => ({
   }
 });
 
-// --- start server (use Render's PORT or fallback) ---
-const PORT = process.env.PORT || 10000;
+/* ------------------------------- start server ------------------------------ */
 
-// Capture the server instance so we can close it on shutdown
+const PORT = process.env.PORT || 10000;
 const server = APP.listen(PORT, () => {
   console.log(`PDF service listening on ${PORT}`);
 });
 
-// --- graceful shutdown so npm doesn't log SIGTERM as an "error" ---
+// graceful shutdown to avoid npm SIGTERM noise
 function shutdown(signal) {
   console.log(`Received ${signal}, shutting down gracefully...`);
   server.close(() => {
     console.log("HTTP server closed.");
     process.exit(0);
   });
-  // Safety timeout in case connections hang
-  setTimeout(() => process.exit(0), 5000).unref();
+  setTimeout(() => process.exit(0), 5000).unref(); // safety
 }
 
 process.on("SIGTERM", () => shutdown("SIGTERM"));
-process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGINT",  () => shutdown("SIGINT"));
