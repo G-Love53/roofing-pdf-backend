@@ -84,11 +84,13 @@ async function renderBundleAndRespond({ templates, email }, res) {
   if (failures.length) {
     console.error("RENDER_FAILURES", failures.map(f => String(f.reason)));
     return res.status(500).json({
-      ok: false,
-      success: false,
-      error: "ONE_OR_MORE_ATTACHMENTS_FAILED",
-      failedCount: failures.length,details
-    });
+  ok: false,
+  success: false,
+  error: "ONE_OR_MORE_ATTACHMENTS_FAILED",
+  failedCount: failures.length,
+  details: failures.map(f => String(f.reason))
+});
+
   }
 
   const attachments = results.map(r => r.value);
