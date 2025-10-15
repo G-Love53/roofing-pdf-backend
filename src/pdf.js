@@ -50,30 +50,6 @@ const __dirname = path.dirname(__filename);
 export async function renderPdf({ htmlPath, cssPath, data = {} }) {
   console.log("PDF Render - htmlPath:", htmlPath);
   console.log("PDF Render - cssPath:", cssPath);
-
-  // In your pdf.js, update the EJS render call:
-html = await ejs.render(
-  templateStr,
-  {
-    ...data,
-    data,
-    formData: data,
-    styles: cssStr,
-    
-    // Add helpers object
-    helpers: {
-      yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
-    },
-    
-    // Keep individual helpers too for backwards compatibility
-    yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
-  },
-  {
-    async: true,
-    filename: htmlPath,
-    compileDebug: true
-  }
-);
   
   // Load template + CSS
   const templateStr = await fs.readFile(htmlPath, "utf8");
@@ -91,32 +67,37 @@ html = await ejs.render(
     cssStr = "";
   }
   
-// Render EJS -> HTML (expose helpers and styles)
-let html;
-try {
-  html = await ejs.render(
-    templateStr,
-    {
-      ...data,             // flattened access
-      data,                // nested access
-      formData: data,      // legacy alias
-      styles: cssStr,      // used by <style><%= styles %></style>
+  // Render EJS -> HTML (expose helpers and styles)
+  let html;
+  try {
+    html = await ejs.render(
+      templateStr,
+      {
+        ...data,             // flattened access
+        data,                // nested access
+        formData: data,      // legacy alias
+        styles: cssStr,      // used by <style><%= styles %></style>
 
-      // helpers available directly in EJS
-      yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
-    },
-    {
-      async: true,
-      filename: htmlPath,   // lets EJS report filename
-      compileDebug: true    // lets EJS report line numbers
-    }
-  );
-} catch (err) {
-  const msg =
-    `EJS compile error in ${htmlPath}: ${err.message}` +
-    (err.lineNumber ? ` (line ${err.lineNumber})` : "");
-  throw new Error(msg);
-}
+        // Add helpers object for EJS templates that use helpers.functionName
+        helpers: {
+          yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
+        },
+        
+        // Also expose helpers directly for backwards compatibility
+        yn, money, moneyUSD, formatDate, ck, isYes, join, yesno, isyes
+      },
+      {
+        async: true,
+        filename: htmlPath,   // lets EJS report filename
+        compileDebug: true    // lets EJS report line numbers
+      }
+    );
+  } catch (err) {
+    const msg =
+      `EJS compile error in ${htmlPath}: ${err.message}` +
+      (err.lineNumber ? ` (line ${err.lineNumber})` : "");
+    throw new Error(msg);
+  }
   
   // Launch Chrome and generate PDF
   const browser = await puppeteer.launch({
@@ -129,17 +110,17 @@ try {
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "load" });
     const pdfBuffer = await page.pdf({
-  format: 'Letter',
-  printBackground: true,
-  preferCSSPageSize: false,  // Let Puppeteer control size
-  margin: { 
-    top: '0.5in', 
-    right: '0.5in', 
-    bottom: '0.5in', 
-    left: '0.5in' 
-  },
-  scale: 1
-});
+      format: 'Letter',
+      printBackground: true,
+      preferCSSPageSize: false,  // Let Puppeteer control size
+      margin: { 
+        top: '0.5in', 
+        right: '0.5in', 
+        bottom: '0.5in', 
+        left: '0.5in' 
+      },
+      scale: 1
+    });
     return pdfBuffer;
   } finally {
     await browser.close();
