@@ -14,6 +14,17 @@ const FILENAME_MAP = {
   RoofingAccord140: "ACORD-140.pdf",
   RoofingForm: "RoofingForm.pdf",
 };
+// add near FILENAME_MAP in src/server.js
+const TEMPLATE_ALIASES = {
+  Accord125: "RoofingAccord125",
+  Accord126: "RoofingAccord126",
+  Accord140: "RoofingAccord140",
+  RoofingAccord125: "RoofingAccord125",
+  RoofingAccord126: "RoofingAccord126",
+  RoofingAccord140: "RoofingAccord140",
+  RoofingForm: "RoofingForm",
+};
+const resolveTemplate = (n) => TEMPLATE_ALIASES[n] || n;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,6 +90,21 @@ async function renderBundleAndRespond({ templates, email }, res) {
       results.push({ status: "rejected", reason: err });
     }
   }
+  // /render-bundle
+APP.post("/render-bundle", async (req, res) => {
+  try {
+    const body = req.body || {};
+    body.templates = (body.templates || []).map(t => ({
+      ...t,
+      name: resolveTemplate(t.name),
+    }));
+    await renderBundleAndRespond(body, res);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 
   const failures = results.filter(r => r.status === "rejected");
   if (failures.length) {
@@ -142,15 +168,19 @@ APP.post("/submit-quote", async (req, res) => {
     let { formData = {}, segments = [], email } = req.body || {};
     formData = enrichFormData(formData);
 
-    // segments must exactly match template folder names
-    const templates = (segments || []).map((name) => ({
-      name,
-      filename: FILENAME_MAP[name] || `${name}.pdf`,
-      data: formData,
+       // /submit-quote
+const templates = (segments || []).map((name) => ({
+  name,
+  filename: FILENAME_MAP[name] || `${name}.pdf`,
+  data: formData,
+}));
+
     }));
     if (templates.length === 0) {
       return res.status(400).json({ ok: false, success: false, error: "NO_VALID_SEGMENTS" });
     }
+ 
+
 
     // Default email block so /submit-quote returns JSON (not a PDF stream)
     const defaultTo = process.env.CARRIER_EMAIL || process.env.GMAIL_USER;
