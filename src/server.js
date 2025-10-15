@@ -65,6 +65,7 @@ async function renderBundleAndRespond({ templates, email }, res) {
   const results = [];
   for (const t of templates) {
     const name = t.name;
+    console.log("RENDERING", name);
     const htmlPath = path.join(TPL_DIR, name, "index.ejs");
     const cssPath = path.join(TPL_DIR, name, "styles.css"); // optional
     const rawData = t.data || {};
@@ -86,7 +87,7 @@ async function renderBundleAndRespond({ templates, email }, res) {
       ok: false,
       success: false,
       error: "ONE_OR_MORE_ATTACHMENTS_FAILED",
-      failedCount: failures.length
+      failedCount: failures.length,details
     });
   }
 
