@@ -1,1 +1,26 @@
+{
+  "insured_name": "businessName",
+  "dba_name": "dba",
+  "mailing_address": "address",
+  "mailing_address_2": "address2",
+  "mailing_city": "city",
+  "mailing_state": "state",
+  "mailing_zip": "zip",
+
+  "contact_name": "contactName",
+  "contact_phone": "inspection_phone",
+  "contact_email": "contact_email",
+
+  "years_in_business": "yearsInBusiness",
+  "naics_code": "naics",
+  "sic_code": "sic",
+  "trade_desc": "trade",
+
+  "gross_receipts": "grossReceipts",
+  "payroll_roofing": "payroll.roofing",
+  "payroll_clerical": "payroll.clerical",
+
+  "operations_description": "operations_description",
+  "loss_history_summary": "loss_history_summary"
+}
 
