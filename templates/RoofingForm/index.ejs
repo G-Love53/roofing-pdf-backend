@@ -1,80 +1,292 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>ROOFING SUPPLEMENT</title>
-<style>
-:root{--ink:#0e1222}
-body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);font-size:10pt}
-.page{width:816px;min-height:1056px;margin:0 auto;padding:12pt 14pt;box-sizing:border-box}
-.headerbar{display:grid;grid-template-columns:1fr auto auto;align-items:center;border-bottom:1pt solid #000;padding-bottom:6pt;margin-bottom:8pt}
-.acord{font-weight:700;letter-spacing:1pt}
-.title{font-size:12pt;font-weight:700;text-align:center}
-.formno{font-size:18pt;font-weight:800}
-.block{border:1pt solid #000;margin:6pt 0}
-.row{display:grid;grid-template-columns:repeat(20,1fr)}
-.cell{border-right:1pt solid #000;border-bottom:1pt solid #000;padding:3pt}
-.cell.label{background:#f2f2f2;font-weight:700}
-.w20{grid-column:span 20}.w16{grid-column:span 16}.w12{grid-column:span 12}.w10{grid-column:span 10}.w8{grid-column:span 8}.w6{grid-column:span 6}.w4{grid-column:span 4}.w2{grid-column:span 2}
-.small{font-size:9pt;color:#374151}
-</style>
-<style><%= styles %></style>
-</head><body>
-<div class="page">
-  <div class="headerbar">
-    <div class="acord">ACORD</div>
-    <div class="title">ROOFING SUPPLEMENT</div>
-    <div class="formno">RS</div>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Roofing Supplemental Application – Berkley</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 24px; color: #111; }
+    h1   { font-size: 16px; margin: 0 0 10px; }
+    h2   { font-size: 13px; margin: 20px 0 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
+    th, td { border: 1px solid #bbb; padding: 6px 8px; vertical-align: top; }
+    th { background: #f3f3f3; text-align: left; }
+    .kv  { width: 100%; border: 1px solid #bbb; margin: 6px 0; }
+    .row { display: flex; gap: 10px; }
+    .col { flex: 1; }
+    .muted { color: #666; }
+    .checkbox { font-family: 'DejaVu Sans', Arial, sans-serif; } /* for ✓ */
+    .box { display:inline-block; width:12px; height:12px; border:1px solid #333; margin-right:6px; }
+    .yesno .col { display:flex; align-items:center; gap:6px; }
+    .small { font-size: 11px; }
+  </style>
+</head>
+<body>
+  <h1>Roofing Supplemental Application</h1>
+  <div class="small muted">To be used with ACORD 125 &amp; 126</div>
+
+  <h2>Producer</h2>
+  <div class="row">
+    <div class="col"><strong>Agent Name:</strong> <%= data.agentName || "" %></div>
+    <div class="col"><strong>Contact:</strong> <%= data.agentContact || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Agent Number:</strong> <%= data.agentNumber || "" %></div>
+    <div class="col"><strong>Phone #:</strong> <%= data.agentPhone || "" %></div>
   </div>
 
-  <div class="block">
-    <div class="row">
-      <div class="cell label w4">BUSINESS NAME</div>
-      <div class="cell w16"><%= data.businessName || data.applicant_name || "" %></div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">DBA</div>
-      <div class="cell w16"><%= data.dba || "" %></div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">ADDRESS</div>
-      <div class="cell w16"><%= [data.address, data.address2, (data.city||""), (data.state||""), (data.zip||"")].filter(Boolean).join(" ") %></div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">CONTACT</div>
-      <div class="cell w6"><%= data.contactName || "" %></div>
-      <div class="cell label w4">PHONE</div>
-      <div class="cell w6"><%= data.phone || data.inspection_phone || "" %></div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">TRADE</div>
-      <div class="cell w6"><%= data.trade || "Roofing" %></div>
-      <div class="cell label w4">NAICS / SIC</div>
-      <div class="cell w6"><%= (data.naics || "238160") + " / " + (data.sic || "1761") %></div>
+  <h2>Applicant</h2>
+  <div class="row">
+    <div class="col"><strong>Applicant’s Name:</strong> <%= data.applicant_name || data.businessName || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Applicant Mailing Address:</strong> <%= data.mailing_address || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Applicant’s Phone Number:</strong> <%= data.applicant_phone || "" %></div>
+    <div class="col"><strong>Web Address:</strong> <%= data.web_address || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Inspection Contact:</strong> <%= data.inspection_contact || "" %></div>
+    <div class="col"><strong>Phone (Inspection):</strong> <%= data.inspection_phone || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Proposed Policy Period:</strong>
+      <%= data.policy_period_from || "" %> to <%= data.policy_period_to || "" %>
     </div>
   </div>
-
-  <div class="block">
-    <div class="row">
-      <div class="cell label w4">CARRIER (PRIOR)</div>
-      <div class="cell w6"><%= data.priorCarrier || "" %></div>
-      <div class="cell label w4">LOSSES (3 YRS)</div>
-      <div class="cell w6">
-        <% if (Array.isArray(data.losses3Yrs)) { %>
-          <% data.losses3Yrs.forEach(function(L, i){ %>
-            <%= (i? " | " : "") %><%= (L.date||"") %> / <%= helpers.money(L.amount) %> / <%= L.cause||"" %> / Open: <%= helpers.yn(L.open) %>
-          <% }); %>
-        <% } %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">CRANE USE</div>
-      <div class="cell w6"><%= helpers.yn(data.craneUse && data.craneUse.used) %></div>
-      <div class="cell label w4">CERTIFIED OPERATOR</div>
-      <div class="cell w6"><%= helpers.yn(data.craneUse && data.craneUse.certifiedOperator) %></div>
-    </div>
-    <div class="row">
-      <div class="cell label w4">LADDER SAFETY PROGRAM</div>
-      <div class="cell w16"><%= helpers.yn(data.ladderSafetyProgram) %></div>
+  <div class="row">
+    <div class="col"><strong>Entity Type:</strong>
+      <%= data.entity_type || "" %> <!-- e.g., Individual / Partnership / Corporation / Joint Venture / Other -->
     </div>
   </div>
+  <div class="row">
+    <div class="col"><strong>Location #1:</strong> <%= data.location1 || "" %></div>
+    <div class="col"><strong>Location #2:</strong> <%= data.location2 || "" %></div>
+    <div class="col"><strong>Location #3:</strong> <%= data.location3 || "" %></div>
+  </div>
 
-  <div class="small">Starter template • Replace with your production layout and fields.</div>
-</div></body></html>
+  <h2>Underwriting Information</h2>
+  <div class="row">
+    <div class="col"><strong>Years in Business:</strong> <%= data.years_in_business || "" %></div>
+    <div class="col"><strong>Years Experience:</strong> <%= data.years_experience || "" %></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Commercial</th>
+        <th>Residential</th>
+        <th>Industrial</th>
+        <th>% of Total (must equal 100)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>New Construction</td>
+        <td><%= data.new_comm || "" %></td>
+        <td><%= data.new_res || "" %></td>
+        <td><%= data.new_ind || "" %></td>
+        <td><%= data.new_total || "" %></td>
+      </tr>
+      <tr>
+        <td>Repair / Patching</td>
+        <td><%= data.repair_comm || "" %></td>
+        <td><%= data.repair_res || "" %></td>
+        <td><%= data.repair_ind || "" %></td>
+        <td><%= data.repair_total || "" %></td>
+      </tr>
+      <tr>
+        <td>Replacement</td>
+        <td><%= data.replace_comm || "" %></td>
+        <td><%= data.replace_res || "" %></td>
+        <td><%= data.replace_ind || "" %></td>
+        <td><%= data.replace_total || "" %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr><th>Roof Type</th><th>%</th><th>Roof Type</th><th>%</th><th>Roof Type</th><th>%</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Flat Roofs</td><td><%= data.roof_flat || "" %></td>
+          <td>Metal</td><td><%= data.roof_metal || "" %></td>
+          <td>Pitched</td><td><%= data.roof_pitch || "" %></td></tr>
+      <tr><td>Asphalt Shingle</td><td><%= data.roof_asphalt || "" %></td>
+          <td>Single Ply</td><td><%= data.roof_singleply || "" %></td>
+          <td>Tile</td><td><%= data.roof_tile || "" %></td></tr>
+      <tr><td>Fiberglass</td><td><%= data.roof_fiberglass || "" %></td>
+          <td>Wood</td><td><%= data.roof_wood || "" %></td>
+          <td>Polyurethane Foam</td><td><%= data.roof_foam || "" %></td></tr>
+      <tr><td>Hot Tar</td><td><%= data.roof_hottar || "" %></td>
+          <td>Slate</td><td><%= data.roof_slate || "" %></td>
+          <td>Torch Down</td><td><%= data.roof_torch || "" %></td></tr>
+      <tr><td colspan="6"><strong>Other – Describe:</strong> <%= data.roof_other || "" %></td></tr>
+    </tbody>
+  </table>
+
+  <div><strong>Other operations (waterproofing, siding, asbestos removal, gutters, carpentry, etc.):</strong><br/>
+    <%= data.other_ops || "" %>
+  </div>
+
+  <div class="yesno row">
+    <div class="col"><strong>Any current Wrap-Up/OCIP projects?</strong> <%= data.ocip_yesno || "" %></div>
+    <div class="col"><strong>Projected cost (if yes):</strong> <%= data.ocip_cost || "" %></div>
+  </div>
+
+  <div><strong>Safety precautions for hot tar / torch / hot process:</strong><br/>
+    <%= data.hot_process_safety || "" %>
+  </div>
+
+  <div class="row">
+    <div class="col"><strong>Max building height:</strong> <%= data.max_height || "" %></div>
+    <div class="col"><strong>Fall protection program (if over 3 stories):</strong> <%= data.fall_protect || "" %></div>
+  </div>
+
+  <div class="row">
+    <div class="col"><strong>Written safety program?</strong> <%= data.safety_program || "" %></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Owner/Partner Payroll</th><th>Employee Payroll</th><th>Subcontractor Cost</th><th>Uninsured Sub Payroll</th><th>Leased Emp Payroll</th><th>Total Gross Sales</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><%= data.owner_payroll || "" %></td>
+        <td><%= data.employee_payroll || "" %></td>
+        <td><%= data.sub_cost || "" %></td>
+        <td><%= data.uninsured_sub_payroll || "" %></td>
+        <td><%= data.leased_payroll || "" %></td>
+        <td><%= data.total_sales || "" %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Public / Jobsite Practices</h2>
+  <div><strong>How do you protect the public?</strong> <br/><%= data.public_protection || "" %></div>
+  <div><strong>How are materials lifted to the roof?</strong> <br/><%= data.material_lift || "" %></div>
+  <div><strong>How are openings protected overnight?</strong> <br/><%= data.opening_protect || "" %></div>
+  <div><strong>Precautions when rainstorm is imminent:</strong> <br/><%= data.rain_precautions || "" %></div>
+  <div><strong>Foreman/contractor inspects on completion?</strong> <%= data.final_inspect || "" %></div>
+
+  <div class="row">
+    <div class="col"><strong>Work in AZ, CA, CO, NV, NY, OR, UT, WA?</strong> <%= data.states_work || "" %></div>
+    <div class="col"><strong>Describe (if yes):</strong> <%= data.states_desc || "" %></div>
+  </div>
+
+  <div class="row">
+    <div class="col"><strong>Asbestos used/sold/installed/removed?</strong> <%= data.asbestos_yesno || "" %></div>
+    <div class="col"><strong>Explain (if yes):</strong> <%= data.asbestos_desc || "" %></div>
+  </div>
+
+  <h2>Cranes</h2>
+  <div class="row">
+    <div class="col"><strong>Used?</strong> <%= data.crane_yesno || "" %></div>
+    <div class="col"><strong>Tons:</strong> <%= data.crane_tons || "" %></div>
+    <div class="col"><strong>Boom Length:</strong> <%= data.crane_boom || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Barriers to protect public?</strong> <%= data.crane_barriers || "" %></div>
+    <div class="col"><strong>Owned / Rented:</strong> <%= data.crane_owned_or_rented || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Regular maintenance schedule?</strong> <%= data.crane_maint || "" %></div>
+    <div class="col"><strong>Employees trained/certified?</strong> <%= data.crane_trained || "" %></div>
+  </div>
+
+  <div class="row">
+    <div class="col"><strong>“Fire watch” program?</strong> <%= data.fire_watch || "" %></div>
+    <div class="col"><strong>OSHA compliant?</strong> <%= data.osha_compliant || "" %></div>
+  </div>
+
+  <h2>Roofing Contractors</h2>
+  <div class="row">
+    <div class="col"><strong>Draw plans/design/specs?</strong> <%= data.draw_specs || "" %></div>
+    <div class="col"><strong>Describe:</strong> <%= data.draw_specs_desc || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Do subs carry lower limits?</strong> <%= data.sub_lower_limits || "" %></div>
+    <div class="col"><strong>Minimum limits accepted:</strong> <%= data.sub_min_limits || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>COIs required from subs?</strong> <%= data.sub_coi || "" %></div>
+    <div class="col"><strong>Add’l Insured on subs?</strong> <%= data.sub_ai || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Signed subcontract w/ indemnity?</strong> <%= data.sub_contract_indemn || "" %></div>
+    <div class="col"><strong>COIs kept (years):</strong> <%= data.sub_coi_years || "" %></div>
+  </div>
+
+  <div><strong>Describe work subcontracted (with %):</strong><br/><%= data.sub_work_desc || "" %></div>
+
+  <div class="row">
+    <div class="col"><strong>Lease equipment to others?</strong> <%= data.lease_equip || "" %></div>
+    <div class="col"><strong>If yes, equipment/lease notes:</strong> <%= data.lease_desc || "" %></div>
+  </div>
+
+  <div class="row">
+    <div class="col"><strong># Employees – Full-time:</strong> <%= data.emp_fulltime || "" %></div>
+    <div class="col"><strong>Part-time:</strong> <%= data.emp_parttime || "" %></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Year</th><th>Gross Sales</th></tr></thead>
+    <tbody>
+      <tr><td><%= data.sales_year1 || "2025" %></td><td><%= data.sales_amt1 || "" %></td></tr>
+      <tr><td><%= data.sales_year2 || "2024" %></td><td><%= data.sales_amt2 || "" %></td></tr>
+      <tr><td><%= data.sales_year3 || "2023" %></td><td><%= data.sales_amt3 || "" %></td></tr>
+    </tbody>
+  </table>
+
+  <div class="row">
+    <div class="col"><strong>Offer warranties?</strong> <%= data.offer_warranty || "" %></div>
+    <div class="col"><strong>Warranty details:</strong> <%= data.warranty_desc || "" %></div>
+  </div>
+
+  <h2>Certificate Recipients / Additional Interests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name & Address</th>
+        <th>Relationship to Applicant</th>
+        <th>Additional Insured</th>
+        <th>Certificate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% (data.certRecipients || []).forEach(r => { %>
+        <tr>
+          <td><%= r.nameAddress || "" %></td>
+          <td><%= r.relationship || "" %></td>
+          <td class="checkbox"><%= r.ai ? "✓" : "" %></td>
+          <td class="checkbox"><%= r.cert ? "✓" : "" %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <h2>Largest Jobs (Last 5 Years)</h2>
+  <table>
+    <thead><tr><th>Job</th><th>Type of Process Used</th></tr></thead>
+    <tbody>
+      <% (data.largestJobs || []).forEach(j => { %>
+        <tr><td><%= j.name || "" %></td><td><%= j.process || "" %></td></tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <h2>Additional Information / Comments</h2>
+  <div><%= data.comments || "" %></div>
+
+  <h2>Signature</h2>
+  <div class="row">
+    <div class="col"><strong>Producer’s Signature:</strong> <%= data.producer_sign || "" %></div>
+    <div class="col"><strong>Date:</strong> <%= data.producer_date || "" %></div>
+  </div>
+  <div class="row">
+    <div class="col"><strong>Applicant’s Signature:</strong> <%= data.applicant_sign || "" %></div>
+    <div class="col"><strong>Date:</strong> <%= data.applicant_date || "" %></div>
+  </div>
+</body>
+</html>
