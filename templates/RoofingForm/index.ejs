@@ -2,291 +2,516 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Roofing Supplemental Application – Berkley</title>
+  <title>Roofing Supplemental Application — Berkley</title>
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 24px; color: #111; }
-    h1   { font-size: 16px; margin: 0 0 10px; }
-    h2   { font-size: 13px; margin: 20px 0 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
-    table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; }
-    th, td { border: 1px solid #bbb; padding: 6px 8px; vertical-align: top; }
-    th { background: #f3f3f3; text-align: left; }
-    .kv  { width: 100%; border: 1px solid #bbb; margin: 6px 0; }
-    .row { display: flex; gap: 10px; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; margin: 0.5in; color: #111; }
+    h1 { font-size: 18pt; font-weight: 700; margin: 0 0 4pt; text-align: center; }
+    h2 { font-size: 11pt; font-weight: 700; margin: 16pt 0 8pt; text-transform: uppercase; border-bottom: 2pt solid #000; padding-bottom: 2pt; }
+    .subheader { text-align: center; font-size: 9pt; margin: 4pt 0 16pt; }
+    table { width: 100%; border-collapse: collapse; margin: 8pt 0; }
+    th, td { border: 1pt solid #000; padding: 6pt; vertical-align: top; text-align: left; }
+    th { background: #f0f0f0; font-weight: 700; font-size: 9pt; }
+    .row { display: flex; gap: 12pt; margin: 8pt 0; }
     .col { flex: 1; }
-    .muted { color: #666; }
-    .checkbox { font-family: 'DejaVu Sans', Arial, sans-serif; } /* for ✓ */
-    .box { display:inline-block; width:12px; height:12px; border:1px solid #333; margin-right:6px; }
-    .yesno .col { display:flex; align-items:center; gap:6px; }
-    .small { font-size: 11px; }
+    .label { font-weight: 700; font-size: 10pt; }
+    .value { font-size: 10pt; margin-top: 2pt; }
+    .checkbox { display: inline-block; width: 14pt; height: 14pt; border: 1pt solid #000; text-align: center; line-height: 14pt; margin-right: 6pt; vertical-align: middle; }
+    .checked { font-weight: 700; }
+    .section { margin: 12pt 0; }
+    .small { font-size: 9pt; }
+    .footer { margin-top: 24pt; padding-top: 8pt; border-top: 1pt solid #000; font-size: 8pt; text-align: center; }
+    @page { size: Letter; margin: 0.5in; }
   </style>
 </head>
 <body>
+
   <h1>Roofing Supplemental Application</h1>
-  <div class="small muted">To be used with ACORD 125 &amp; 126</div>
+  <div class="subheader">TO BE USED WITH COMMERCIAL GENERAL LIABILITY APPLICATION (ACORD 125 & 126)<br>
+  All questions must be answered in full. Application must be signed and dated by the applicant.</div>
 
-  <h2>Producer</h2>
-  <div class="row">
-    <div class="col"><strong>Agent Name:</strong> <%= data.agentName || "" %></div>
-    <div class="col"><strong>Contact:</strong> <%= data.agentContact || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Agent Number:</strong> <%= data.agentNumber || "" %></div>
-    <div class="col"><strong>Phone #:</strong> <%= data.agentPhone || "" %></div>
+  <h2>Applicant Information</h2>
+  
+  <div class="section">
+    <div class="label">Applicant's Name:</div>
+    <div class="value"><%= data.applicant_name || "" %></div>
   </div>
 
-  <h2>Applicant</h2>
-  <div class="row">
-    <div class="col"><strong>Applicant’s Name:</strong> <%= data.applicant_name || data.businessName || "" %></div>
+  <div class="section">
+    <div class="label">Applicant Mailing Address:</div>
+    <div class="value"><%= data.applicant_address || "" %>, <%= data.applicant_state || "" %> <%= data.applicant_zip || "" %></div>
   </div>
+
   <div class="row">
-    <div class="col"><strong>Applicant Mailing Address:</strong> <%= data.mailing_address || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Applicant’s Phone Number:</strong> <%= data.applicant_phone || "" %></div>
-    <div class="col"><strong>Web Address:</strong> <%= data.web_address || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Inspection Contact:</strong> <%= data.inspection_contact || "" %></div>
-    <div class="col"><strong>Phone (Inspection):</strong> <%= data.inspection_phone || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Proposed Policy Period:</strong>
-      <%= data.policy_period_from || "" %> to <%= data.policy_period_to || "" %>
+    <div class="col">
+      <div class="label">Applicant's Phone Number:</div>
+      <div class="value"><%= data.applicant_phone || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Web Address:</div>
+      <div class="value"><%= data.web_address || "" %></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col"><strong>Entity Type:</strong>
-      <%= data.entity_type || "" %> <!-- e.g., Individual / Partnership / Corporation / Joint Venture / Other -->
+    <div class="col">
+      <div class="label">Inspection Contact:</div>
+      <div class="value"><%= data.inspection_contact || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Phone Number for Inspection Contact:</div>
+      <div class="value"><%= data.inspection_phone || "" %></div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="label">Proposed Policy Period:</div>
+    <div class="value"><%= data.policy_period_from || "" %> to <%= data.to || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">Applicant is:</div>
+    <div class="value">
+      <span class="checkbox <%= data.entity_type_individual ? 'checked' : '' %>"><%= data.entity_type_individual ? '✓' : '' %></span> Individual
+      <span class="checkbox <%= data.entity_type_partnership ? 'checked' : '' %>"><%= data.entity_type_partnership ? '✓' : '' %></span> Partnership
+      <span class="checkbox <%= data.entity_type_corporation ? 'checked' : '' %>"><%= data.entity_type_corporation ? '✓' : '' %></span> Corporation
+      <span class="checkbox <%= data.entity_type_joint_venture ? 'checked' : '' %>"><%= data.entity_type_joint_venture ? '✓' : '' %></span> Joint Venture
+      <span class="checkbox <%= data.entity_type_llc ? 'checked' : '' %>"><%= data.entity_type_llc ? '✓' : '' %></span> LLC
+      <span class="checkbox <%= data.entity_type_other ? 'checked' : '' %>"><%= data.entity_type_other ? '✓' : '' %></span> Other
+    </div>
+  </div>
+
   <div class="row">
-    <div class="col"><strong>Location #1:</strong> <%= data.location1 || "" %></div>
-    <div class="col"><strong>Location #2:</strong> <%= data.location2 || "" %></div>
-    <div class="col"><strong>Location #3:</strong> <%= data.location3 || "" %></div>
+    <div class="col">
+      <div class="label">Location #1:</div>
+      <div class="value"><%= data.location_1 || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Location #2:</div>
+      <div class="value"><%= data.location_2 || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Location #3:</div>
+      <div class="value"><%= data.location_3 || "" %></div>
+    </div>
   </div>
 
   <h2>Underwriting Information</h2>
-  <div class="row">
-    <div class="col"><strong>Years in Business:</strong> <%= data.years_in_business || "" %></div>
-    <div class="col"><strong>Years Experience:</strong> <%= data.years_experience || "" %></div>
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Commercial</th>
-        <th>Residential</th>
-        <th>Industrial</th>
-        <th>% of Total (must equal 100)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>New Construction</td>
-        <td><%= data.new_comm || "" %></td>
-        <td><%= data.new_res || "" %></td>
-        <td><%= data.new_ind || "" %></td>
-        <td><%= data.new_total || "" %></td>
-      </tr>
-      <tr>
-        <td>Repair / Patching</td>
-        <td><%= data.repair_comm || "" %></td>
-        <td><%= data.repair_res || "" %></td>
-        <td><%= data.repair_ind || "" %></td>
-        <td><%= data.repair_total || "" %></td>
-      </tr>
-      <tr>
-        <td>Replacement</td>
-        <td><%= data.replace_comm || "" %></td>
-        <td><%= data.replace_res || "" %></td>
-        <td><%= data.replace_ind || "" %></td>
-        <td><%= data.replace_total || "" %></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <table>
-    <thead>
-      <tr><th>Roof Type</th><th>%</th><th>Roof Type</th><th>%</th><th>Roof Type</th><th>%</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Flat Roofs</td><td><%= data.roof_flat || "" %></td>
-          <td>Metal</td><td><%= data.roof_metal || "" %></td>
-          <td>Pitched</td><td><%= data.roof_pitch || "" %></td></tr>
-      <tr><td>Asphalt Shingle</td><td><%= data.roof_asphalt || "" %></td>
-          <td>Single Ply</td><td><%= data.roof_singleply || "" %></td>
-          <td>Tile</td><td><%= data.roof_tile || "" %></td></tr>
-      <tr><td>Fiberglass</td><td><%= data.roof_fiberglass || "" %></td>
-          <td>Wood</td><td><%= data.roof_wood || "" %></td>
-          <td>Polyurethane Foam</td><td><%= data.roof_foam || "" %></td></tr>
-      <tr><td>Hot Tar</td><td><%= data.roof_hottar || "" %></td>
-          <td>Slate</td><td><%= data.roof_slate || "" %></td>
-          <td>Torch Down</td><td><%= data.roof_torch || "" %></td></tr>
-      <tr><td colspan="6"><strong>Other – Describe:</strong> <%= data.roof_other || "" %></td></tr>
-    </tbody>
-  </table>
-
-  <div><strong>Other operations (waterproofing, siding, asbestos removal, gutters, carpentry, etc.):</strong><br/>
-    <%= data.other_ops || "" %>
-  </div>
-
-  <div class="yesno row">
-    <div class="col"><strong>Any current Wrap-Up/OCIP projects?</strong> <%= data.ocip_yesno || "" %></div>
-    <div class="col"><strong>Projected cost (if yes):</strong> <%= data.ocip_cost || "" %></div>
-  </div>
-
-  <div><strong>Safety precautions for hot tar / torch / hot process:</strong><br/>
-    <%= data.hot_process_safety || "" %>
-  </div>
 
   <div class="row">
-    <div class="col"><strong>Max building height:</strong> <%= data.max_height || "" %></div>
-    <div class="col"><strong>Fall protection program (if over 3 stories):</strong> <%= data.fall_protect || "" %></div>
+    <div class="col">
+      <div class="label">1. Years in Business?</div>
+      <div class="value"><%= data.years_in_business || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Years of Experience in this field?</div>
+      <div class="value"><%= data.Years_of_Experience || "" %></div>
+    </div>
   </div>
 
-  <div class="row">
-    <div class="col"><strong>Written safety program?</strong> <%= data.safety_program || "" %></div>
+  <div class="section">
+    <div class="label">2. Indicate the percent of each type of roofing performed.</div>
+    <table>
+      <thead>
+        <tr>
+          <th>TYPE</th>
+          <th>COMMERCIAL</th>
+          <th>RESIDENTIAL</th>
+          <th>INDUSTRIAL</th>
+          <th>% OF TOTAL OPERATIONS<br>(MUST EQUAL 100%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>NEW CONSTRUCTION</td>
+          <td><%= data.commercial_new_construction || "" %>%</td>
+          <td><%= data.residential_new_construction || "" %>%</td>
+          <td><%= data.industrial_new_construction || "" %>%</td>
+          <td><%= (parseInt(data.commercial_new_construction||0) + parseInt(data.residential_new_construction||0) + parseInt(data.industrial_new_construction||0)) %>%</td>
+        </tr>
+        <tr>
+          <td>REPAIR/PATCHING</td>
+          <td><%= data.commercial_repair_patching || "" %>%</td>
+          <td><%= data.residential_repair_patching || "" %>%</td>
+          <td><%= data.industrial_repair_patching || "" %>%</td>
+          <td><%= (parseInt(data.commercial_repair_patching||0) + parseInt(data.residential_repair_patching||0) + parseInt(data.industrial_repair_patching||0)) %>%</td>
+        </tr>
+        <tr>
+          <td>REPLACEMENT</td>
+          <td><%= data.commercial_replacement || "" %>%</td>
+          <td><%= data.residential_replacement || "" %>%</td>
+          <td><%= data.industrial_replacement || "" %>%</td>
+          <td><%= (parseInt(data.commercial_replacement||0) + parseInt(data.residential_replacement||0) + parseInt(data.industrial_replacement||0)) %>%</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <table>
-    <thead><tr><th>Owner/Partner Payroll</th><th>Employee Payroll</th><th>Subcontractor Cost</th><th>Uninsured Sub Payroll</th><th>Leased Emp Payroll</th><th>Total Gross Sales</th></tr></thead>
-    <tbody>
+  <div class="section">
+    <table>
+      <tbody>
+        <tr>
+          <td><strong>FLAT ROOFS</strong></td>
+          <td><%= data.flat_roofs_percent || "" %>%</td>
+          <td><strong>METAL</strong></td>
+          <td><%= data.metal_percent || "" %>%</td>
+          <td><strong>PITCH ROOFS</strong></td>
+          <td><%= data.pitch_roofs_percent || "" %>%</td>
+        </tr>
+        <tr>
+          <td><strong>ASPHALT SHINGLE</strong></td>
+          <td><%= data.asphalt_shingle_percent || "" %>%</td>
+          <td><strong>SINGLE PLY</strong></td>
+          <td><%= data.single_ply_percent || "" %>%</td>
+          <td><strong>TILE</strong></td>
+          <td><%= data.tile_percent || "" %>%</td>
+        </tr>
+        <tr>
+          <td><strong>FIBERGLASS</strong></td>
+          <td><%= data.fiberglass_percent || "" %>%</td>
+          <td><strong>WOOD</strong></td>
+          <td><%= data.wood_percent || "" %>%</td>
+          <td><strong>POLYURETHANE FOAM</strong></td>
+          <td><%= data.polyurethane_foam_percent || "" %>%</td>
+        </tr>
+        <tr>
+          <td><strong>HOT TAR</strong></td>
+          <td><%= data.hot_tar_percent || "" %>%</td>
+          <td><strong>SLATE</strong></td>
+          <td><%= data.slate_percent || "" %>%</td>
+          <td><strong>TORCH DOWN</strong></td>
+          <td><%= data.torch_down_percent || "" %>%</td>
+        </tr>
+        <tr>
+          <td colspan="6"><strong>OTHER - DESCRIBE:</strong> <%= data.other_roofing_describe || "" %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="label">3. Describe any other operations or work done other than roofing (e.g., waterproofing, siding, asbestos removal, rain gutters, carpentry, etc):</div>
+    <div class="value"><%= data.other_operations || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">4. Has or will any work involve the new construction of condominiums, townhouses, multi-family homes, apartments or tract homes?</div>
+    <div class="value">
+      <span class="checkbox <%= data.Multi_Family_Work === 'Yes' ? 'checked' : '' %>"><%= data.Multi_Family_Work === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.Multi_Family_Work === 'No' ? 'checked' : '' %>"><%= data.Multi_Family_Work === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.Multi_Family_Work === 'Yes') { %>
+    <div class="value"><strong>If yes, please describe the work:</strong> <%= data.describework || "" %></div>
+    <% } %>
+  </div>
+
+  <h2>Underwriting Information (Continued)</h2>
+
+  <div class="section">
+    <div class="label">5. Any Current Wrap-Up/OCIP Projects?</div>
+    <div class="value">
+      <span class="checkbox <%= data.wrap_up_projects === 'Yes' ? 'checked' : '' %>"><%= data.wrap_up_projects === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.wrap_up_projects === 'No' ? 'checked' : '' %>"><%= data.wrap_up_projects === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.wrap_up_projects === 'Yes') { %>
+    <div class="value"><strong>If yes, projected cost:</strong> <%= data.wrap_up_cost || "" %></div>
+    <% } %>
+  </div>
+
+  <div class="section">
+    <div class="label">7. What is the maximum height of the buildings you work on?</div>
+    <div class="value"><%= data.max_building_height || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">If over 3 stories, does applicant have a fall protection program in place for all jobs including one of the following systems:</div>
+    <div class="value">
+      <div><span class="checkbox <%= data.fall_protection_guardrail ? 'checked' : '' %>"><%= data.fall_protection_guardrail ? '✓' : '' %></span> Guardrail system with toes boards</div>
+      <div><span class="checkbox <%= data.fall_protection_safety_net ? 'checked' : '' %>"><%= data.fall_protection_safety_net ? '✓' : '' %></span> Safety net</div>
+      <div><span class="checkbox <%= data.fall_protection_personal ? 'checked' : '' %>"><%= data.fall_protection_personal ? '✓' : '' %></span> Personal fall arrest system</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">8. Do you have a written safety program?</div>
+    <div class="value">
+      <span class="checkbox <%= data.written_safety_program === 'Yes' ? 'checked' : '' %>"><%= data.written_safety_program === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.written_safety_program === 'No' ? 'checked' : '' %>"><%= data.written_safety_program === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">9. Financial Information:</div>
+    <table class="small">
       <tr>
-        <td><%= data.owner_payroll || "" %></td>
-        <td><%= data.employee_payroll || "" %></td>
-        <td><%= data.sub_cost || "" %></td>
+        <td><strong>Owner/Partner Payroll</strong></td>
+        <td><%= data.owner_partner_payroll || "" %></td>
+        <td><strong>Subcontractor Cost</strong></td>
+        <td><%= data.subcontractor_cost || "" %></td>
+      </tr>
+      <tr>
+        <td><strong>Uninsured Subcontractor Payroll</strong></td>
         <td><%= data.uninsured_sub_payroll || "" %></td>
-        <td><%= data.leased_payroll || "" %></td>
-        <td><%= data.total_sales || "" %></td>
+        <td><strong>Number of Employees</strong></td>
+        <td><%= data.num_employees || "" %></td>
       </tr>
-    </tbody>
-  </table>
-
-  <h2>Public / Jobsite Practices</h2>
-  <div><strong>How do you protect the public?</strong> <br/><%= data.public_protection || "" %></div>
-  <div><strong>How are materials lifted to the roof?</strong> <br/><%= data.material_lift || "" %></div>
-  <div><strong>How are openings protected overnight?</strong> <br/><%= data.opening_protect || "" %></div>
-  <div><strong>Precautions when rainstorm is imminent:</strong> <br/><%= data.rain_precautions || "" %></div>
-  <div><strong>Foreman/contractor inspects on completion?</strong> <%= data.final_inspect || "" %></div>
-
-  <div class="row">
-    <div class="col"><strong>Work in AZ, CA, CO, NV, NY, OR, UT, WA?</strong> <%= data.states_work || "" %></div>
-    <div class="col"><strong>Describe (if yes):</strong> <%= data.states_desc || "" %></div>
+      <tr>
+        <td><strong>Employee Payroll</strong></td>
+        <td><%= data.employee_payroll || "" %></td>
+        <td><strong>Leased Employees Payroll</strong></td>
+        <td><%= data.leased_employee_payroll || "" %></td>
+      </tr>
+      <tr>
+        <td><strong>Total Gross Sales</strong></td>
+        <td colspan="3"><%= data.total_gross_sales || "" %></td>
+      </tr>
+    </table>
   </div>
 
-  <div class="row">
-    <div class="col"><strong>Asbestos used/sold/installed/removed?</strong> <%= data.asbestos_yesno || "" %></div>
-    <div class="col"><strong>Explain (if yes):</strong> <%= data.asbestos_desc || "" %></div>
+  <div class="section">
+    <div class="label">10. How do you protect the general public from potential injury?</div>
+    <div class="value"><%= data.protect_public || "" %></div>
   </div>
 
-  <h2>Cranes</h2>
-  <div class="row">
-    <div class="col"><strong>Used?</strong> <%= data.crane_yesno || "" %></div>
-    <div class="col"><strong>Tons:</strong> <%= data.crane_tons || "" %></div>
-    <div class="col"><strong>Boom Length:</strong> <%= data.crane_boom || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Barriers to protect public?</strong> <%= data.crane_barriers || "" %></div>
-    <div class="col"><strong>Owned / Rented:</strong> <%= data.crane_owned_or_rented || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Regular maintenance schedule?</strong> <%= data.crane_maint || "" %></div>
-    <div class="col"><strong>Employees trained/certified?</strong> <%= data.crane_trained || "" %></div>
+  <div class="section">
+    <div class="label">11. How are materials lifted to the roof?</div>
+    <div class="value"><%= data.materials_lifting || "" %></div>
   </div>
 
-  <div class="row">
-    <div class="col"><strong>“Fire watch” program?</strong> <%= data.fire_watch || "" %></div>
-    <div class="col"><strong>OSHA compliant?</strong> <%= data.osha_compliant || "" %></div>
+  <div class="section">
+    <div class="label">12. How are openings in the roof protected over night?</div>
+    <div class="value"><%= data.roof_openings_protected || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">13. What precautions do you take when a rainstorm is imminent?</div>
+    <div class="value"><%= data.rainstorm_precautions || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">14. Does a foreman or contractor inspect all jobs upon completion?</div>
+    <div class="value">
+      <span class="checkbox <%= data.completion_inspection === 'Yes' ? 'checked' : '' %>"><%= data.completion_inspection === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.completion_inspection === 'No' ? 'checked' : '' %>"><%= data.completion_inspection === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">15. Have you ever or do you currently perform work in AZ, CA, CO, NV, NY, OR, UT or WA?</div>
+    <div class="value">
+      <span class="checkbox <%= data.work_restricted_states === 'Yes' ? 'checked' : '' %>"><%= data.work_restricted_states === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.work_restricted_states === 'No' ? 'checked' : '' %>"><%= data.work_restricted_states === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.work_restricted_states === 'Yes') { %>
+    <div class="value"><strong>If yes, please describe:</strong> <%= data.restricted_states_details || "" %></div>
+    <% } %>
+  </div>
+
+  <div class="section">
+    <div class="label">16. Have you ever used, sold, installed or removed asbestos?</div>
+    <div class="value">
+      <span class="checkbox <%= data.asbestos_work === 'Yes' ? 'checked' : '' %>"><%= data.asbestos_work === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.asbestos_work === 'No' ? 'checked' : '' %>"><%= data.asbestos_work === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.asbestos_work === 'Yes') { %>
+    <div class="value"><strong>If yes explain in detail:</strong> <%= data.asbestos_details || "" %></div>
+    <% } %>
+  </div>
+
+  <div class="section">
+    <div class="label">17. Are Cranes used?</div>
+    <div class="value">
+      <span class="checkbox <%= data.cranes_used === 'Yes' ? 'checked' : '' %>"><%= data.cranes_used === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.cranes_used === 'No' ? 'checked' : '' %>"><%= data.cranes_used === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.cranes_used === 'Yes') { %>
+      <div class="value"><strong>Tons:</strong> <%= data.crane_size_tons || "" %> <strong>Boom Length:</strong> <%= data.crane_boom_length || "" %></div>
+      <div class="value"><strong>Barriers in place?</strong> <%= data.crane_barriers || "" %></div>
+      <div class="value">
+        <span class="checkbox <%= data.cranes_owned ? 'checked' : '' %>"><%= data.cranes_owned ? '✓' : '' %></span> Owned
+        <span class="checkbox <%= data.cranes_rented ? 'checked' : '' %>"><%= data.cranes_rented ? '✓' : '' %></span> Rented
+      </div>
+      <div class="value"><strong>Regular maintenance schedule?</strong> <%= data.crane_maintenance || "" %></div>
+      <div class="value"><strong>Employees trained/certified?</strong> <%= data.crane_training || "" %></div>
+    <% } %>
+  </div>
+
+  <div class="section">
+    <div class="label">18. Does the applicant have a "fire watch" program?</div>
+    <div class="value">
+      <span class="checkbox <%= data.fire_watch_program ? 'checked' : '' %>"><%= data.fire_watch_program ? '✓' : '' %></span> Yes
+    </div>
+    <% if (data.fire_watch_program) { %>
+    <div class="value"><strong>Describe:</strong> <%= data.fire_watch_description || "" %></div>
+    <% } %>
+  </div>
+
+  <div class="section">
+    <div class="label">19. Is applicant complying with all state & OSHA regulations?</div>
+    <div class="value">
+      <span class="checkbox <%= data.osha_compliance === 'Yes' ? 'checked' : '' %>"><%= data.osha_compliance === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.osha_compliance === 'No' ? 'checked' : '' %>"><%= data.osha_compliance === 'No' ? '✓' : '' %></span> No
+    </div>
   </div>
 
   <h2>Roofing Contractors</h2>
-  <div class="row">
-    <div class="col"><strong>Draw plans/design/specs?</strong> <%= data.draw_specs || "" %></div>
-    <div class="col"><strong>Describe:</strong> <%= data.draw_specs_desc || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Do subs carry lower limits?</strong> <%= data.sub_lower_limits || "" %></div>
-    <div class="col"><strong>Minimum limits accepted:</strong> <%= data.sub_min_limits || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>COIs required from subs?</strong> <%= data.sub_coi || "" %></div>
-    <div class="col"><strong>Add’l Insured on subs?</strong> <%= data.sub_ai || "" %></div>
-  </div>
-  <div class="row">
-    <div class="col"><strong>Signed subcontract w/ indemnity?</strong> <%= data.sub_contract_indemn || "" %></div>
-    <div class="col"><strong>COIs kept (years):</strong> <%= data.sub_coi_years || "" %></div>
+
+  <div class="section">
+    <div class="label">1. Does applicant draw plans, designs or specifications?</div>
+    <div class="value">
+      <span class="checkbox <%= data.draw_plans_designs === 'Yes' ? 'checked' : '' %>"><%= data.draw_plans_designs === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.draw_plans_designs === 'No' ? 'checked' : '' %>"><%= data.draw_plans_designs === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.draw_plans_designs === 'Yes') { %>
+    <div class="value"><strong>If yes, describe:</strong> <%= data.plans_description || "" %></div>
+    <% } %>
   </div>
 
-  <div><strong>Describe work subcontracted (with %):</strong><br/><%= data.sub_work_desc || "" %></div>
+  <div class="section">
+    <div class="label">2. Do your subcontractors carry coverage or limits less than yours?</div>
+    <div class="value">
+      <span class="checkbox <%= data.sub_lower_coverage === 'Yes' ? 'checked' : '' %>"><%= data.sub_lower_coverage === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.sub_lower_coverage === 'No' ? 'checked' : '' %>"><%= data.sub_lower_coverage === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.sub_lower_coverage === 'Yes') { %>
+    <div class="value"><strong>Minimum limits accepted:</strong> <%= data.minimum_limits || "" %></div>
+    <% } %>
+  </div>
 
-  <div class="row">
-    <div class="col"><strong>Lease equipment to others?</strong> <%= data.lease_equip || "" %></div>
-    <div class="col"><strong>If yes, equipment/lease notes:</strong> <%= data.lease_desc || "" %></div>
+  <div class="section">
+    <div class="label">3. Are certificates of insurance required from subcontractors?</div>
+    <div class="value">
+      <span class="checkbox <%= data.certificates_required === 'Yes' ? 'checked' : '' %>"><%= data.certificates_required === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.certificates_required === 'No' ? 'checked' : '' %>"><%= data.certificates_required === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">4. Do the subcontractors list the applicant as an Additional Insured?</div>
+    <div class="value">
+      <span class="checkbox <%= data.additional_insured === 'Yes' ? 'checked' : '' %>"><%= data.additional_insured === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.additional_insured === 'No' ? 'checked' : '' %>"><%= data.additional_insured === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">5. Is a signed subcontract agreement used with all subcontractors that contains an indemnification and hold harmless clause in your favor?</div>
+    <div class="value">
+      <span class="checkbox <%= data.indemnification_clause === 'Yes' ? 'checked' : '' %>"><%= data.indemnification_clause === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.indemnification_clause === 'No' ? 'checked' : '' %>"><%= data.indemnification_clause === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">6. How long are Certificates of Insurance kept?</div>
+    <div class="value"><%= data.certificate_retention_years || "" %> years <%= data.certificate_retention_other ? '(' + data.certificate_retention_other + ')' : '' %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">7. Describe the type of work subcontracted indicating percent for each category:</div>
+    <div class="value"><%= data.Subcontracted_Work || "" %></div>
+  </div>
+
+  <div class="section">
+    <div class="label">8. Does applicant lease equipment to others with or without operators?</div>
+    <div class="value">
+      <span class="checkbox <%= data.lease_equipment === 'Yes' ? 'checked' : '' %>"><%= data.lease_equipment === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.lease_equipment === 'No' ? 'checked' : '' %>"><%= data.lease_equipment === 'No' ? '✓' : '' %></span> No
+    </div>
+    <% if (data.lease_equipment === 'Yes') { %>
+    <div class="value"><strong>If yes, describe equipment:</strong> <%= data.lease_equipment_description || "" %></div>
+    <% } %>
   </div>
 
   <div class="row">
-    <div class="col"><strong># Employees – Full-time:</strong> <%= data.emp_fulltime || "" %></div>
-    <div class="col"><strong>Part-time:</strong> <%= data.emp_parttime || "" %></div>
+    <div class="col">
+      <div class="label">9. Full-time Employees:</div>
+      <div class="value"><%= data.full_time_employees || "" %></div>
+    </div>
+    <div class="col">
+      <div class="label">Part-time Employees:</div>
+      <div class="value"><%= data.part_time_employees || "" %></div>
+    </div>
   </div>
 
-  <table>
-    <thead><tr><th>Year</th><th>Gross Sales</th></tr></thead>
-    <tbody>
-      <tr><td><%= data.sales_year1 || "2025" %></td><td><%= data.sales_amt1 || "" %></td></tr>
-      <tr><td><%= data.sales_year2 || "2024" %></td><td><%= data.sales_amt2 || "" %></td></tr>
-      <tr><td><%= data.sales_year3 || "2023" %></td><td><%= data.sales_amt3 || "" %></td></tr>
-    </tbody>
-  </table>
+  <div class="section">
+    <div class="label">10. List Gross Sales for the last three years:</div>
+    <table class="small">
+      <tr><td><strong>Year 2025</strong></td><td><%= data.gross_sales_year_1 || "" %></td></tr>
+      <tr><td><strong>Year 2024</strong></td><td><%= data.gross_sales_year_2 || "" %></td></tr>
+      <tr><td><strong>Year 2023</strong></td><td><%= data.gross_sales_year_3 || "" %></td></tr>
+    </table>
+  </div>
 
-  <div class="row">
-    <div class="col"><strong>Offer warranties?</strong> <%= data.offer_warranty || "" %></div>
-    <div class="col"><strong>Warranty details:</strong> <%= data.warranty_desc || "" %></div>
+  <div class="section">
+    <div class="label">11. Do you offer warranties?</div>
+    <div class="value">
+      <span class="checkbox <%= data.warranties_offered === 'Yes' ? 'checked' : '' %>"><%= data.warranties_offered === 'Yes' ? '✓' : '' %></span> Yes
+      <span class="checkbox <%= data.warranties_offered === 'No' ? 'checked' : '' %>"><%= data.warranties_offered === 'No' ? '✓' : '' %></span> No
+    </div>
+  </div>
+
+  <h2>Contractual Liability</h2>
+  <div class="section">
+    <div class="label">Describe All Hold Harmless Agreements (Dates, Contracting Party, Cost):</div>
+    <div class="value"><%= data.hold_harmless_agreements || "" %></div>
   </div>
 
   <h2>Certificate Recipients / Additional Interests</h2>
-  <table>
+  <table class="small">
     <thead>
       <tr>
-        <th>Name & Address</th>
-        <th>Relationship to Applicant</th>
-        <th>Additional Insured</th>
-        <th>Certificate</th>
+        <th>NAME AND ADDRESS</th>
+        <th>RELATIONSHIP TO APPLICANT</th>
+        <th>ADDITIONAL INSURED</th>
+        <th>CERTIFICATE</th>
       </tr>
     </thead>
     <tbody>
-      <% (data.certRecipients || []).forEach(r => { %>
+      <% for (let i = 1; i <= 4; i++) { %>
+        <% if (data['certificate_recipients_name_' + i]) { %>
         <tr>
-          <td><%= r.nameAddress || "" %></td>
-          <td><%= r.relationship || "" %></td>
-          <td class="checkbox"><%= r.ai ? "✓" : "" %></td>
-          <td class="checkbox"><%= r.cert ? "✓" : "" %></td>
+          <td><%= data['certificate_recipients_name_' + i] || "" %></td>
+          <td><%= data['certificate_recipients_relationship_' + i] || "" %></td>
+          <td class="checkbox <%= data['certificate_recipients_additional_' + i] === 'Yes' ? 'checked' : '' %>">
+            <%= data['certificate_recipients_additional_' + i] === 'Yes' ? '✓' : '' %>
+          </td>
+          <td class="checkbox <%= data['certificate_recipients_certificate_' + i] ? 'checked' : '' %>">
+            <%= data['certificate_recipients_certificate_' + i] ? '✓' : '' %>
+          </td>
         </tr>
-      <% }) %>
+        <% } %>
+      <% } %>
     </tbody>
   </table>
 
-  <h2>Largest Jobs (Last 5 Years)</h2>
-  <table>
-    <thead><tr><th>Job</th><th>Type of Process Used</th></tr></thead>
+  <h2>List Three (3) of Your Largest Jobs and Type of Process Used in the Last Five (5) Years</h2>
+  <table class="small">
+    <thead>
+      <tr><th>JOBS</th><th>TYPE OF PROCESS USED</th></tr>
+    </thead>
     <tbody>
-      <% (data.largestJobs || []).forEach(j => { %>
-        <tr><td><%= j.name || "" %></td><td><%= j.process || "" %></td></tr>
-      <% }) %>
+      <% for (let i = 1; i <= 3; i++) { %>
+        <% if (data['largest_job_' + i]) { %>
+        <tr>
+          <td><%= data['largest_job_' + i] || "" %></td>
+          <td><%= data['largest_job_' + i + '_process'] || "" %></td>
+        </tr>
+        <% } %>
+      <% } %>
     </tbody>
   </table>
 
-  <h2>Additional Information / Comments</h2>
-  <div><%= data.comments || "" %></div>
+  <h2>Additional Information or Comments</h2>
+  <div class="section">
+    <div class="value"><%= data.additional_comments || "" %></div>
+  </div>
 
-  <h2>Signature</h2>
-  <div class="row">
-    <div class="col"><strong>Producer’s Signature:</strong> <%= data.producer_sign || "" %></div>
-    <div class="col"><strong>Date:</strong> <%= data.producer_date || "" %></div>
+  <div class="footer">
+    Berkley Specialty Insurance Company | Email: contactus@berkleyaspire.com | Page 1 of 1 | GF0060 08/18
   </div>
-  <div class="row">
-    <div class="col"><strong>Applicant’s Signature:</strong> <%= data.applicant_sign || "" %></div>
-    <div class="col"><strong>Date:</strong> <%= data.applicant_date || "" %></div>
-  </div>
+
 </body>
 </html>
+```
+
+---
