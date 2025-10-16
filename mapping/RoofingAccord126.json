@@ -1,11 +1,53 @@
 {
-  "policy_period_from": "policy_period_from",
-  "total_gross_sales": "total_gross_sales",
-  "subcontractor_cost": "subcontractor_cost",
-  "employee_payroll": "employee_payroll",
-  "Certificate_Recipients_Name_1": "Certificate_Recipients_Name_1",
-  "Additional_Insured_Type_1": "Additional_Insured_Type_1",
-  "Lienholder_1": "Lienholder_1",
-  "Loss_Payee_1": "Loss_Payee_1",
-  "Mortgagee_1": "Mortgagee_1"
+  "_comment": "Maps Roofing HTML form to ACORD 126 EJS template fields",
+  
+  "applicant_name": "applicant_name",
+  "applicant_address": "applicant_street",
+  "applicant_state": "applicant_state",
+  "applicant_zip": "applicant_zip",
+  "applicant_phone": "business_phone",
+  "web_address": "premises_website",
+  
+  "location_1": "premise_address",
+  
+  "policy_period_from": "effective_date",
+  "policy_period_to": "expiration_date",
+  
+  "entity_type_corporation": "org_type_corporation",
+  "entity_type_llc": "org_type_llc",
+  "entity_type_partnership": "org_type_partnership",
+  "entity_type_individual": "org_type_individual",
+  
+  "full_time_employees": "full_time_employees",
+  "part_time_employees": "part_time_employees",
+  "num_employees": "total_employees",
+  
+  "total_gross_sales": "total_sales",
+  
+  "certificate_recipients_name_1": "ai_name_1",
+  "certificate_recipients_relationship_1": "ai_relationship_1",
+  
+  "Additional_Insured_Type_1": "ai_additional_insured",
+  "Lienholder_1": "ai_lienholder",
+  "Loss_Payee_1": "ai_loss_payee",
+  "Mortgagee_1": "ai_mortgagee",
+  
+  "additional_comments": "remarks_126",
+  
+  "draw_plans_designs": "c_drawPlansDesigns",
+  "sub_lower_coverage": "c_subsLowerLimits",
+  "certificates_required": "certificates_required",
+  "subcontracted_work": "c_typeOfWorkSubcontracted",
+  "lease_equipment": "c_leaseEquipToOthers",
+  
+  "full_time_employees": "c_fullTimeStaff",
+  "part_time_employees": "c_partTimeStaff",
+  
+  "cranes_used": "gi_rentLoanEquipment",
+  
+  "asbestos_work": "gi_hazardousMaterials",
+  
+  "written_safety_program": "gi_safetySecurityPolicy",
+  
+  "years_in_business": "years_in_business"
 }
