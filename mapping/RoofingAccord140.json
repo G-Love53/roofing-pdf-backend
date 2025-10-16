@@ -1,26 +1,39 @@
 {
-  "insured_name": "businessName",
-  "dba_name": "dba",
-  "mailing_address": "address",
-  "mailing_address_2": "address2",
-  "mailing_city": "city",
-  "mailing_state": "state",
-  "mailing_zip": "zip",
-
-  "contact_name": "contactName",
-  "contact_phone": "inspection_phone",
-  "contact_email": "contact_email",
-
-  "years_in_business": "yearsInBusiness",
-  "naics_code": "naics",
-  "sic_code": "sic",
-  "trade_desc": "trade",
-
-  "gross_receipts": "grossReceipts",
-  "payroll_roofing": "payroll.roofing",
-  "payroll_clerical": "payroll.clerical",
-
-  "operations_description": "operations_description",
-  "loss_history_summary": "loss_history_summary"
+  "_comment": "Maps Roofing HTML form to ACORD 140 EJS template fields",
+  
+  "applicant_name": "applicant_name",
+  "applicant_address": "premise_address",
+  "applicant_state": "premise_state",
+  "applicant_zip": "premise_zip",
+  "applicant_phone": "business_phone",
+  
+  "location_1": "premise_address",
+  
+  "policy_period_from": "effective_date",
+  "policy_period_to": "expiration_date",
+  
+  "total_gross_sales": "total_sales",
+  
+  "certificate_recipients_name_1": "ai_name_1",
+  "certificate_recipients_relationship_1": "ai_relationship_1",
+  
+  "Additional_Insured_Type_1": "ai_additional_insured",
+  "Lienholder_1": "ai_lienholder",
+  "Loss_Payee_1": "ai_loss_payee",
+  "Mortgagee_1": "ai_mortgagee",
+  
+  "additional_comments": "remarks_140",
+  
+  "years_in_business": "year_built",
+  
+  "num_employees": "num_employees",
+  "full_time_employees": "full_time_employees",
+  "part_time_employees": "part_time_employees",
+  
+  "automatic_sprinkler": "automatic_sprinkler",
+  "fire_watch_program": "fire_alarm_type",
+  
+  "cranes_used": "cranes_used"
 }
+
 
