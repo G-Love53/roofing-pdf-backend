@@ -1,125 +1,470 @@
-/* ===== ACORD Print-Fidelity (20-col) – shared baseline ===== */
+/* ===== Roofing Supplemental Application - Berkley Style ===== */
 
-/* --- Page + footer lock (ACORD-140) --- */
-@page { size: Letter; margin: 0.35in; }
-
-.page{
-  width:100%;
-  margin:0;
-  position:relative;
-  padding:0.125in;            /* top/right/left */
-  padding-bottom:24pt;        /* reserve space for footer (exact) */
-  page-break-after: always;
-}
-.page:last-child{ page-break-after: auto; }
-
-.footnote{
-  position:absolute;
-  left:0.125in;
-  right:0.125in;
-  bottom:0.125in;
-  font-size:6.6pt;
-  text-align:center;
-  border-top:1pt solid #000;
-  padding-top:2pt;
+/* Print Settings */
+@media print {
+  @page { 
+    size: Letter; 
+    margin: 0.5in; 
+  }
+  .page-break { 
+    page-break-before: always; 
+    break-before: page; 
+  }
 }
 
-/* hard page break utility */
-.pagebreak{ break-before: page; page-break-before: always; }
-
-
-* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-html, body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; color:#000; font-size: 8pt; line-height: 1.15; }
-.page { page-break-after: always; }
-.page:last-child { page-break-after: auto; }
-
-/* Header bar (black/white ACORD) */
-.headerbar {
-  display: grid; grid-template-columns: .95in 1fr .65in; align-items: center;
-  border: 2pt solid #000; background:#fff; margin-bottom: 6pt;
+/* Reset & Base */
+* {
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  margin: 0;
+  padding: 0;
 }
-.headerbar .acord { font-weight: 800; font-size: 12pt; text-align:center; border-right:1pt solid #000; padding: 4pt 0; background:#000; color:#fff; }
-.headerbar .title { font-weight:700; letter-spacing:.3pt; text-align:center; font-size:11pt; padding: 2pt; }
-.headerbar .formno{ font-weight:700; font-size:11pt; text-align:center; border-left:1pt solid #000; padding:2pt 0; background:#000; color:#fff; }
 
-/* Section title bar */
-.subbar { background:#e6e6e6; border:1pt solid #000; padding:4pt 6pt; font-weight:700; font-size:8pt; margin:8pt 0 4pt; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  line-height: 1.3;
+  color: #000;
+  background: #fff;
+  padding: 0;
+  margin: 0;
+}
 
-/* Boxed blocks */
-.block { border:1pt solid #000; border-top:none; }
-.block .row { display:grid; grid-template-columns: repeat(20, minmax(0,1fr)); border-top:1pt solid #000; }
-.block .row:first-child { border-top:none; }
+/* Header Info Section */
+.header-info {
+  margin-bottom: 16pt;
+  font-size: 9pt;
+}
 
-.cell { padding:3pt 4pt; border-left:1pt solid #000; min-height:14pt; display:flex; align-items:center; overflow:hidden; word-break: break-word; }
-.cell:first-child { border-left:none; }
+.header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20pt;
+  margin-bottom: 4pt;
+}
 
-.label { background:#f5f5f5; font-weight:700; font-size:6.7pt; letter-spacing:.15pt; white-space:nowrap; }
+.header-col {
+  padding: 2pt 0;
+}
 
-/* Utilities */
-.right{ text-align:right; } .center{ text-align:center; } .nowrap{ white-space:nowrap; }
-.wrap{ white-space:normal; overflow-wrap:anywhere; word-break: break-word; hyphens:auto; }
-.small{ font-size:6.7pt; line-height:1.15; }
-.num { text-align:right; white-space:nowrap; font-variant-numeric: tabular-nums; }
+/* Title */
+h1 {
+  font-size: 16pt;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 8pt;
+  padding: 0;
+  border: none;
+}
 
-/* Width helpers (20-col grid) */
-.w5{grid-column:span 1}.w10{grid-column:span 2}.w15{grid-column:span 3}.w20{grid-column:span 4}.w25{grid-column:span 5}
-.w30{grid-column:span 6}.w35{grid-column:span 7}.w40{grid-column:span 8}.w45{grid-column:span 9}.w50{grid-column:span 10}
-.w55{grid-column:span 11}.w60{grid-column:span 12}.w65{grid-column:span 13}.w70{grid-column:span 14}.w75{grid-column:span 15}
-.w80{grid-column:span 16}.w85{grid-column:span 17}.w90{grid-column:span 18}.w95{grid-column:span 19}.w100{grid-column:span 20}
+.subheader {
+  text-align: center;
+  font-size: 8.5pt;
+  line-height: 1.4;
+  margin: 0 0 16pt;
+  color: #000;
+}
+
+/* Section Headers */
+h2 {
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  padding: 6pt 0;
+  margin: 16pt 0 10pt;
+  border-top: 1pt solid #000;
+  border-bottom: 1pt solid #000;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 9pt;
+  font-weight: 700;
+  margin: 12pt 0 6pt;
+}
+
+/* Form Sections */
+.form-section {
+  margin: 0 0 12pt;
+}
+
+.form-row {
+  margin: 8pt 0;
+  page-break-inside: avoid;
+}
+
+.form-row.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16pt;
+}
+
+.form-row.cols-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12pt;
+}
+
+.form-label {
+  font-weight: 400;
+  font-size: 9pt;
+  margin-bottom: 2pt;
+  color: #000;
+}
+
+.form-value {
+  font-size: 10pt;
+  border-bottom: 1pt solid #000;
+  min-height: 16pt;
+  padding: 2pt 4pt;
+  line-height: 1.3;
+}
+
+.form-value.yesno {
+  border-bottom: none;
+  padding: 2pt 0;
+}
+
+.yesno-line {
+  margin: 4pt 0;
+}
+
+.form-row.indent {
+  margin-left: 20pt;
+}
 
 /* Checkboxes */
-.check{ display:inline-block; width:11pt; height:11pt; line-height:11pt; border:1pt solid #000; text-align:center; font-weight:700; font-size:9pt; margin:0 6pt; vertical-align:middle; }
+.checkbox {
+  display: inline-block;
+  width: 12pt;
+  height: 12pt;
+  line-height: 12pt;
+  border: 1pt solid #000;
+  text-align: center;
+  font-weight: 700;
+  font-size: 9pt;
+  margin-right: 6pt;
+  vertical-align: middle;
+  background: #fff;
+}
 
-/* Fraud notices – compact, no grid chrome, won’t split */
-.fraud { border:1pt solid #000; padding:6pt; font-size:6.6pt; line-height:1.22; }
-.fraud p{ margin:0 0 6pt 0; } .fraud p:last-child{ margin-bottom:0; }
-.fraud, .legal { break-inside: avoid; page-break-inside: avoid; }
-.fraud.start-new-page { break-before: page; page-break-before: always; }
+.checkbox-item {
+  display: inline-block;
+  margin-right: 12pt;
+  white-space: nowrap;
+}
 
-/* --- Small utilities for inline-like spacing --- */
-.u-mb5  { margin-bottom: 5pt; }
-.u-mb10 { margin-bottom: 10pt; }
-.u-mt10 { margin-top: 10pt; }
-.bold   { font-weight: 700; }
-.no-break { break-inside: avoid; page-break-inside: avoid; }
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8pt 0;
+  page-break-inside: avoid;
+}
 
-/* --- Fix text flow inside cells --- */
-.cell { min-width: 0; }                 /* allow text to shrink in columns */
-.cell.vstack { display: block; }        /* stack children vertically (no flex-row) */
-.no-hyphen { hyphens: none; word-break: normal; overflow-wrap: break-word; }
+.data-table {
+  border: 1pt solid #000;
+}
 
-/* --- Spacing helpers (used below) --- */
-.u-mb5  { margin-bottom: 5pt; }
-.u-mb10 { margin-bottom: 10pt; }
-.u-mt10 { margin-top: 10pt; }
-.bold   { font-weight: 700; }
+.data-table th,
+.data-table td {
+  border: 1pt solid #000;
+  padding: 6pt 8pt;
+  text-align: left;
+  font-size: 9pt;
+}
 
-/* Stack text nicely in a cell and stop weird hyphenation */
-.cell { min-width: 0; }
-.cell.vstack { display: block; }
-.no-hyphen { hyphens: none; word-break: normal; overflow-wrap: break-word; }
+.data-table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
 
-/* Spacing helpers */
-.u-mb5 { margin-bottom: 5pt; }
-.u-mb8 { margin-bottom: 8pt; }
-.u-mb10 { margin-bottom: 10pt; }
-.u-mt10 { margin-top: 10pt; }
+.data-table td {
+  background: #fff;
+}
 
-/* Inline answer groups */
-.yn { display:inline-flex; gap:8pt; align-items:center; margin-left:8pt; }
-.chkgrp { display:inline-flex; gap:10pt; align-items:center; margin-left:8pt; }
+.data-table tbody tr:nth-child(even) td {
+  background: #fafafa;
+}
 
-/* --- Page break rules (allow blocks to split) --- */
-.page { page-break-after: always; break-after: page; }
-.page:last-child { page-break-after: auto; break-after: auto; }
+/* Material Table (for roofing materials) */
+.material-table {
+  border: 1pt solid #000;
+}
 
-/* Only protect things that must not split */
-.headerbar, .subbar, .footnote, .no-break,
-.fraud, .legal { break-inside: avoid; page-break-inside: avoid; }
+.material-table td {
+  border: 1pt solid #000;
+  padding: 6pt 8pt;
+  font-size: 9pt;
+}
 
-/* Let normal content flow/split as needed */
-.block, .row { break-inside: auto; page-break-inside: auto; }
+/* Financial Table */
+.financial-table {
+  border: 1pt solid #000;
+  margin: 8pt 0;
+}
 
+.financial-table td {
+  border: 1pt solid #000;
+  padding: 6pt 8pt;
+  font-size: 9pt;
+  background: #fff;
+}
 
+/* Sales Table */
+.sales-table {
+  border: 1pt solid #000;
+  width: 60%;
+}
 
+.sales-table td {
+  border: 1pt solid #000;
+  padding: 6pt 8pt;
+  font-size: 9pt;
+}
 
+/* Certificate Table */
+.certificate-table {
+  border: 1pt solid #000;
+}
+
+.certificate-table th,
+.certificate-table td {
+  border: 1pt solid #000;
+  padding: 8pt;
+  font-size: 9pt;
+  text-align: left;
+}
+
+.certificate-table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.certificate-table .checkbox-cell {
+  text-align: center;
+}
+
+/* Jobs Table */
+.jobs-table {
+  border: 1pt solid #000;
+}
+
+.jobs-table th,
+.jobs-table td {
+  border: 1pt solid #000;
+  padding: 8pt;
+  font-size: 9pt;
+}
+
+.jobs-table th {
+  background: #f0f0f0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.jobs-table td {
+  min-height: 50pt;
+  vertical-align: top;
+}
+
+/* Signature Table */
+.signature-table {
+  width: 100%;
+  border: none;
+  margin-top: 30pt;
+}
+
+.signature-table td {
+  border: none;
+  padding: 4pt 8pt;
+  vertical-align: bottom;
+}
+
+.signature-name {
+  font-size: 10pt;
+  padding-bottom: 2pt;
+}
+
+.signature-line {
+  border-bottom: 1pt solid #000;
+  min-height: 20pt;
+  font-size: 8pt;
+  padding-top: 20pt;
+}
+
+/* Comments Box */
+.comments-box {
+  min-height: 80pt;
+  border: 1pt solid #000;
+  padding: 8pt;
+  background: #fff;
+}
+
+/* Notice Section */
+.notice-section {
+  margin: 16pt 0;
+  page-break-inside: avoid;
+}
+
+.notice-section p {
+  margin: 8pt 0;
+  font-size: 9pt;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+/* Fraud Section */
+.fraud-section {
+  margin: 12pt 0;
+  font-size: 8.5pt;
+  line-height: 1.4;
+}
+
+.fraud-section p {
+  margin: 8pt 0;
+  text-align: justify;
+}
+
+.fraud-section p strong {
+  font-weight: 700;
+}
+
+/* Signature Section */
+.signature-section {
+  margin: 30pt 0;
+  page-break-inside: avoid;
+}
+
+.signature-text {
+  margin: 16pt 0;
+  font-size: 9pt;
+  line-height: 1.4;
+  text-align: justify;
+  padding: 12pt;
+  border: 1pt solid #000;
+  background: #f9f9f9;
+}
+
+/* Page Footer */
+.page-footer {
+  margin-top: 40pt;
+  padding-top: 8pt;
+  border-top: 1pt solid #000;
+  font-size: 8pt;
+  text-align: center;
+  color: #000;
+  page-break-after: always;
+}
+
+/* Page Break */
+.page-break {
+  page-break-before: always;
+  break-before: page;
+  margin: 0;
+  padding: 0;
+  height: 0;
+}
+
+/* Prevent orphans */
+h2, h3, .form-label {
+  page-break-after: avoid;
+}
+
+.form-row {
+  page-break-inside: avoid;
+}
+
+table {
+  page-break-inside: avoid;
+}
+
+/* Screen View (for browser preview) */
+@media screen {
+  body {
+    background: #e5e5e5;
+    padding: 20pt;
+  }
+  
+  body::before {
+    content: '';
+    display: block;
+    width: 8.5in;
+    max-width: 8.5in;
+    margin: 0 auto;
+    background: #fff;
+  }
+  
+  h1, h2, .form-section, .header-info, .subheader, 
+  .notice-section, .fraud-section, .signature-section,
+  table, .page-footer {
+    max-width: 7.5in;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Print Optimizations */
+@media print {
+  body {
+    background: #fff;
+    padding: 0;
+  }
+  
+  .page-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    page-break-after: auto;
+  }
+  
+  /* Ensure checkboxes print */
+  .checkbox {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  
+  /* Ensure borders print */
+  table, th, td {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Additional Refinements */
+strong {
+  font-weight: 700;
+}
+
+em {
+  font-style: italic;
+}
+
+/* Fix any text overflow issues */
+.form-value {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure proper spacing */
+p {
+  margin: 6pt 0;
+}
+
+/* List styling if needed */
+ul, ol {
+  margin: 6pt 0;
+  padding-left: 20pt;
+}
+
+li {
+  margin: 3pt 0;
+}
