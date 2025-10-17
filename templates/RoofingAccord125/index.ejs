@@ -181,92 +181,100 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
 (function () {
   // Dates (support old/new keys)
   const CURR_DATE = data.current_date || data.date || "";
-  const EFF_DATE  = data.effective_date || data.effectiveDate || "";
-  const EXP_DATE  = data.expiration_date || data.expirationDate || "";
+  const EFF_DATE = data.policy_period_from || data.effective_date || data.effectiveDate || "";
+  const EXP_DATE = data.to || data.expiration_date || data.expirationDate || "";
 
-  data.current_date    = CURR_DATE; 
-  data.date            = CURR_DATE;
-  data.effective_date  = EFF_DATE;  
-  data.effectiveDate   = EFF_DATE;
+  data.current_date = CURR_DATE; 
+  data.date = CURR_DATE;
+  data.effective_date = EFF_DATE;  
+  data.effectiveDate = EFF_DATE;
   data.expiration_date = EXP_DATE;  
-  data.expirationDate  = EXP_DATE;
+  data.expirationDate = EXP_DATE;
+
+  // Contact & Business Info
+  data.business_phone = data.applicant_phone || data.business_phone || "";
+  data.premises_website = data.web_address || data.website || "";
+  data.primary_contact_name = data.inspection_contact || data.applicant_name || "";
+  data.primary_phone = data.inspection_phone || data.applicant_phone || "";
+
+  // Address parsing (if it's combined)
+  if (data.applicant_address && !data.applicant_street) {
+    data.applicant_street = data.applicant_address;
+  }
+
+  // Premises from location_1
+  data.premise_address = data.location_1 || data.premise_address || "";
+
+  // Operations description
+  data.primaryOperations = data.other_operations || data.primaryOperations || "";
+
+  // Annual revenue - Clean dollar formatting from total_sales
+  const cleanTotalSales = (() => {
+    const raw = data.total_sales || "";
+    if (!raw) return "";
+    return String(raw).replace(/[$,]/g, '');
+  })();
+  data.annual_revenue = cleanTotalSales || data.total_gross_sales || data.annual_revenue || "";
+
+  // Additional Interest mappings
+  data.ai_name_1 = data.certificate_recipients_name_1 || data.ai_name_1 || "";
+  data.interest_name = data.certificate_recipients_name_1 || data.interest_name || "";
+
+  // Remarks
+  data.remarks = data.additional_comments || data.remarks || "";
 
   // Applicant mailing address (works even if enricher didn't set)
   const street = data.applicant_street || data.premise_address || data.applicant_mailing_address || data.applicantAddress1 || "";
-  const csz = data.applicant_city_state_zip
-    || [data.premise_city || data.applicant_city || data.applicantCity, 
-        data.premise_state || data.applicant_state || data.applicantState, 
-        data.premise_zip || data.applicant_zip || data.applicantZip]
-         .filter(Boolean).join(", ");
+  const city = data.applicant_city || data.premise_city || data.applicant_mailing_city || data.applicantCity || "";
+  const state = data.applicant_state || data.premise_state || data.applicant_mailing_state || data.applicantState || "";
+  const zip = data.applicant_zip || data.premise_zip || data.applicant_mailing_zip || data.applicantZip || "";
+  
+  const csz = data.applicant_city_state_zip || 
+    [city, state, zip].filter(Boolean).join(", ");
+  
   data.applicant_street = street;
+  data.applicant_city = city;
+  data.applicant_state = state;
+  data.applicant_zip = zip;
   data.applicant_city_state_zip = csz;
-// Add these to the existing compat shim in Bar125index.ejs:
-
-// Dates
-data.effectiveDate = data.policy_period_from || data.effectiveDate || "";
-data.expirationDate = data.to || data.expirationDate || "";
-
-// Contact & Business Info
-data.business_phone = data.applicant_phone || data.business_phone || "";
-data.premises_website = data.web_address || data.website || "";
-data.primary_contact_name = data.inspection_contact || data.applicant_name || "";
-data.primary_phone = data.inspection_phone || data.applicant_phone || "";
-
-// Address parsing (if it's combined)
-if (data.applicant_address && !data.applicant_street) {
-  data.applicant_street = data.applicant_address;
-}
-
-// Premises from location_1
-data.premise_address = data.location_1 || data.premise_address || "";
-
-// Operations description
-data.primaryOperations = data.other_operations || data.primaryOperations || "";
-
-// Annual revenue
-data.annual_revenue = data.total_gross_sales || data.annual_revenue || "";
-
-// Additional Interest
-data.ai_name_1 = data.certificate_recipients_name_1 || "";
-data.interest_name = data.certificate_recipients_name_1 || "";
-
-// Remarks
-data.remarks = data.additional_comments || data.remarks || "";
 
   // Additional Interest #1 (normalize + backfill)
   const aiName = data.ai_name_1 || data.additionalInsuredName || data.interest_name || "";
   const aiAddr = data.ai_address_1 || data.additionalInsuredAddress || data.interest_address || "";
-  data.ai_name_1    = data.ai_name_1    || aiName;
+  data.ai_name_1 = data.ai_name_1 || aiName;
   data.ai_address_1 = data.ai_address_1 || aiAddr;
-  data.ai_city_1    = data.ai_city_1    || data.additionalInsuredCity  || data.interest_city  || "";
-  data.ai_state_1   = data.ai_state_1   || data.additionalInsuredState || data.interest_state || "";
-  data.ai_zip_1     = data.ai_zip_1     || data.additionalInsuredZip   || data.interest_zip   || "";
+  data.ai_city_1 = data.ai_city_1 || data.additionalInsuredCity || data.interest_city || "";
+  data.ai_state_1 = data.ai_state_1 || data.additionalInsuredState || data.interest_state || "";
+  data.ai_zip_1 = data.ai_zip_1 || data.additionalInsuredZip || data.interest_zip || "";
 
   // Normalized AI type (for checkbox logic) - ULTRA-ENHANCED VERSION
-const aiTypeRaw = String(data.interest_type || data.ai_type || data.interestType || data.additional_interest_type || "").toUpperCase();
-let aiTypeNorm = "";
+  const aiTypeRaw = String(data.interest_type || data.ai_type || data.interestType || data.additional_interest_type || "").toUpperCase();
+  let aiTypeNorm = "";
 
-// More flexible matching
-if (aiTypeRaw.includes('ADDITIONAL') || aiTypeRaw.includes('INSURED')) {
-  aiTypeNorm = 'ADDITIONAL_INSURED';
-} else if (aiTypeRaw.includes('LOSS') && aiTypeRaw.includes('PAYEE')) {
-  aiTypeNorm = 'LOSS_PAYEE';
-} else if (aiTypeRaw.includes('MORTGAGEE')) {
-  aiTypeNorm = 'MORTGAGEE';
-} else if (aiTypeRaw.includes('LIEN')) {
-  aiTypeNorm = 'LIENHOLDER';
-} else if (aiTypeRaw.includes('LENDER')) {
-  aiTypeNorm = 'LENDER_S_LOSS';
-} else {
-  // Fallback: strip all non-letters and underscores
-  aiTypeNorm = aiTypeRaw.replace(/[^A-Z_]/g, '_');
-}
+  // More flexible matching
+  if (aiTypeRaw.includes('ADDITIONAL') || aiTypeRaw.includes('INSURED')) {
+    aiTypeNorm = 'ADDITIONAL_INSURED';
+  } else if (aiTypeRaw.includes('LOSS') && aiTypeRaw.includes('PAYEE')) {
+    aiTypeNorm = 'LOSS_PAYEE';
+  } else if (aiTypeRaw.includes('MORTGAGEE')) {
+    aiTypeNorm = 'MORTGAGEE';
+  } else if (aiTypeRaw.includes('LIEN')) {
+    aiTypeNorm = 'LIENHOLDER';
+  } else if (aiTypeRaw.includes('LENDER')) {
+    aiTypeNorm = 'LENDER_S_LOSS';
+  } else {
+    // Fallback: strip all non-letters and underscores
+    aiTypeNorm = aiTypeRaw.replace(/[^A-Z_]/g, '_');
+  }
 
-data.aiTypeNorm = aiTypeNorm;
+  data.aiTypeNorm = aiTypeNorm;
 
   // BPP (for 140; harmless elsewhere)
   const bpp = data.business_personal_property_clean || data.bpp_amount || data.business_personal_property || "";
-  if (bpp) { data.business_personal_property = bpp; data.bpp_amount = bpp; }
+  if (bpp) { 
+    data.business_personal_property = bpp; 
+    data.bpp_amount = bpp; 
+  }
 
   // 125-only convenience: "See Remarks Below" + remarks text (no harm if present on 126/140)
   if (!data.description_of_insurance && (data.claim_count === "2_or_less" || data.claim_count === "3_or_more")) {
@@ -302,9 +310,9 @@ const formatDate = (d) => {
 const firstNamed = data.first_named_insured || data.applicant_name || data.namedInsured || data.applicantName || "";
 
 const mailStreet = data.applicant_mailing_address || data.applicant_street || data.mailing_street || data.applicantAddress1 || "";
-const mailCity   = data.applicant_city || data.mailing_city || data.applicantCity || "";
-const mailState  = data.applicant_state || data.mailing_state || data.applicantState || "";
-const mailZip    = data.applicant_zip || data.mailing_zip || data.applicantZip || "";
+const mailCity = data.applicant_city || data.mailing_city || data.applicantCity || "";
+const mailState = data.applicant_state || data.mailing_state || data.applicantState || "";
+const mailZip = data.applicant_zip || data.mailing_zip || data.applicantZip || "";
 
 /* Phone + website */
 const businessPhone = data.business_phone || data.businessPhone || data.phone || "";
@@ -314,45 +322,40 @@ const typeIs = (t) => {
   const raw = (data.type_of_business || data.business_type || data.entity_type || data.entityType || "").toString().trim().toLowerCase();
   const map = {
     corporation: ['corp','corporation','inc','inc.','incorporated'],
-    llc:         ['llc','l.l.c','l.l.c.','limited liability company'],
+    llc: ['llc','l.l.c','l.l.c.','limited liability company'],
     partnership: ['partnership','llp','lp','general partnership','limited partnership'],
-    individual:  ['individual','sole proprietor','sole proprietorship','sole prop','proprietor','dba'],
+    individual: ['individual','sole proprietor','sole proprietorship','sole prop','proprietor','dba'],
     'joint venture': ['joint venture','jv','joint-venture'],
-    other:       ['other']
+    other: ['other']
   };
   return (map[t]||[]).some(k => raw.includes(k));
 };
 
 /* Premises (LOC #1) */
-const locCity   = data.premise_city || data.premiseCity || data.location1_city || "";
-const locState  = data.premise_state || data.premiseState || data.location1_state || "";
-const locZip    = data.premise_zip || data.premiseZip || data.location1_zip || "";
-const bldgDesc  = data.bldg_description || data.building_description || data.premiseDescription || "";
+const locCity = data.premise_city || data.premiseCity || data.location1_city || "";
+const locState = data.premise_state || data.premiseState || data.location1_state || "";
+const locZip = data.premise_zip || data.premiseZip || data.location1_zip || "";
+const bldgDesc = data.bldg_description || data.building_description || data.premiseDescription || "";
 
 /* Employees / revenue / bldg area */
-const ftEmp         = data.full_time_employees || data.ft_employees || data.ftEmp || data.fullTimeEmployees || "";
-const ptEmp         = data.part_time_employees || data.pt_employees || data.ptEmp || data.partTimeEmployees || "";
+const ftEmp = data.full_time_employees || data.ft_employees || data.ftEmp || data.fullTimeEmployees || "";
+const ptEmp = data.part_time_employees || data.pt_employees || data.ptEmp || data.partTimeEmployees || "";
 
 /* Contact Information - ENHANCED */
 const primaryContactName = data.primary_contact_name || data.primaryContactName || data.contact_name || firstNamed || "";
-const primaryPhone       = data.primary_phone || data.primaryPhone || data.contact_phone || businessPhone;
-const primaryEmail       = data.primary_email || data.primaryEmail || data.contact_email || data.email || "";
+const primaryPhone = data.primary_phone || data.primaryPhone || data.contact_phone || businessPhone;
+const primaryEmail = data.primary_email || data.primaryEmail || data.contact_email || data.email || "";
 const secondaryContactName = data.secondary_contact_name || data.secondaryContactName || "";
-const secondaryPhone       = data.secondary_phone || data.secondaryPhone || "";
-const secondaryEmail       = data.secondary_email || data.secondaryEmail || "";
+const secondaryPhone = data.secondary_phone || data.secondaryPhone || "";
+const secondaryEmail = data.secondary_email || data.secondaryEmail || "";
 
 /* Update these existing variables to add more fallbacks: */
 const website = data.premises_website || data.website || data.website_address || data.web || data.applicant_website || data.website_url || data.websiteAddress || "";
 const locStreet = data.premise_address || data.premiseAddress || data.location1_street || data.applicant_street || data.business_address || data.businessAddress || "";
 const bldgSqFt = data.total_area || data.building_sq_ft || data.bldgSqFt || data.totalBuildingArea || data.square_footage || data.squareFootage || "";
-// Clean dollar formatting from total_sales before using it
-const cleanTotalSales = (() => {
-  const raw = data.total_sales || data.annualRevenues || "";
-  if (!raw) return "";
-  // Strip $ and commas, keep just the number
-  return String(raw).replace(/[$,]/g, '');
-})();
-const annualRevenue = cleanTotalSales || data.annual_revenue || data.annualRevenue || data.totalSales || "";
+
+// Annual revenue already cleaned in compat shim
+const annualRevenue = data.annual_revenue || data.annualRevenue || data.totalSales || "";
 
 /* Loss history helpers (page 4) - ENHANCED */
 const claimCountRaw = String(data.claim_count || data.claims_count || "").toLowerCase();
@@ -376,20 +379,20 @@ const claimDesc = (() => {
 })();
 
 /* Additional Interest (page 3 / 140 section) */
-const AITYPE  = data.aiTypeNorm || "";
-const aiName  = data.interest_name   || data.ai_name_1    || "";
-const aiAddr1 = data.interest_address|| data.ai_address_1 || "";
-const aiCity  = data.interest_city   || data.ai_city_1    || "";
-const aiState = data.interest_state  || data.ai_state_1   || "";
-const aiZip   = data.interest_zip    || data.ai_zip_1     || "";
-const aiRank  = data.interest_rank   || data.ai_rank_1    || "";
-const aiRef   = data.interest_reference || data.ai_reference_1 || "";
+const AITYPE = data.aiTypeNorm || "";
+const aiName = data.interest_name || data.ai_name_1 || "";
+const aiAddr1 = data.interest_address || data.ai_address_1 || "";
+const aiCity = data.interest_city || data.ai_city_1 || "";
+const aiState = data.interest_state || data.ai_state_1 || "";
+const aiZip = data.interest_zip || data.ai_zip_1 || "";
+const aiRank = data.interest_rank || data.ai_rank_1 || "";
+const aiRef = data.interest_reference || data.ai_reference_1 || "";
 
 /* Applicant address for 126 header */
 const applStreet = data.applicant_street || data.mailing_street || data.premise_address || "";
-const applCity   = data.applicant_city || data.premise_city || "";
-const applState  = data.applicant_state || data.premise_state || "";
-const applZip    = data.applicant_zip || data.premise_zip || "";
+const applCity = data.applicant_city || data.premise_city || "";
+const applState = data.applicant_state || data.premise_state || "";
+const applZip = data.applicant_zip || data.premise_zip || "";
 
 /* Employees total (126 p2) */
 const employeesTotal = data.num_employees || data.employees_total || ((Number(ftEmp)||0)+(Number(ptEmp)||0));
@@ -529,7 +532,7 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
     .small { font-size: 7pt; line-height: 1.15; }
 
     /* Width utilities */
-    .w5  { grid-column: span 1; }
+    .w5 { grid-column: span 1; }
     .w10 { grid-column: span 2; }
     .w15 { grid-column: span 3; }
     .w20 { grid-column: span 4; }
@@ -943,18 +946,18 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
       <div class="cell w15"><%= website %></div>
     </div>
     <div class="row">
-  <div class="cell w100">
-    <span class="check"><%= typeIs('corporation') || data.entityType === 'CORPORATION' || yes(data.org_type_corporation) ? 'X' : '' %></span> CORPORATION
-    <span class="check"><%= typeIs('individual') || data.entityType === 'INDIVIDUAL' || data.entityType === 'SOLE_PROPRIETOR' || yes(data.org_type_individual) ? 'X' : '' %></span> INDIVIDUAL / SOLE PROP
-    <span class="check"><%= typeIs('llc') || data.entityType === 'LLC' || yes(data.org_type_llc) ? 'X' : '' %></span> LLC
-    <span class="check"><%= typeIs('joint venture') || data.entityType === 'JOINT_VENTURE' ? 'X' : '' %></span> JOINT VENTURE
-    <span class="check"><%= typeIs('partnership') || data.entityType === 'PARTNERSHIP' ? 'X' : '' %></span> PARTNERSHIP
-    <span class="check"><%= data.entityType === 'NOT_FOR_PROFIT' || data.entityType === 'NONPROFIT' ? 'X' : '' %></span> NOT FOR PROFIT ORG
-    <span class="check"><%= data.entityType === 'SUBCHAPTER_S' || data.entityType === 'S_CORP' ? 'X' : '' %></span> SUBCHAPTER "S" CORPORATION
-    <span class="check"><%= data.entityType === 'TRUST' ? 'X' : '' %></span> TRUST
-    <span class="check"><%= typeIs('other') || data.entityType === 'OTHER' ? 'X' : '' %></span> OTHER
-   </div>
-  </div>
+      <div class="cell w100">
+        <span class="check"><%= typeIs('corporation') || data.entityType === 'CORPORATION' || yes(data.org_type_corporation) ? 'X' : '' %></span> CORPORATION
+        <span class="check"><%= typeIs('individual') || data.entityType === 'INDIVIDUAL' || data.entityType === 'SOLE_PROPRIETOR' || yes(data.org_type_individual) ? 'X' : '' %></span> INDIVIDUAL / SOLE PROP
+        <span class="check"><%= typeIs('llc') || data.entityType === 'LLC' || yes(data.org_type_llc) ? 'X' : '' %></span> LLC
+        <span class="check"><%= typeIs('joint venture') || data.entityType === 'JOINT_VENTURE' ? 'X' : '' %></span> JOINT VENTURE
+        <span class="check"><%= typeIs('partnership') || data.entityType === 'PARTNERSHIP' ? 'X' : '' %></span> PARTNERSHIP
+        <span class="check"><%= data.entityType === 'NOT_FOR_PROFIT' || data.entityType === 'NONPROFIT' ? 'X' : '' %></span> NOT FOR PROFIT ORG
+        <span class="check"><%= data.entityType === 'SUBCHAPTER_S' || data.entityType === 'S_CORP' ? 'X' : '' %></span> SUBCHAPTER "S" CORPORATION
+        <span class="check"><%= data.entityType === 'TRUST' ? 'X' : '' %></span> TRUST
+        <span class="check"><%= typeIs('other') || data.entityType === 'OTHER' ? 'X' : '' %></span> OTHER
+      </div>
+    </div>
   </div>
 
   <!-- Contact Information -->
@@ -993,10 +996,10 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
       <div class="cell w10"></div>
       <div class="cell label w15">STREET</div>
       <div class="cell w55">
-       <% if(data.premises_name) { %><%= data.premises_name %><br/><% } %>
-       <%= locStreet %>
+        <% if(data.premises_name) { %><%= data.premises_name %><br/><% } %>
+        <%= locStreet %>
+      </div>
     </div>
-</div>
     <div class="row">
       <div class="cell label w10">CITY</div>
       <div class="cell w25"><%= locCity %></div>
@@ -1548,83 +1551,79 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
   </div>
 
   <!-- STATE FRAUD NOTICES -->
-<div class="subbar">STATE FRAUD NOTICES</div>
-<div class="block fraud-block">
-  <div class="row">
-    <div class="cell w100 small legal">
-      <div class="fraud-list">
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in AL, AR, LA, MD, NM, RI and WV:</strong></span>
-          <span class="txt">Any person who knowingly (or willfully)<em>*</em> presents a false or fraudulent claim for payment of a loss or benefit or knowingly (or willfully)<em>*</em> presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison. <em>*Applies in MD Only.</em></span>
-        </div>
+  <div class="subbar">STATE FRAUD NOTICES</div>
+  <div class="block fraud-block">
+    <div class="row">
+      <div class="cell w100 small legal">
+        <div class="fraud-list">
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in AL, AR, LA, MD, NM, RI and WV:</strong></span>
+            <span class="txt">Any person who knowingly (or willfully)<em>*</em> presents a false or fraudulent claim for payment of a loss or benefit or knowingly (or willfully)<em>*</em> presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison. <em>*Applies in MD Only.</em></span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in CA:</strong></span>
-          <span class="txt">For your protection, California law requires the following to appear on this form: Any person who knowingly presents false or fraudulent information to obtain or amend insurance coverage or to make a claim for the payment of a loss is guilty of a crime and may be subject to fines and confinement in state prison.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in CA:</strong></span>
+            <span class="txt">For your protection, California law requires the following to appear on this form: Any person who knowingly presents false or fraudulent information to obtain or amend insurance coverage or to make a claim for the payment of a loss is guilty of a crime and may be subject to fines and confinement in state prison.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in CO:</strong></span>
-          <span class="txt">It is unlawful to knowingly provide false, incomplete, or misleading facts or information to an insurance company for the purpose of defrauding or attempting to defraud the company. Penalties may include imprisonment, fines, denial of insurance and civil damages. Any insurance company or agent of an insurance company who knowingly provides false, incomplete, or misleading facts or information to a policyholder or claimant for the purpose of defrauding or attempting to defraud the policyholder or claimant with regard to a settlement or award payable from insurance proceeds shall be reported to the Colorado Division of Insurance within the Department of Regulatory Agencies.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in CO:</strong></span>
+            <span class="txt">It is unlawful to knowingly provide false, incomplete, or misleading facts or information to an insurance company for the purpose of defrauding or attempting to defraud the company. Penalties may include imprisonment, fines, denial of insurance and civil damages. Any insurance company or agent of an insurance company who knowingly provides false, incomplete, or misleading facts or information to a policyholder or claimant for the purpose of defrauding or attempting to defraud the policyholder or claimant with regard to a settlement or award payable from insurance proceeds shall be reported to the Colorado Division of Insurance within the Department of Regulatory Agencies.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in DC:</strong></span>
-          <span class="txt"><strong>WARNING:</strong> It is a crime to provide false or misleading information to an insurer for the purpose of defrauding the insurer or any other person. Penalties include imprisonment and/or fines. In addition, an insurer may deny insurance benefits if false information materially related to a claim was provided by the applicant.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in DC:</strong></span>
+            <span class="txt"><strong>WARNING:</strong> It is a crime to provide false or misleading information to an insurer for the purpose of defrauding the insurer or any other person. Penalties include imprisonment and/or fines. In addition, an insurer may deny insurance benefits if false information materially related to a claim was provided by the applicant.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in FL and OK:</strong></span>
-          <span class="txt">Any person who knowingly and with intent to injure, defraud, or deceive any insurer files a statement of claim or an application containing any false, incomplete, or misleading information is guilty of a felony (of the third degree)<em>*</em>. <em>*Applies in FL Only.</em></span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in FL and OK:</strong></span>
+            <span class="txt">Any person who knowingly and with intent to injure, defraud, or deceive any insurer files a statement of claim or an application containing any false, incomplete, or misleading information is guilty of a felony (of the third degree)<em>*</em>. <em>*Applies in FL Only.</em></span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in KS:</strong></span>
-          <span class="txt">Any person who, knowingly and with intent to defraud, presents, causes to be presented or prepares with knowledge or belief that it will be presented to or by an insurer, purported insurer, broker or any agent thereof, any written, electronic, electronic impulse, facsimile, magnetic, oral, or telephonic communication or statement as part of, or in support of, an application for the issuance of, or the rating of an insurance policy for personal or commercial insurance, or a claim for payment or other benefit pursuant to an insurance policy for commercial or personal insurance which such person knows to contain materially false information concerning any fact material thereto; or conceals, for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in KS:</strong></span>
+            <span class="txt">Any person who, knowingly and with intent to defraud, presents, causes to be presented or prepares with knowledge or belief that it will be presented to or by an insurer, purported insurer, broker or any agent thereof, any written, electronic, electronic impulse, facsimile, magnetic, oral, or telephonic communication or statement as part of, or in support of, an application for the issuance of, or the rating of an insurance policy for personal or commercial insurance, or a claim for payment or other benefit pursuant to an insurance policy for commercial or personal insurance which such person knows to contain materially false information concerning any fact material thereto; or conceals, for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in KY, OH and PA:</strong></span>
-          <span class="txt">Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which is a crime and subjects such person to criminal and civil penalties.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in KY, OH and PA:</strong></span>
+            <span class="txt">Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which is a crime and subjects such person to criminal and civil penalties.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in ME, TN, VA and WA:</strong></span>
-          <span class="txt">It is a crime to knowingly provide false, incomplete or misleading information to an insurance company for the purpose of defrauding the company. Penalties <em>(may)*</em> include imprisonment, fines and denial of insurance benefits. <em>*Applies in ME Only.</em></span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in ME, TN, VA and WA:</strong></span>
+            <span class="txt">It is a crime to knowingly provide false, incomplete or misleading information to an insurance company for the purpose of defrauding the company. Penalties <em>(may)*</em> include imprisonment, fines and denial of insurance benefits. <em>*Applies in ME Only.</em></span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in NJ:</strong></span>
-          <span class="txt">Any person who includes any false or misleading information on an application for an insurance policy is subject to criminal and civil penalties.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in NJ:</strong></span>
+            <span class="txt">Any person who includes any false or misleading information on an application for an insurance policy is subject to criminal and civil penalties.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in NY:</strong></span>
-          <span class="txt">Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information, or conceals for the purpose of misleading, information concerning any fact material thereto, commits a fraudulent insurance act, which is a crime, and shall also be subject to a civil penalty not to exceed five thousand dollars and the stated value of the claim for each such violation.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in NY:</strong></span>
+            <span class="txt">Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information, or conceals for the purpose of misleading, information concerning any fact material thereto, commits a fraudulent insurance act, which is a crime, and shall also be subject to a civil penalty not to exceed five thousand dollars and the stated value of the claim for each such violation.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in OR:</strong></span>
-          <span class="txt">Any person who knowingly and with intent to defraud or solicit another to defraud the insurer by submitting an application containing a false statement as to any material fact may be violating state law.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in OR:</strong></span>
+            <span class="txt">Any person who knowingly and with intent to defraud or solicit another to defraud the insurer by submitting an application containing a false statement as to any material fact may be violating state law.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in PR:</strong></span>
-          <span class="txt">Any person who knowingly and with the intention of defrauding presents false information in an insurance application, or presents, helps, or causes the presentation of a fraudulent claim for the payment of a loss or any other benefit, or presents more than one claim for the same damage or loss, shall incur a felony and, upon conviction, shall be sanctioned for each violation by a fine of not less than five thousand dollars ($5,000) and not more than ten thousand dollars ($10,000), or a fixed term of imprisonment for three (3) years, or both penalties. Should aggravating circumstances be present, the penalty thus established may be increased to a maximum of five (5) years, if extenuating circumstances are present, it may be reduced to a minimum of two (2) years.</span>
-        </div>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in PR:</strong></span>
+            <span class="txt">Any person who knowingly and with the intention of defrauding presents false information in an insurance application, or presents, helps, or causes the presentation of a fraudulent claim for the payment of a loss or any other benefit, or presents more than one claim for the same damage or loss, shall incur a felony and, upon conviction, shall be sanctioned for each violation by a fine of not less than five thousand dollars ($5,000) and not more than ten thousand dollars ($10,000), or a fixed term of imprisonment for three (3) years, or both penalties. Should aggravating circumstances be present, the penalty thus established may be increased to a maximum of five (5) years, if extenuating circumstances are present, it may be reduced to a minimum of two (2) years.</span>
+          </div>
 
-        <div class="fraud-line">
-          <span class="jur"><strong>Applicable in UT:</strong></span>
-          <span class="txt">Any person who knowingly presents false or fraudulent information for insurance, files or causes to be filed a false or fraudulent claim for disability income or medical benefits, or submits a false or fraudulent report or billing for health care fees or other professional services is guilty of a crime and may be subject to fines and confinement in prison.</span>
+          <div class="fraud-line">
+            <span class="jur"><strong>Applicable in UT:</strong></span>
+            <span class="txt">Any person who knowingly presents false or fraudulent information for insurance, files or causes to be filed a false or fraudulent claim for disability income or medical benefits, or submits a false or fraudulent report or billing for health care fees or other professional services is guilty of a crime and may be subject to fines and confinement in prison.</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-    </div>   <!-- /.cell -->
-  </div>     <!-- /.row -->
-</div>       <!-- /.block -->
 
   <!-- Footer -->
   <div class="footnote">
