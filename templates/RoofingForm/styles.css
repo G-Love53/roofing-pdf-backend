@@ -1,10 +1,9 @@
-/* ===== Roofing Supplemental Application - Berkley Style ===== */
+/* ===== Roofing Supplemental Application - Berkley Style (COMPACT) ===== */
 
-/* Print Settings */
 @media print {
   @page { 
     size: Letter; 
-    margin: 0.5in; 
+    margin: 0.4in; 
   }
   .page-break { 
     page-break-before: always; 
@@ -12,7 +11,6 @@
   }
 }
 
-/* Reset & Base */
 * {
   box-sizing: border-box;
   -webkit-print-color-adjust: exact;
@@ -23,8 +21,8 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 10pt;
-  line-height: 1.3;
+  font-size: 9pt;  /* Reduced from 10pt */
+  line-height: 1.2; /* Reduced from 1.3 */
   color: #000;
   background: #fff;
   padding: 0;
@@ -33,127 +31,127 @@ body {
 
 /* Header Info Section */
 .header-info {
-  margin-bottom: 16pt;
-  font-size: 9pt;
+  margin-bottom: 10pt; /* Reduced from 16pt */
+  font-size: 8pt; /* Reduced from 9pt */
 }
 
 .header-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20pt;
-  margin-bottom: 4pt;
+  gap: 16pt;
+  margin-bottom: 3pt; /* Reduced from 4pt */
 }
 
 .header-col {
-  padding: 2pt 0;
+  padding: 1pt 0; /* Reduced from 2pt */
 }
 
 /* Title */
 h1 {
-  font-size: 16pt;
+  font-size: 14pt; /* Reduced from 16pt */
   font-weight: 700;
   text-align: center;
-  margin: 0 0 8pt;
+  margin: 0 0 6pt; /* Reduced from 8pt */
   padding: 0;
   border: none;
 }
 
 .subheader {
   text-align: center;
-  font-size: 8.5pt;
-  line-height: 1.4;
-  margin: 0 0 16pt;
+  font-size: 8pt; /* Reduced from 8.5pt */
+  line-height: 1.3;
+  margin: 0 0 12pt; /* Reduced from 16pt */
   color: #000;
 }
 
 /* Section Headers */
 h2 {
-  font-size: 10pt;
+  font-size: 9pt; /* Reduced from 10pt */
   font-weight: 700;
   text-transform: uppercase;
   background: #fff;
   color: #000;
-  padding: 6pt 0;
-  margin: 16pt 0 10pt;
+  padding: 4pt 0; /* Reduced from 6pt */
+  margin: 10pt 0 6pt; /* Reduced */
   border-top: 1pt solid #000;
   border-bottom: 1pt solid #000;
   page-break-after: avoid;
 }
 
 h3 {
-  font-size: 9pt;
+  font-size: 8.5pt; /* Reduced from 9pt */
   font-weight: 700;
-  margin: 12pt 0 6pt;
+  margin: 8pt 0 4pt; /* Reduced */
 }
 
 /* Form Sections */
 .form-section {
-  margin: 0 0 12pt;
+  margin: 0 0 8pt; /* Reduced from 12pt */
 }
 
 .form-row {
-  margin: 8pt 0;
+  margin: 5pt 0; /* Reduced from 8pt */
   page-break-inside: avoid;
 }
 
 .form-row.cols-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16pt;
+  gap: 12pt; /* Reduced from 16pt */
 }
 
 .form-row.cols-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12pt;
+  gap: 10pt; /* Reduced from 12pt */
 }
 
 .form-label {
   font-weight: 400;
-  font-size: 9pt;
-  margin-bottom: 2pt;
+  font-size: 8pt; /* Reduced from 9pt */
+  margin-bottom: 1pt; /* Reduced from 2pt */
   color: #000;
 }
 
 .form-value {
-  font-size: 10pt;
+  font-size: 9pt; /* Reduced from 10pt */
   border-bottom: 1pt solid #000;
-  min-height: 16pt;
-  padding: 2pt 4pt;
-  line-height: 1.3;
+  min-height: 14pt; /* Reduced from 16pt */
+  padding: 1pt 3pt; /* Reduced */
+  line-height: 1.2;
 }
 
 .form-value.yesno {
   border-bottom: none;
-  padding: 2pt 0;
+  padding: 1pt 0; /* Reduced */
 }
 
 .yesno-line {
-  margin: 4pt 0;
+  margin: 3pt 0; /* Reduced from 4pt */
 }
 
 .form-row.indent {
-  margin-left: 20pt;
+  margin-left: 16pt; /* Reduced from 20pt */
 }
 
 /* Checkboxes */
 .checkbox {
   display: inline-block;
-  width: 12pt;
-  height: 12pt;
-  line-height: 12pt;
+  width: 11pt; /* Reduced from 12pt */
+  height: 11pt;
+  line-height: 11pt;
   border: 1pt solid #000;
   text-align: center;
   font-weight: 700;
-  font-size: 9pt;
-  margin-right: 6pt;
+  font-size: 8pt; /* Reduced from 9pt */
+  margin-right: 5pt; /* Reduced from 6pt */
   vertical-align: middle;
   background: #fff;
 }
 
 .checkbox-item {
   display: inline-block;
-  margin-right: 12pt;
+  margin-right: 10pt; /* Reduced from 12pt */
   white-space: nowrap;
 }
 
@@ -161,7 +159,7 @@ h3 {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 8pt 0;
+  margin: 6pt 0; /* Reduced from 8pt */
   page-break-inside: avoid;
 }
 
@@ -172,16 +170,16 @@ table {
 .data-table th,
 .data-table td {
   border: 1pt solid #000;
-  padding: 6pt 8pt;
+  padding: 4pt 6pt; /* Reduced from 6pt 8pt */
   text-align: left;
-  font-size: 9pt;
+  font-size: 8pt; /* Reduced from 9pt */
 }
 
 .data-table th {
   background: #f0f0f0;
   font-weight: 700;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .data-table td {
@@ -192,27 +190,27 @@ table {
   background: #fafafa;
 }
 
-/* Material Table (for roofing materials) */
+/* Material Table */
 .material-table {
   border: 1pt solid #000;
 }
 
 .material-table td {
   border: 1pt solid #000;
-  padding: 6pt 8pt;
-  font-size: 9pt;
+  padding: 4pt 6pt; /* Reduced */
+  font-size: 8pt;
 }
 
 /* Financial Table */
 .financial-table {
   border: 1pt solid #000;
-  margin: 8pt 0;
+  margin: 6pt 0;
 }
 
 .financial-table td {
   border: 1pt solid #000;
-  padding: 6pt 8pt;
-  font-size: 9pt;
+  padding: 4pt 6pt;
+  font-size: 8pt;
   background: #fff;
 }
 
@@ -224,8 +222,8 @@ table {
 
 .sales-table td {
   border: 1pt solid #000;
-  padding: 6pt 8pt;
-  font-size: 9pt;
+  padding: 4pt 6pt;
+  font-size: 8pt;
 }
 
 /* Certificate Table */
@@ -236,8 +234,8 @@ table {
 .certificate-table th,
 .certificate-table td {
   border: 1pt solid #000;
-  padding: 8pt;
-  font-size: 9pt;
+  padding: 5pt 6pt; /* Reduced */
+  font-size: 8pt;
   text-align: left;
 }
 
@@ -259,8 +257,8 @@ table {
 .jobs-table th,
 .jobs-table td {
   border: 1pt solid #000;
-  padding: 8pt;
-  font-size: 9pt;
+  padding: 5pt 6pt;
+  font-size: 8pt;
 }
 
 .jobs-table th {
@@ -270,7 +268,7 @@ table {
 }
 
 .jobs-table td {
-  min-height: 50pt;
+  min-height: 40pt; /* Reduced from 50pt */
   vertical-align: top;
 }
 
@@ -278,57 +276,57 @@ table {
 .signature-table {
   width: 100%;
   border: none;
-  margin-top: 30pt;
+  margin-top: 20pt; /* Reduced from 30pt */
 }
 
 .signature-table td {
   border: none;
-  padding: 4pt 8pt;
+  padding: 3pt 6pt; /* Reduced */
   vertical-align: bottom;
 }
 
 .signature-name {
-  font-size: 10pt;
-  padding-bottom: 2pt;
+  font-size: 9pt;
+  padding-bottom: 1pt;
 }
 
 .signature-line {
   border-bottom: 1pt solid #000;
-  min-height: 20pt;
-  font-size: 8pt;
-  padding-top: 20pt;
+  min-height: 16pt; /* Reduced from 20pt */
+  font-size: 7.5pt; /* Reduced from 8pt */
+  padding-top: 16pt; /* Reduced from 20pt */
 }
 
 /* Comments Box */
 .comments-box {
-  min-height: 80pt;
+  min-height: 60pt; /* Reduced from 80pt */
   border: 1pt solid #000;
-  padding: 8pt;
+  padding: 6pt; /* Reduced from 8pt */
   background: #fff;
 }
 
 /* Notice Section */
 .notice-section {
-  margin: 16pt 0;
+  margin: 10pt 0; /* Reduced from 16pt */
   page-break-inside: avoid;
 }
 
 .notice-section p {
-  margin: 8pt 0;
-  font-size: 9pt;
-  line-height: 1.4;
+  margin: 6pt 0; /* Reduced from 8pt */
+  font-size: 8pt; /* Reduced from 9pt */
+  line-height: 1.3;
   text-align: justify;
 }
 
 /* Fraud Section */
 .fraud-section {
-  margin: 12pt 0;
-  font-size: 8.5pt;
-  line-height: 1.4;
+  margin: 8pt 0; /* Reduced from 12pt */
+  font-size: 7.5pt; /* Reduced from 8.5pt */
+  line-height: 1.3;
 }
 
 .fraud-section p {
-  margin: 8pt 0;
+  margin: 5pt 0; /* Reduced from 8pt */
   text-align: justify;
 }
 
@@ -338,29 +336,29 @@ table {
 
 /* Signature Section */
 .signature-section {
-  margin: 30pt 0;
+  margin: 20pt 0; /* Reduced from 30pt */
   page-break-inside: avoid;
 }
 
 .signature-text {
-  margin: 16pt 0;
-  font-size: 9pt;
-  line-height: 1.4;
+  margin: 12pt 0; /* Reduced from 16pt */
+  font-size: 8pt; /* Reduced from 9pt */
+  line-height: 1.3;
   text-align: justify;
-  padding: 12pt;
+  padding: 8pt; /* Reduced from 12pt */
   border: 1pt solid #000;
   background: #f9f9f9;
 }
 
-/* Page Footer */
+/* Page Footer - FIXED TO PREVENT DUPLICATION */
 .page-footer {
-  margin-top: 40pt;
-  padding-top: 8pt;
+  margin-top: 20pt; /* Reduced from 40pt */
+  padding-top: 6pt; /* Reduced from 8pt */
   border-top: 1pt solid #000;
-  font-size: 8pt;
+  font-size: 7.5pt; /* Reduced from 8pt */
   text-align: center;
   color: #000;
-  page-break-after: always;
+  page-break-after: avoid; /* Changed from always */
 }
 
 /* Page Break */
@@ -385,44 +383,11 @@ table {
   page-break-inside: avoid;
 }
 
-/* Screen View (for browser preview) */
-@media screen {
-  body {
-    background: #e5e5e5;
-    padding: 20pt;
-  }
-  
-  body::before {
-    content: '';
-    display: block;
-    width: 8.5in;
-    max-width: 8.5in;
-    margin: 0 auto;
-    background: #fff;
-  }
-  
-  h1, h2, .form-section, .header-info, .subheader, 
-  .notice-section, .fraud-section, .signature-section,
-  table, .page-footer {
-    max-width: 7.5in;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
 /* Print Optimizations */
 @media print {
   body {
     background: #fff;
     padding: 0;
-  }
-  
-  .page-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    page-break-after: auto;
   }
   
   /* Ensure checkboxes print */
@@ -437,6 +402,12 @@ table {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  
+  /* Prevent footer duplication */
+  .page-footer {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
 }
 
 /* Additional Refinements */
@@ -448,23 +419,20 @@ em {
   font-style: italic;
 }
 
-/* Fix any text overflow issues */
 .form-value {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
-/* Ensure proper spacing */
 p {
-  margin: 6pt 0;
+  margin: 4pt 0; /* Reduced from 6pt */
 }
 
-/* List styling if needed */
 ul, ol {
-  margin: 6pt 0;
-  padding-left: 20pt;
+  margin: 4pt 0; /* Reduced from 6pt */
+  padding-left: 16pt; /* Reduced from 20pt */
 }
 
 li {
-  margin: 3pt 0;
+  margin: 2pt 0; /* Reduced from 3pt */
 }
