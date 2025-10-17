@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer";
-const SITE_URL = "https://roofingcontractorinsurancedirect.com/";
 
 // Generate formatted HTML email summary
 function generateEmailSummary(formData) {
@@ -8,31 +7,19 @@ function generateEmailSummary(formData) {
     <html>
     <head>
       <style>
-  body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-  .header { background-color: #ff8c00; color: white; padding: 12px 20px; text-align: center; }
-  .header h1 { margin: 0; font-size: 24px; }
-  .content { padding: 20px; background-color: #f5f5f5; margin: 20px; border-radius: 8px; }
-  .field { margin: 10px 0; }
-  .label { font-weight: bold; }
-  .footer { padding: 20px; text-align: center; color: #666; }
-</style>
+        body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; margin: 0; padding: 0; }
+        .header { background-color: #ff8c00; color: white; padding: 12px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 20px; background-color: #f5f5f5; margin: 20px; border-radius: 8px; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; }
+        .footer { padding: 20px; text-align: center; color: #666; }
+      </style>
     </head>
     <body>
       <div class="header">
         <h1>Commercial Insurance Quote Request</h1>
       </div>
-      <div class="header">
-  <h1>Commercial Insurance Quote Request</h1>
-</div>
-
-  <!-- CTA to open the Roofing form -->
-  <div style="text-align:center; padding:16px 0 24px;">
-  <a href="${SITE_URL}" target="_blank" rel="noopener"
-     style="display:inline-block; padding:12px 18px; background:#0ea5e9; color:#fff;
-            text-decoration:none; border-radius:6px; font-weight:600;">
-    Start / View the Roofing Form
-   </a>
-   </div>
 
       <div class="content">
         <h3>Applicant Information:</h3>
@@ -42,15 +29,11 @@ function generateEmailSummary(formData) {
         </div>
         
         <div class="field">
-          <span class="label">Premises Name:</span> ${formData.premises_name || 'N/A'}
+          <span class="label">Address:</span> ${formData.applicant_address || 'N/A'}, ${formData.applicant_state || ''} ${formData.applicant_zip || ''}
         </div>
         
         <div class="field">
-          <span class="label">Address:</span> ${formData.premise_address || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Phone:</span> ${formData.business_phone || 'N/A'}
+          <span class="label">Phone:</span> ${formData.applicant_phone || formData.business_phone || 'N/A'}
         </div>
         
         <div class="field">
@@ -58,19 +41,11 @@ function generateEmailSummary(formData) {
         </div>
         
         <div class="field">
-          <span class="label">Effective Date:</span> ${formData.effective_date || 'N/A'}
+          <span class="label">Effective Date:</span> ${formData.effective_date || formData.policy_period_from || 'N/A'}
         </div>
         
         <div class="field">
-          <span class="label">Would Like A Building Quote:</span> ${formData.building_quote || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Workers Comp Quote:</span> ${formData.workers_comp_quote || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Total Sales:</span> ${formData.total_sales || 'N/A'}
+          <span class="label">Total Sales:</span> ${formData.total_sales || formData.total_gross_sales || 'N/A'}
         </div>
       </div>
       
@@ -88,7 +63,7 @@ function generateEmailSummary(formData) {
   `;
 }
 
-export async function sendWithGmail({ to, subject, html, formData, attachments }) {
+export async function sendWithGmail({ to, cc, subject, html, formData, attachments }) {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD }
@@ -100,6 +75,7 @@ export async function sendWithGmail({ to, subject, html, formData, attachments }
     await transporter.sendMail({
         from: process.env.GMAIL_USER,
         to,
+        cc,
         subject,
         html: emailHtml,
         attachments: attachments.map(a => ({ filename: a.filename, content: a.buffer }))
