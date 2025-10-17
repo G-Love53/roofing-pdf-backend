@@ -200,6 +200,38 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
          .filter(Boolean).join(", ");
   data.applicant_street = street;
   data.applicant_city_state_zip = csz;
+// Add these to the existing compat shim in Bar125index.ejs:
+
+// Dates
+data.effectiveDate = data.policy_period_from || data.effectiveDate || "";
+data.expirationDate = data.to || data.expirationDate || "";
+
+// Contact & Business Info
+data.business_phone = data.applicant_phone || data.business_phone || "";
+data.premises_website = data.web_address || data.website || "";
+data.primary_contact_name = data.inspection_contact || data.applicant_name || "";
+data.primary_phone = data.inspection_phone || data.applicant_phone || "";
+
+// Address parsing (if it's combined)
+if (data.applicant_address && !data.applicant_street) {
+  data.applicant_street = data.applicant_address;
+}
+
+// Premises from location_1
+data.premise_address = data.location_1 || data.premise_address || "";
+
+// Operations description
+data.primaryOperations = data.other_operations || data.primaryOperations || "";
+
+// Annual revenue
+data.annual_revenue = data.total_gross_sales || data.annual_revenue || "";
+
+// Additional Interest
+data.ai_name_1 = data.certificate_recipients_name_1 || "";
+data.interest_name = data.certificate_recipients_name_1 || "";
+
+// Remarks
+data.remarks = data.additional_comments || data.remarks || "";
 
   // Additional Interest #1 (normalize + backfill)
   const aiName = data.ai_name_1 || data.additionalInsuredName || data.interest_name || "";
