@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACORD 126 - Business Liability Section</title>
+    <title>ACORD 126 - Commercial General Liability Section</title>
     <style>
         @page {
             size: letter;
@@ -16,21 +16,29 @@
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 9pt;
+            font-size: 8pt;
             line-height: 1.2;
             width: 8.5in;
             margin: 0 auto;
+        }
+        .page {
+            width: 8.5in;
+            min-height: 11in;
             padding: 0.5in;
+            page-break-after: always;
+            position: relative;
+        }
+        .page:last-child {
+            page-break-after: auto;
         }
         .header {
-            border: 1px solid black;
+            border: 2px solid black;
             padding: 5px;
             margin-bottom: 5px;
         }
         .section {
             border: 1px solid black;
-            margin-bottom: 5px;
-            padding: 5px;
+            margin-bottom: 3px;
         }
         .row {
             display: flex;
@@ -40,6 +48,8 @@
             border-right: 1px solid black;
             padding: 2px 4px;
             min-height: 14pt;
+            display: flex;
+            align-items: center;
         }
         .cell:last-child {
             border-right: none;
@@ -60,10 +70,11 @@
         .w70 { width: 70%; }
         .w75 { width: 75%; }
         .w80 { width: 80%; }
+        .w90 { width: 90%; }
         .w100 { width: 100%; }
         .checkbox {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border: 1px solid black;
             display: inline-block;
             vertical-align: middle;
@@ -73,23 +84,44 @@
             content: "X";
             display: block;
             text-align: center;
-            line-height: 10px;
+            line-height: 8px;
             font-weight: bold;
         }
         .bold { font-weight: bold; }
         .center { text-align: center; }
         .right { text-align: right; }
-        .small { font-size: 8pt; }
-        .tiny { font-size: 7pt; }
+        .small { font-size: 7pt; }
+        .tiny { font-size: 6pt; }
         .large { font-size: 10pt; }
-        .title { font-size: 11pt; font-weight: bold; text-align: center; }
+        .title { font-size: 11pt; font-weight: bold; }
         .underline { text-decoration: underline; }
         .border-top { border-top: 1px solid black; }
         .border-bottom { border-bottom: 1px solid black; }
         .no-border { border: none !important; }
-        .label { font-size: 7pt; }
-        .value { font-weight: bold; }
-        .num { font-family: 'Courier New', monospace; }
+        .label {
+            font-size: 7pt;
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+        .value { font-weight: normal; }
+        .gray-bg { background-color: #e0e0e0; }
+        .section-title {
+            background: #d0d0d0;
+            font-weight: bold;
+            padding: 3px;
+            font-size: 9pt;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0.5in;
+            left: 0.5in;
+            right: 0.5in;
+            text-align: center;
+            font-size: 7pt;
+        }
+        @media print {
+            .page { page-break-after: always; }
+        }
     </style>
 </head>
 <body>
@@ -108,7 +140,7 @@
         data.expiration_date = EXP_DATE;
         data.expirationDate = EXP_DATE;
 
-        // NEW MAPPINGS - INSIDE THE FUNCTION
+        // NEW MAPPINGS - ALL INSIDE THE FUNCTION
         if (data.applicant_address && !data.applicant_street) {
             data.applicant_street = data.applicant_address;
         }
@@ -119,7 +151,7 @@
         data.ai_name_1 = data.certificate_recipients_name_1 || "";
         data.interest_name = data.certificate_recipients_name_1 || "";
 
-        // Continue with existing code
+        // Address mappings
         const street = data.applicant_street || data.premise_address || data.applicant_mailing_address || "";
         const city = data.applicant_city || data.premise_city || data.applicant_mailing_city || "";
         const state = data.applicant_state || data.premise_state || data.applicant_mailing_state || "";
@@ -140,6 +172,12 @@
 
         // Policy number
         data.policy_number = data.policy_number || data.quote_number || "";
+
+        // Producer/Agency defaults
+        data.agency_name = data.agency_name || "RICK P CLINE AGENCY INC, DBA ALL ACCESS INSURANCE, LLC (COMMERCIAL INSURANCE DIRECT, LLC)";
+        data.agency_address = data.agency_address || "9200 W Cross Drive #515";
+        data.agency_city_state_zip = data.agency_city_state_zip || "Littleton, CO 80123";
+        data.producer_name = data.producer_name || data.agent_name || "RICK CLINE";
     })();
 
     // UTILITIES
@@ -194,497 +232,584 @@
     }
     %>
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="row">
-            <div class="cell w70">
-                <div class="title">ACORD 126 - BUSINESS LIABILITY SECTION</div>
-                <div class="small center">Bars, Taverns, Nightclubs & Restaurants</div>
+    <!-- PAGE 1 -->
+    <div class="page">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title center">COMMERCIAL GENERAL LIABILITY SECTION</div>
+            <div class="center bold">ACORD 126</div>
+        </div>
+
+        <!-- AGENCY SECTION -->
+        <div class="section">
+            <div class="section-title">AGENCY</div>
+            <div style="padding: 5px;">
+                <div><%= data.agency_name %></div>
+                <div><%= data.agency_address %></div>
+                <div><%= data.agency_city_state_zip %></div>
             </div>
-            <div class="cell w30 center">
-                <div class="small">DATE</div>
-                <div class="value"><%= formatDate(data.current_date) %></div>
+        </div>
+
+        <!-- CARRIER/POLICY INFO -->
+        <div class="section">
+            <div class="row">
+                <div class="cell w25 label">CARRIER</div>
+                <div class="cell w25"><%= data.carrier || '' %></div>
+                <div class="cell w25 label">NAIC CODE</div>
+                <div class="cell w25"><%= data.naic_code || '' %></div>
             </div>
+            <div class="row border-top">
+                <div class="cell w25 label">POLICY NUMBER</div>
+                <div class="cell w25"><%= data.policy_number || '' %></div>
+                <div class="cell w25 label">EFFECTIVE DATE</div>
+                <div class="cell w25"><%= formatDate(data.effective_date) %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w50 label">AGENCY CUSTOMER ID</div>
+                <div class="cell w50"><%= data.agency_customer_id || '' %></div>
+            </div>
+        </div>
+
+        <!-- APPLICANT/FIRST NAMED INSURED -->
+        <div class="section">
+            <div class="section-title">APPLICANT / FIRST NAMED INSURED</div>
+            <div style="padding: 5px;">
+                <div><%= data.applicant_name || data.insured_name || '' %></div>
+                <div><%= data.applicant_street || '' %></div>
+                <div><%= [data.applicant_city, data.applicant_state, data.applicant_zip].filter(Boolean).join(', ') %></div>
+            </div>
+        </div>
+
+        <!-- IMPORTANT NOTICE -->
+        <div class="section">
+            <div style="padding: 5px; font-size: 7pt;">
+                <strong>IMPORTANT -</strong> If CLAIMS MADE is checked in the COVERAGE / LIMITS section below, this is an application for a claims-made policy. Read all provisions of the policy carefully.
+            </div>
+        </div>
+
+        <!-- COVERAGES / LIMITS -->
+        <div class="section">
+            <div class="section-title">COVERAGES / LIMITS</div>
+            <div class="row">
+                <div class="cell w50">
+                    <strong>COMMERCIAL GENERAL LIABILITY</strong><br/>
+                    <span class="checkbox <%= isChecked(data.claims_made) ? 'checked' : '' %>"></span> CLAIMS MADE
+                    <span class="checkbox <%= isChecked(data.occurrence) || !isChecked(data.claims_made) ? 'checked' : '' %>"></span> OCCURRENCE
+                </div>
+                <div class="cell w25 label">GENERAL AGGREGATE</div>
+                <div class="cell w25 right">$<%= money(data.general_aggregate_limit || '2000000') %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w50">
+                    LIMIT APPLIES PER:
+                    <span class="checkbox <%= isChecked(data.per_policy) ? 'checked' : '' %>"></span> POLICY
+                    <span class="checkbox <%= isChecked(data.per_location) ? 'checked' : '' %>"></span> LOCATION
+                    <span class="checkbox <%= isChecked(data.per_project) ? 'checked' : '' %>"></span> PROJECT
+                </div>
+                <div class="cell w25 label">PRODUCTS & COMPLETED OPERATIONS AGGREGATE</div>
+                <div class="cell w25 right">$<%= money(data.products_ops_limit || '2000000') %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w25 label">DEDUCTIBLES</div>
+                <div class="cell w25"></div>
+                <div class="cell w25 label">PERSONAL & ADVERTISING INJURY</div>
+                <div class="cell w25 right">$<%= money(data.personal_adv_limit || '1000000') %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w25 label">PROPERTY DAMAGE</div>
+                <div class="cell w25">$<%= money(data.property_damage_deductible) %> PER CLAIM</div>
+                <div class="cell w25 label">EACH OCCURRENCE</div>
+                <div class="cell w25 right">$<%= money(data.each_occurrence_limit || '1000000') %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w25 label">BODILY INJURY</div>
+                <div class="cell w25">$<%= money(data.bodily_injury_deductible) %> PER OCCURRENCE</div>
+                <div class="cell w25 label">DAMAGE TO RENTED PREMISES (EACH OCCURRENCE)</div>
+                <div class="cell w25 right">$<%= money(data.rented_premises_limit || '100000') %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w25 label">EMPLOYEE BENEFITS</div>
+                <div class="cell w25">$<%= money(data.employee_benefits_deductible) %></div>
+                <div class="cell w25 label">MEDICAL EXPENSE (ANY ONE PERSON)</div>
+                <div class="cell w25 right">$<%= money(data.medical_expense_limit || '5000') %></div>
+            </div>
+        </div>
+
+        <!-- OTHER COVERAGES -->
+        <div class="section">
+            <div class="section-title small">OTHER COVERAGES, RESTRICTIONS AND/OR ENDORSEMENTS (FOR HIRED/NON-OWNED AUTO COVERAGES ATTACH THE APPLICABLE STATE BUSINESS AUTO SECTION, ACORD 137)</div>
+            <div style="padding: 5px; min-height: 40px;">
+                <%= data.other_coverages || 'BLANKET ADDITIONAL INSURED GENERAL FORM: HIRED & NON OWNED AUTO INCLUDED' %>
+            </div>
+        </div>
+
+        <!-- SCHEDULE OF HAZARDS -->
+        <div class="section">
+            <div class="section-title small">SCHEDULE OF HAZARDS (ACORD 211, Schedule of Hazards, may be attached if more space is required)</div>
+            <div class="row">
+                <div class="cell w5 center label small">LOC #</div>
+                <div class="cell w5 center label small">HAZ #</div>
+                <div class="cell w10 center label small">CLASS CODE</div>
+                <div class="cell w10 center label small">PREMIUM BASIS</div>
+                <div class="cell w20 center label small">CLASSIFICATION DESCRIPTION</div>
+                <div class="cell w10 center label small">EXPOSURE</div>
+                <div class="cell w5 center label small">TERR</div>
+                <div class="cell w10 center label small">RATE PREM/OPS</div>
+                <div class="cell w10 center label small">RATE PRODS</div>
+                <div class="cell w10 center label small">PREM PREM/OPS</div>
+                <div class="cell w10 center label small">PREM PRODS</div>
+            </div>
+            
+            <!-- Row 1 -->
+            <div class="row border-top">
+                <div class="cell w5 center">1</div>
+                <div class="cell w5 center">1</div>
+                <div class="cell w10 center"><%= data.class_code_1 || '' %></div>
+                <div class="cell w10 center">GROSS REV</div>
+                <div class="cell w20"><%= data.classification_1 || '' %></div>
+                <div class="cell w10 right">$<%= money(data.total_sales || data.exposure_1 || '') %></div>
+                <div class="cell w5 center"><%= data.territory_1 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_ops_1 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_prods_1 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_ops_1 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_prods_1 || '' %></div>
+            </div>
+            
+            <!-- Row 2 -->
+            <div class="row border-top">
+                <div class="cell w5 center">1</div>
+                <div class="cell w5 center">2</div>
+                <div class="cell w10 center"><%= data.class_code_2 || '' %></div>
+                <div class="cell w10 center">LIQ REV</div>
+                <div class="cell w20"><%= data.classification_2 || '' %></div>
+                <div class="cell w10 right">$<%= money(data.alcohol_sales || data.exposure_2 || '') %></div>
+                <div class="cell w5 center"><%= data.territory_2 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_ops_2 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_prods_2 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_ops_2 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_prods_2 || '' %></div>
+            </div>
+            
+            <!-- Row 3 -->
+            <div class="row border-top">
+                <div class="cell w5 center">1</div>
+                <div class="cell w5 center">3</div>
+                <div class="cell w10 center"><%= data.class_code_3 || '' %></div>
+                <div class="cell w10 center">SQUARE FT</div>
+                <div class="cell w20"><%= data.classification_3 || '' %></div>
+                <div class="cell w10 right"><%= data.square_footage || data.exposure_3 || '' %></div>
+                <div class="cell w5 center"><%= data.territory_3 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_ops_3 || '' %></div>
+                <div class="cell w10 right"><%= data.rate_prods_3 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_ops_3 || '' %></div>
+                <div class="cell w10 right"><%= data.prem_prods_3 || '' %></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ACORD 126 (2016/09) &nbsp;&nbsp; Page 1 of 4 &nbsp;&nbsp; © 1993-2016 ACORD CORPORATION. All rights reserved.
         </div>
     </div>
 
-    <!-- APPLICANT INFO -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">APPLICANT INFORMATION</div>
+    <!-- PAGE 2 -->
+    <div class="page">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title center">COMMERCIAL GENERAL LIABILITY SECTION</div>
+            <div class="center bold">ACORD 126</div>
         </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">NAME (First, Middle, Last)</div>
-                <div class="value"><%= data.applicant_name || data.insured_name || '' %></div>
+
+        <!-- CLAIMS MADE -->
+        <div class="section">
+            <div class="section-title">CLAIMS MADE (Explain all "Yes" responses)</div>
+            <div class="row">
+                <div class="cell w50">
+                    <div class="label">1. PROPOSED RETROACTIVE DATE</div>
+                    <div><%= formatDate(data.retroactive_date) %></div>
+                </div>
+                <div class="cell w50">
+                    <div class="label">2. ENTRY DATE INTO UNINTERRUPTED CLAIMS MADE COVERAGE</div>
+                    <div><%= formatDate(data.claims_made_entry_date) %></div>
+                </div>
             </div>
-            <div class="cell w50">
-                <div class="label">MAILING ADDRESS</div>
-                <div class="value"><%= data.applicant_street || '' %></div>
+            <div class="row border-top">
+                <div class="cell w90">3. HAS ANY PRODUCT, WORK, ACCIDENT, OR LOCATION BEEN EXCLUDED, UNINSURED OR SELF-INSURED FROM ANY PREVIOUS COVERAGE?</div>
+                <div class="cell w10 center"><%= isChecked(data.excluded_uninsured) ? 'Y' : 'N' %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w90">4. WAS TAIL COVERAGE PURCHASED UNDER ANY PREVIOUS POLICY?</div>
+                <div class="cell w10 center"><%= isChecked(data.tail_coverage) ? 'Y' : 'N' %></div>
+            </div>
+            <div class="row border-top">
+                <div class="cell w100">
+                    <div class="label">EXPLAIN ALL "YES" RESPONSES</div>
+                    <div style="min-height: 30px;"><%= data.claims_made_explanation || '' %></div>
+                </div>
             </div>
         </div>
-        <div class="row border-top">
-            <div class="cell w25">
-                <div class="label">CITY</div>
-                <div class="value"><%= data.applicant_city || '' %></div>
+
+        <!-- EMPLOYEE BENEFITS LIABILITY -->
+        <div class="section">
+            <div class="section-title">EMPLOYEE BENEFITS LIABILITY</div>
+            <div class="row">
+                <div class="cell w25">
+                    <div class="label">1. DEDUCTIBLE PER CLAIM</div>
+                    <div>$<%= money(data.employee_benefits_deductible_per_claim) %></div>
+                </div>
+                <div class="cell w25">
+                    <div class="label">2. NUMBER OF EMPLOYEES</div>
+                    <div><%= data.number_of_employees || data.total_employees || '0' %></div>
+                </div>
+                <div class="cell w25">
+                    <div class="label">3. NUMBER OF EMPLOYEES COVERED BY EMPLOYEE BENEFITS PLANS</div>
+                    <div><%= data.employees_covered_by_benefits || '' %></div>
+                </div>
+                <div class="cell w25">
+                    <div class="label">4. RETROACTIVE DATE</div>
+                    <div><%= formatDate(data.benefits_retroactive_date) %></div>
+                </div>
             </div>
-            <div class="cell w25">
-                <div class="label">STATE</div>
-                <div class="value"><%= data.applicant_state || '' %></div>
+        </div>
+
+        <!-- CONTRACTORS -->
+        <div class="section">
+            <div class="section-title">CONTRACTORS</div>
+            <div style="padding: 5px;">
+                <table width="100%">
+                    <tr>
+                        <td width="90%">1. DOES APPLICANT DRAW PLANS, DESIGNS, OR SPECIFICATIONS FOR OTHERS?</td>
+                        <td width="10%" align="center"><%= isChecked(data.draw_plans) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>2. DO ANY OPERATIONS INCLUDE BLASTING OR UTILIZE OR STORE EXPLOSIVE MATERIAL?</td>
+                        <td align="center"><%= isChecked(data.use_explosives) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>3. DO ANY OPERATIONS INCLUDE EXCAVATION, TUNNELING, UNDERGROUND WORK OR EARTH MOVING?</td>
+                        <td align="center"><%= isChecked(data.excavation_work) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>4. DO YOUR SUBCONTRACTORS CARRY COVERAGES OR LIMITS LESS THAN YOURS?</td>
+                        <td align="center"><%= isChecked(data.subcontractors_less_coverage) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>5. ARE SUBCONTRACTORS ALLOWED TO WORK WITHOUT PROVIDING YOU WITH A CERTIFICATE OF INSURANCE?</td>
+                        <td align="center"><%= isChecked(data.subcontractors_no_certificate) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>6. DOES APPLICANT LEASE EQUIPMENT TO OTHERS WITH OR WITHOUT OPERATORS?</td>
+                        <td align="center"><%= isChecked(data.lease_equipment) ? 'Y' : 'N' %></td>
+                    </tr>
+                </table>
+                
+                <div class="row" style="margin-top: 10px;">
+                    <div class="cell w20 center label"># FULL-TIME STAFF</div>
+                    <div class="cell w20 center label"># PART-TIME STAFF</div>
+                    <div class="cell w20 center label">% OF WORK SUBCONTRACTED</div>
+                    <div class="cell w20 center label">$ PAID TO SUBCONTRACTORS</div>
+                    <div class="cell w20 center label">DESCRIBE THE TYPE OF WORK SUBCONTRACTED</div>
+                </div>
+                <div class="row border-top">
+                    <div class="cell w20 center"><%= data.full_time_staff || data.full_time_employees || '' %></div>
+                    <div class="cell w20 center"><%= data.part_time_staff || data.part_time_employees || '' %></div>
+                    <div class="cell w20 center"><%= data.percent_subcontracted || '' %>%</div>
+                    <div class="cell w20 center">$<%= money(data.paid_to_subcontractors || data.subcontractor_cost) %></div>
+                    <div class="cell w20"><%= data.work_subcontracted_description || '' %></div>
+                </div>
             </div>
-            <div class="cell w25">
-                <div class="label">ZIP CODE</div>
-                <div class="value"><%= data.applicant_zip || '' %></div>
+        </div>
+
+        <!-- PRODUCTS / COMPLETED OPERATIONS -->
+        <div class="section">
+            <div class="section-title">PRODUCTS / COMPLETED OPERATIONS</div>
+            <div class="row">
+                <div class="cell w15 center label small">PRODUCTS</div>
+                <div class="cell w15 center label small">ANNUAL GROSS SALES</div>
+                <div class="cell w10 center label small"># OF UNITS</div>
+                <div class="cell w10 center label small">TIME IN MARKET</div>
+                <div class="cell w15 center label small">EXPECTED LIFE</div>
+                <div class="cell w15 center label small">INTENDED USE</div>
+                <div class="cell w20 center label small">PRINCIPAL COMPONENTS</div>
             </div>
-            <div class="cell w25">
-                <div class="label">COUNTY</div>
-                <div class="value"><%= data.applicant_county || '' %></div>
+            <div class="row border-top">
+                <div class="cell w15"><%= data.product_1 || '' %></div>
+                <div class="cell w15 right">$<%= money(data.product_1_sales) %></div>
+                <div class="cell w10 center"><%= data.product_1_units || '' %></div>
+                <div class="cell w10 center"><%= data.product_1_time || '' %></div>
+                <div class="cell w15 center"><%= data.product_1_life || '' %></div>
+                <div class="cell w15"><%= data.product_1_use || '' %></div>
+                <div class="cell w20"><%= data.product_1_components || '' %></div>
             </div>
+            <div class="row border-top">
+                <div class="cell w15"><%= data.product_2 || '' %></div>
+                <div class="cell w15 right">$<%= money(data.product_2_sales) %></div>
+                <div class="cell w10 center"><%= data.product_2_units || '' %></div>
+                <div class="cell w10 center"><%= data.product_2_time || '' %></div>
+                <div class="cell w15 center"><%= data.product_2_life || '' %></div>
+                <div class="cell w15"><%= data.product_2_use || '' %></div>
+                <div class="cell w20"><%= data.product_2_components || '' %></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ACORD 126 (2016/09) &nbsp;&nbsp; Page 2 of 4 &nbsp;&nbsp; © 1993-2016 ACORD CORPORATION. All rights reserved.
         </div>
     </div>
 
-    <!-- POLICY INFO -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w33">
-                <div class="label">POLICY NUMBER</div>
-                <div class="value"><%= data.policy_number || '' %></div>
+    <!-- PAGE 3 -->
+    <div class="page">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title center">COMMERCIAL GENERAL LIABILITY SECTION</div>
+            <div class="center bold">ACORD 126</div>
+        </div>
+
+        <!-- ADDITIONAL INTEREST / CERTIFICATE RECIPIENT -->
+        <div class="section">
+            <div class="section-title">ADDITIONAL INTEREST / CERTIFICATE RECIPIENT &nbsp;&nbsp; <span class="checkbox <%= isChecked(data.acord_45_attached) ? 'checked' : '' %>"></span> ACORD 45 attached for additional names</div>
+            
+            <div class="row">
+                <div class="cell w100 center">
+                    <strong>INTEREST</strong> &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_additional_insured_1) ? 'checked' : '' %>"></span> ADDITIONAL INSURED &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_loss_payee_1) ? 'checked' : '' %>"></span> LOSS PAYEE &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_mortgagee_1) ? 'checked' : '' %>"></span> MORTGAGEE &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_lienholder_1) ? 'checked' : '' %>"></span> LIENHOLDER &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_employee_as_lessor_1) ? 'checked' : '' %>"></span> EMPLOYEE AS LESSOR &nbsp;&nbsp;
+                    <span class="checkbox <%= isChecked(data.ai_lenders_loss_1) ? 'checked' : '' %>"></span> LENDER'S LOSS PAYABLE
+                </div>
             </div>
-            <div class="cell w33">
-                <div class="label">EFFECTIVE DATE</div>
-                <div class="value"><%= formatDate(data.effective_date) %></div>
+            
+            <div class="row border-top">
+                <div class="cell w60">
+                    <div class="label">NAME AND ADDRESS</div>
+                    <div><%= data.ai_name_1 || data.interest_name || '' %></div>
+                    <div><%= data.ai_address_1 || data.interest_address || '' %></div>
+                    <div><%= [data.ai_city_1 || data.interest_city, data.ai_state_1 || data.interest_state, data.ai_zip_1 || data.interest_zip].filter(Boolean).join(', ') %></div>
+                </div>
+                <div class="cell w10">
+                    <div class="label">RANK</div>
+                    <div class="center"><%= data.ai_rank_1 || '' %></div>
+                </div>
+                <div class="cell w30">
+                    <div class="label">EVIDENCE</div>
+                    <div>
+                        <span class="checkbox <%= isChecked(data.ai_certificate_1) ? 'checked' : '' %>"></span> CERTIFICATE
+                    </div>
+                </div>
             </div>
-            <div class="cell w34">
-                <div class="label">EXPIRATION DATE</div>
-                <div class="value"><%= formatDate(data.expiration_date) %></div>
+        </div>
+
+        <!-- GENERAL INFORMATION -->
+        <div class="section">
+            <div class="section-title">GENERAL INFORMATION</div>
+            <div style="padding: 5px; font-size: 7pt;">
+                <div class="label center">EXPLAIN ALL "YES" RESPONSES (FOR ALL PAST OR PRESENT OPERATIONS)</div>
+                <table width="100%" style="margin-top: 5px;">
+                    <tr>
+                        <td width="90%">1. ANY MEDICAL FACILITIES PROVIDED OR MEDICAL PROFESSIONALS EMPLOYED OR CONTRACTED?</td>
+                        <td width="10%" align="center"><%= isChecked(data.medical_facilities) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>2. ANY EXPOSURE TO RADIOACTIVE/NUCLEAR MATERIALS?</td>
+                        <td align="center"><%= isChecked(data.radioactive_exposure) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>3. DO/HAVE PAST, PRESENT OR DISCONTINUED OPERATIONS INVOLVE(D) STORING, TREATING, DISCHARGING, APPLYING, DISPOSING, OR TRANSPORTING OF HAZARDOUS MATERIAL? (e.g. landfills, wastes, fuel tanks, etc)</td>
+                        <td align="center"><%= isChecked(data.hazardous_materials) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>4. ANY OPERATIONS SOLD, ACQUIRED, OR DISCONTINUED IN LAST FIVE (5) YEARS?</td>
+                        <td align="center"><%= isChecked(data.operations_changed) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>5. DO YOU RENT OR LOAN EQUIPMENT TO OTHERS?</td>
+                        <td align="center"><%= isChecked(data.rent_equipment) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>6. ANY WATERCRAFT, DOCKS, FLOATS OWNED, HIRED OR LEASED?</td>
+                        <td align="center"><%= isChecked(data.watercraft) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>7. ANY PARKING FACILITIES OWNED/RENTED?</td>
+                        <td align="center"><%= isChecked(data.parking_facilities) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>8. IS A FEE CHARGED FOR PARKING?</td>
+                        <td align="center"><%= isChecked(data.parking_fee) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>9. RECREATION FACILITIES PROVIDED?</td>
+                        <td align="center"><%= isChecked(data.recreation_facilities) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>10. ARE THERE ANY LODGING OPERATIONS INCLUDING APARTMENTS? (If "YES", answer the following):</td>
+                        <td align="center"><%= isChecked(data.lodging_operations) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;Number of units: <%= data.lodging_units || '' %> &nbsp;&nbsp; Number of stories: <%= data.lodging_stories || '' %></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>11. IS THERE A SWIMMING POOL ON PREMISES? (Check all that apply)</td>
+                        <td align="center"><%= isChecked(data.swimming_pool) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="checkbox <%= isChecked(data.pool_above_ground) ? 'checked' : '' %>"></span> Above Ground &nbsp;&nbsp;
+                            <span class="checkbox <%= isChecked(data.pool_in_ground) ? 'checked' : '' %>"></span> In-Ground &nbsp;&nbsp;
+                            <span class="checkbox <%= isChecked(data.pool_fenced) ? 'checked' : '' %>"></span> Fenced &nbsp;&nbsp;
+                            <span class="checkbox <%= isChecked(data.pool_diving_board) ? 'checked' : '' %>"></span> Diving Board &nbsp;&nbsp;
+                            <span class="checkbox <%= isChecked(data.pool_slide) ? 'checked' : '' %>"></span> Slide
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>12. ARE SOCIAL EVENTS SPONSORED?</td>
+                        <td align="center"><%= isChecked(data.social_events) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>13. ARE ATHLETIC TEAMS SPONSORED?</td>
+                        <td align="center"><%= isChecked(data.athletic_teams) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>14. ANY STRUCTURAL ALTERATIONS CONTEMPLATED?</td>
+                        <td align="center"><%= isChecked(data.structural_alterations) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>15. ANY DEMOLITION EXPOSURE CONTEMPLATED?</td>
+                        <td align="center"><%= isChecked(data.demolition_exposure) ? 'Y' : 'N' %></td>
+                    </tr>
+                </table>
             </div>
+        </div>
+
+        <div class="footer">
+            ACORD 126 (2016/09) &nbsp;&nbsp; Page 3 of 4 &nbsp;&nbsp; © 1993-2016 ACORD CORPORATION. All rights reserved.
         </div>
     </div>
 
-    <!-- BUSINESS TYPE -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">TYPE OF BUSINESS</div>
+    <!-- PAGE 4 -->
+    <div class="page">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title center">COMMERCIAL GENERAL LIABILITY SECTION</div>
+            <div class="center bold">ACORD 126</div>
         </div>
-        <div class="row border-top">
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.bar) ? 'checked' : '' %>"></span> Bar
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.tavern) ? 'checked' : '' %>"></span> Tavern
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.nightclub) ? 'checked' : '' %>"></span> Nightclub
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.restaurant) ? 'checked' : '' %>"></span> Restaurant
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w100">
-                <div class="label">DESCRIBE OPERATIONS</div>
-                <div class="value"><%= data.operations_description || '' %></div>
-            </div>
-        </div>
-    </div>
 
-    <!-- PREMISES LOCATIONS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">PREMISES / LOCATIONS</div>
+        <!-- GENERAL INFORMATION (continued) -->
+        <div class="section">
+            <div class="section-title">GENERAL INFORMATION (continued)</div>
+            <div style="padding: 5px; font-size: 7pt;">
+                <div class="label center">EXPLAIN ALL "YES" RESPONSES (FOR ALL PAST OR PRESENT OPERATIONS)</div>
+                <table width="100%" style="margin-top: 5px;">
+                    <tr>
+                        <td width="90%">16. HAS APPLICANT BEEN ACTIVE IN OR IS CURRENTLY ACTIVE IN JOINT VENTURES?</td>
+                        <td width="10%" align="center"><%= isChecked(data.joint_ventures) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>17. DO YOU LEASE EMPLOYEES TO OR FROM OTHER EMPLOYERS?</td>
+                        <td align="center"><%= isChecked(data.lease_employees) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>18. IS THERE A LABOR INTERCHANGE WITH ANY OTHER BUSINESS OR SUBSIDIARIES?</td>
+                        <td align="center"><%= isChecked(data.labor_interchange) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>19. ARE DAY CARE FACILITIES OPERATED OR CONTROLLED?</td>
+                        <td align="center"><%= isChecked(data.day_care) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>20. HAVE ANY CRIMES OCCURRED OR BEEN ATTEMPTED ON YOUR PREMISES WITHIN THE LAST THREE (3) YEARS?</td>
+                        <td align="center"><%= isChecked(data.crimes_on_premises) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>21. IS THERE A FORMAL, WRITTEN SAFETY AND SECURITY POLICY IN EFFECT?</td>
+                        <td align="center"><%= isChecked(data.safety_policy) ? 'Y' : 'N' %></td>
+                    </tr>
+                    <tr>
+                        <td>22. DOES THE BUSINESSES' PROMOTIONAL LITERATURE MAKE ANY REPRESENTATIONS ABOUT THE SAFETY OR SECURITY OF THE PREMISES?</td>
+                        <td align="center"><%= isChecked(data.safety_representations) ? 'Y' : 'N' %></td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div class="row border-top">
-            <div class="cell w5 center bold small">#</div>
-            <div class="cell w35 center bold small">ADDRESS</div>
-            <div class="cell w20 center bold small">CITY</div>
-            <div class="cell w10 center bold small">STATE</div>
-            <div class="cell w15 center bold small">ZIP</div>
-            <div class="cell w15 center bold small">COUNTY</div>
-        </div>
-        
-        <% for(let i = 1; i <= 3; i++) { %>
-        <div class="row border-top">
-            <div class="cell w5 center"><%= i %></div>
-            <div class="cell w35"><%= data['premise_address_' + i] || (i === 1 ? data.premise_address : '') || '' %></div>
-            <div class="cell w20"><%= data['premise_city_' + i] || (i === 1 ? data.premise_city : '') || '' %></div>
-            <div class="cell w10 center"><%= data['premise_state_' + i] || (i === 1 ? data.premise_state : '') || '' %></div>
-            <div class="cell w15"><%= data['premise_zip_' + i] || (i === 1 ? data.premise_zip : '') || '' %></div>
-            <div class="cell w15"><%= data['premise_county_' + i] || (i === 1 ? data.premise_county : '') || '' %></div>
-        </div>
-        <% } %>
-    </div>
 
-    <!-- ENTERTAINMENT -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">ENTERTAINMENT</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.live_music) ? 'checked' : '' %>"></span> Live Music
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.dj) ? 'checked' : '' %>"></span> DJ
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.dancing) ? 'checked' : '' %>"></span> Dancing
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.karaoke) ? 'checked' : '' %>"></span> Karaoke
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.comedy) ? 'checked' : '' %>"></span> Comedy
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.adult_entertainment) ? 'checked' : '' %>"></span> Adult Entertainment
-            </div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data.other_entertainment) ? 'checked' : '' %>"></span> Other
-            </div>
-            <div class="cell w25">
-                <% if(data.other_entertainment_description) { %>
-                    <div class="small"><%= data.other_entertainment_description %></div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <!-- SECURITY -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">SECURITY</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">SECURITY PERSONNEL ON PREMISES?</div>
-                <span class="checkbox <%= isChecked(data.security_yes) ? 'checked' : '' %>"></span> Yes
-                <span class="checkbox <%= isChecked(data.security_no) ? 'checked' : '' %>"></span> No
-            </div>
-            <div class="cell w50">
-                <div class="label">IF YES, NUMBER OF GUARDS</div>
-                <div class="value"><%= data.number_of_guards || '' %></div>
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">HOURS OF SECURITY COVERAGE</div>
-                <div class="value"><%= data.security_hours || '' %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">TYPE OF SECURITY</div>
-                <span class="checkbox <%= isChecked(data.security_armed) ? 'checked' : '' %>"></span> Armed
-                <span class="checkbox <%= isChecked(data.security_unarmed) ? 'checked' : '' %>"></span> Unarmed
-            </div>
-        </div>
-    </div>
-
-    <!-- OPERATIONS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">OPERATIONS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w33">
-                <div class="label">HOURS OF OPERATION</div>
-                <div class="value"><%= data.hours_of_operation || '' %></div>
-            </div>
-            <div class="cell w33">
-                <div class="label">DAYS OPEN PER WEEK</div>
-                <div class="value"><%= data.days_open || '' %></div>
-            </div>
-            <div class="cell w34">
-                <div class="label">SEASONAL?</div>
-                <span class="checkbox <%= isChecked(data.seasonal_yes) ? 'checked' : '' %>"></span> Yes
-                <span class="checkbox <%= isChecked(data.seasonal_no) ? 'checked' : '' %>"></span> No
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">MAXIMUM OCCUPANCY</div>
-                <div class="value"><%= data.maximum_occupancy || '' %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">AVERAGE DAILY CUSTOMERS</div>
-                <div class="value"><%= data.average_customers || '' %></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ALCOHOL SERVICE -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">ALCOHOL SERVICE</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">LIQUOR LICENSE NUMBER</div>
-                <div class="value"><%= data.liquor_license_number || '' %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">LICENSE TYPE</div>
-                <span class="checkbox <%= isChecked(data.beer_wine) ? 'checked' : '' %>"></span> Beer/Wine
-                <span class="checkbox <%= isChecked(data.full_bar) ? 'checked' : '' %>"></span> Full Bar
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w100">
-                <div class="label">SERVER TRAINING PROGRAM?</div>
-                <span class="checkbox <%= isChecked(data.server_training_yes) ? 'checked' : '' %>"></span> Yes
-                <span class="checkbox <%= isChecked(data.server_training_no) ? 'checked' : '' %>"></span> No
-                <% if(data.server_training_description) { %>
-                    <span class="small"> - <%= data.server_training_description %></span>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
-    <!-- EMPLOYEES -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">EMPLOYEES</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w25">
-                <div class="label">FULL TIME</div>
-                <div class="value"><%= data.full_time_employees || '' %></div>
-            </div>
-            <div class="cell w25">
-                <div class="label">PART TIME</div>
-                <div class="value"><%= data.part_time_employees || '' %></div>
-            </div>
-            <div class="cell w25">
-                <div class="label">SEASONAL</div>
-                <div class="value"><%= data.seasonal_employees || '' %></div>
-            </div>
-            <div class="cell w25">
-                <div class="label">TOTAL</div>
-                <div class="value"><%= data.total_employees || '' %></div>
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">ANNUAL PAYROLL</div>
-                <div class="value">$<%= money(data.annual_payroll) %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">SUBCONTRACTOR COSTS</div>
-                <div class="value">$<%= money(data.subcontractor_cost) %></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCHEDULE OF HAZARDS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">SCHEDULE OF HAZARDS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w40 center bold small">HAZARD</div>
-            <div class="cell w20 center bold small">CLASSIFICATION</div>
-            <div class="cell w10 center bold small">CODE</div>
-            <div class="cell w10 center bold small">PREMIUM BASIS</div>
-            <div class="cell w10 center bold small">RATE</div>
-            <div class="cell w10 center bold small">EXPOSURE</div>
-        </div>
-        
-        <!-- Row 1 - Total Sales -->
-        <div class="row border-top">
-            <div class="cell w40">Premises Operations - Total Sales</div>
-            <div class="cell w20 center">58161</div>
-            <div class="cell w10 center">001</div>
-            <div class="cell w10 center">Sales</div>
-            <div class="cell w10 right"></div>
-            <div class="cell w10 right num">$<%= money(data.total_sales || '') %></div>
-        </div>
-        
-        <!-- Row 2 - Alcohol Sales -->
-        <div class="row border-top">
-            <div class="cell w40">Liquor Liability - Alcohol Sales</div>
-            <div class="cell w20 center">58160</div>
-            <div class="cell w10 center">002</div>
-            <div class="cell w10 center">Sales</div>
-            <div class="cell w10 right"></div>
-            <div class="cell w10 right num">$<%= money(data.alcohol_sales || '') %></div>
-        </div>
-        
-        <!-- Row 3 - Square Footage -->
-        <div class="row border-top">
-            <div class="cell w40">Property - Square Footage</div>
-            <div class="cell w20 center">61217</div>
-            <div class="cell w10 center">003</div>
-            <div class="cell w10 center">Area</div>
-            <div class="cell w10 right"></div>
-            <div class="cell w10 right num"><%= data.square_footage || '' %></div>
-        </div>
-        
-        <!-- Additional Rows -->
-        <% for(let i = 4; i <= 6; i++) { %>
-        <div class="row border-top">
-            <div class="cell w40"><%= data['hazard_' + i] || '' %></div>
-            <div class="cell w20 center"><%= data['class_' + i] || '' %></div>
-            <div class="cell w10 center"><%= data['code_' + i] || '' %></div>
-            <div class="cell w10 center"><%= data['basis_' + i] || '' %></div>
-            <div class="cell w10 right"><%= data['rate_' + i] || '' %></div>
-            <div class="cell w10 right num"><%= data['exposure_' + i] || '' %></div>
-        </div>
-        <% } %>
-    </div>
-
-    <!-- LIABILITY LIMITS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">LIABILITY LIMITS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">EACH OCCURRENCE</div>
-                <div class="value">$<%= money(data.each_occurrence_limit || '1000000') %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">GENERAL AGGREGATE</div>
-                <div class="value">$<%= money(data.general_aggregate_limit || '2000000') %></div>
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">PRODUCTS/COMPLETED OPS AGGREGATE</div>
-                <div class="value">$<%= money(data.products_ops_limit || '2000000') %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">PERSONAL & ADVERTISING INJURY</div>
-                <div class="value">$<%= money(data.personal_adv_limit || '1000000') %></div>
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">DAMAGE TO RENTED PREMISES</div>
-                <div class="value">$<%= money(data.rented_premises_limit || '100000') %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">MEDICAL EXPENSE (ANY ONE PERSON)</div>
-                <div class="value">$<%= money(data.medical_expense_limit || '5000') %></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- LIQUOR LIABILITY LIMITS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">LIQUOR LIABILITY LIMITS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">EACH COMMON CAUSE</div>
-                <div class="value">$<%= money(data.liquor_each_cause_limit || '1000000') %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">AGGREGATE</div>
-                <div class="value">$<%= money(data.liquor_aggregate_limit || '1000000') %></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- LOSS HISTORY -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">LOSS HISTORY (Past 5 Years)</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w20 center bold small">DATE</div>
-            <div class="cell w40 center bold small">DESCRIPTION</div>
-            <div class="cell w20 center bold small">AMOUNT PAID</div>
-            <div class="cell w20 center bold small">AMOUNT RESERVED</div>
-        </div>
-        
-        <% for(let i = 1; i <= 3; i++) { %>
-        <div class="row border-top">
-            <div class="cell w20 center"><%= formatDate(data['loss_date_' + i]) %></div>
-            <div class="cell w40"><%= data['loss_description_' + i] || '' %></div>
-            <div class="cell w20 right">$<%= money(data['loss_paid_' + i]) %></div>
-            <div class="cell w20 right">$<%= money(data['loss_reserved_' + i]) %></div>
-        </div>
-        <% } %>
-    </div>
-
-    <!-- ADDITIONAL INTERESTS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">ADDITIONAL INTERESTS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w5 center bold small">#</div>
-            <div class="cell w35 center bold small">NAME</div>
-            <div class="cell w35 center bold small">ADDRESS</div>
-            <div class="cell w25 center bold small">INTEREST TYPE</div>
-        </div>
-        
-        <% for(let i = 1; i <= 2; i++) { %>
-        <div class="row border-top">
-            <div class="cell w5 center"><%= i %></div>
-            <div class="cell w35"><%= data['ai_name_' + i] || '' %></div>
-            <div class="cell w35"><%= data['ai_address_' + i] || '' %></div>
-            <div class="cell w25">
-                <span class="checkbox <%= isChecked(data['ai_mortgagee_' + i]) ? 'checked' : '' %>"></span> Mortgagee
-                <span class="checkbox <%= isChecked(data['ai_addl_insured_' + i]) ? 'checked' : '' %>"></span> Add'l Insured
-                <span class="checkbox <%= isChecked(data['ai_loss_payee_' + i]) ? 'checked' : '' %>"></span> Loss Payee
-            </div>
-        </div>
-        <% } %>
-    </div>
-
-    <!-- REMARKS -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w100 bold">REMARKS</div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w100" style="min-height: 60px;">
+        <!-- REMARKS -->
+        <div class="section">
+            <div class="section-title">REMARKS (ACORD 101, Additional Remarks Schedule, may be attached if more space is required)</div>
+            <div style="padding: 10px; min-height: 100px;">
                 <%= data.remarks || '' %>
             </div>
         </div>
-    </div>
 
-    <!-- SIGNATURE -->
-    <div class="section">
-        <div class="row">
-            <div class="cell w50">
-                <div class="label">PRODUCER NAME</div>
-                <div class="value"><%= data.producer_name || data.agent_name || '' %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">PRODUCER SIGNATURE</div>
-                <div class="value" style="min-height: 30px; border-bottom: 1px solid black; margin-top: 10px;"></div>
+        <!-- SIGNATURE -->
+        <div class="section">
+            <div class="section-title">SIGNATURE</div>
+            <div style="padding: 10px; font-size: 7pt;">
+                <p style="margin-bottom: 10px;">
+                    THE UNDERSIGNED IS AN AUTHORIZED REPRESENTATIVE OF THE APPLICANT AND REPRESENTS THAT REASONABLE INQUIRY HAS BEEN MADE TO OBTAIN THE ANSWERS TO QUESTIONS ON THIS APPLICATION. HE/SHE REPRESENTS THAT THE ANSWERS ARE TRUE, CORRECT AND COMPLETE TO THE BEST OF HIS/HER KNOWLEDGE.
+                </p>
+                
+                <div class="row" style="margin-top: 20px;">
+                    <div class="cell w25">
+                        <div class="label">PRODUCER'S SIGNATURE</div>
+                        <div style="border-bottom: 1px solid black; min-height: 30px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="cell w25">
+                        <div class="label">PRODUCER'S NAME (PLEASE PRINT)</div>
+                        <div style="margin-top: 10px;"><%= data.producer_name || data.agent_name || 'RICK CLINE' %></div>
+                    </div>
+                    <div class="cell w25">
+                        <div class="label">APPLICANT'S SIGNATURE</div>
+                        <div style="border-bottom: 1px solid black; min-height: 30px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="cell w25">
+                        <div class="label">DATE</div>
+                        <div style="margin-top: 10px;"><%= formatDate(data.signature_date || data.current_date) %></div>
+                    </div>
+                </div>
+                
+                <div class="row" style="margin-top: 15px;">
+                    <div class="cell w50">
+                        <div class="label">STATE PRODUCER LICENSE NO (REQUIRED IN FLORIDA)</div>
+                        <div style="margin-top: 5px;"><%= data.state_license_no || '' %></div>
+                    </div>
+                    <div class="cell w50">
+                        <div class="label">NATIONAL PRODUCER NUMBER</div>
+                        <div style="margin-top: 5px;"><%= data.national_producer_no || '' %></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">APPLICANT NAME</div>
-                <div class="value"><%= data.applicant_name || data.insured_name || '' %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">APPLICANT SIGNATURE</div>
-                <div class="value" style="min-height: 30px; border-bottom: 1px solid black; margin-top: 10px;"></div>
-            </div>
-        </div>
-        <div class="row border-top">
-            <div class="cell w50">
-                <div class="label">DATE</div>
-                <div class="value"><%= formatDate(data.signature_date || data.current_date) %></div>
-            </div>
-            <div class="cell w50">
-                <div class="label">AGENCY</div>
-                <div class="value"><%= data.agency_name || '' %></div>
-            </div>
-        </div>
-    </div>
 
-    <!-- FOOTER -->
-    <div class="footer" style="margin-top: 20px; text-align: center; font-size: 7pt;">
-        <div>ACORD 126 (2016/03)</div>
-        <div>© 1988-2016 ACORD CORPORATION. All rights reserved.</div>
-        <div>The ACORD name and logo are registered marks of ACORD</div>
+        <!-- FRAUD WARNINGS -->
+        <div class="section">
+            <div style="padding: 5px; font-size: 6pt; line-height: 1.3;">
+                <p><strong>Applicable in AL, AR, DC, LA, MD, NM, RI and WV:</strong> Any person who knowingly (or willfully)* presents a false or fraudulent claim for payment of a loss or benefit or knowingly (or willfully)* presents false information in an application for insurance is guilty of a crime and may be subject to fines and confinement in prison. *Applies in MD Only.</p>
+                
+                <p><strong>Applicable in CO:</strong> It is unlawful to knowingly provide false, incomplete, or misleading facts or information to an insurance company for the purpose of defrauding or attempting to defraud the company. Penalties may include imprisonment, fines, denial of insurance and civil damages. Any insurance company or agent of an insurance company who knowingly provides false, incomplete, or misleading facts or information to a policyholder or claimant for the purpose of defrauding or attempting to defraud the policyholder or claimant with regard to a settlement or award payable from insurance proceeds shall be reported to the Colorado Division of Insurance within the Department of Regulatory Agencies.</p>
+                
+                <p><strong>Applicable in FL and OK:</strong> Any person who knowingly and with intent to injure, defraud, or deceive any insurer files a statement of claim or an application containing any false, incomplete, or misleading information is guilty of a felony (of the third degree)*. *Applies in FL Only.</p>
+                
+                <p><strong>Applicable in KS:</strong> Any person who, knowingly and with intent to defraud, presents, causes to be presented or prepares with knowledge or belief that it will be presented to or by an insurer, purported insurer, broker or any agent thereof, any written, electronic, electronic impulse, facsimile, magnetic, oral, or telephonic communication or statement as part of, or in support of, an application for the issuance of, or the rating of an insurance policy for personal or commercial insurance, or a claim for payment or other benefit pursuant to an insurance policy for commercial or personal insurance which such person knows to contain materially false information concerning any fact material thereto; or conceals, for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act.</p>
+                
+                <p><strong>Applicable in KY, NY, OH and PA:</strong> Any person who knowingly and with intent to defraud any insurance company or other person files an application for insurance or statement of claim containing any materially false information or conceals for the purpose of misleading, information concerning any fact material thereto commits a fraudulent insurance act, which is a crime and subjects such person to criminal and civil penalties (not to exceed five thousand dollars and the stated value of the claim for each such violation)*. *Applies in NY Only.</p>
+                
+                <p><strong>Applicable in ME, TN, VA and WA:</strong> It is a crime to knowingly provide false, incomplete or misleading information to an insurance company for the purpose of defrauding the company. Penalties (may)* include imprisonment, fines and denial of insurance benefits. *Applies in ME Only.</p>
+                
+                <p><strong>Applicable in NJ:</strong> Any person who includes any false or misleading information on an application for an insurance policy is subject to criminal and civil penalties.</p>
+                
+                <p><strong>Applicable in OR:</strong> Any person who knowingly and with intent to defraud or solicit another to defraud the insurer by submitting an application containing a false statement as to any material fact may be violating state law.</p>
+                
+                <p><strong>Applicable in PR:</strong> Any person who knowingly and with the intention of defrauding presents false information in an insurance application, or presents, helps, or causes the presentation of a fraudulent claim for the payment of a loss or any other benefit, or presents more than one claim for the same damage or loss, shall incur a felony and, upon conviction, shall be sanctioned for each violation by a fine of not less than five thousand dollars ($5,000) and not more than ten thousand dollars ($10,000), or a fixed term of imprisonment for three (3) years, or both penalties. Should aggravating circumstances be present, the penalty thus established may be increased to a maximum of five (5) years; if extenuating circumstances are present, it may be reduced to a minimum of two (2) years.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>AGENCY CUSTOMER ID: <%= data.agency_customer_id || '' %></div>
+            <div style="margin-top: 5px;">ACORD 126 (2016/09) &nbsp;&nbsp; Page 4 of 4 &nbsp;&nbsp; © 1993-2016 ACORD CORPORATION. All rights reserved.</div>
+        </div>
     </div>
 </body>
 </html>
