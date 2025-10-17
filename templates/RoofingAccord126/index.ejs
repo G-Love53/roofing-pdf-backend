@@ -123,6 +123,32 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
   const EFF_DATE  = data.effective_date || data.effectiveDate || "";
   const EXP_DATE  = data.expiration_date || data.expirationDate || "";
 
+// Add to compat shim in Bar126index.ejs:
+
+// Date
+data.effective_date = data.policy_period_from || data.effective_date || "";
+
+// Address (same as 125)
+if (data.applicant_address && !data.applicant_street) {
+  data.applicant_street = data.applicant_address;
+}
+
+// Employees
+data.full_time_staff = data.full_time_employees || "";
+data.part_time_staff = data.part_time_employees || "";
+
+// Subcontractor
+data.paid_to_subcontractors = data.subcontractor_cost || "";
+
+// Additional Interest (same as 125)
+data.ai_name_1 = data.certificate_recipients_name_1 || "";
+data.interest_name = data.certificate_recipients_name_1 || "";
+
+// IMPORTANT: Remove or clear the hardcoded Bar values
+data.gross_rev = "";  // Don't show $8,000
+data.liq_rev = "";    // Don't show $3,000
+data.square_ft = "";  // Don't show 2500
+
   data.current_date = CURR_DATE;      data.date = CURR_DATE;
   data.effective_date = EFF_DATE;     data.effectiveDate = EFF_DATE;
   data.expiration_date = EXP_DATE;    data.expirationDate = EXP_DATE;
