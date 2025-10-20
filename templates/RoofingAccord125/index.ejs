@@ -6,9 +6,9 @@ const defaults = {
   producerAddress1: "9200 W Cross Drive #515",
   producerAddress2: "Littleton, CO 80123",
   producerContact: "Rick Cline or Gerry Jones",
-  producerPhone: "(555) 123-4567",
-  producerFax: "(555) 123-4568",
-  producerEmail: "quote@barinsurancedirect.com",
+  producerPhone: "(303)932 1700",
+  producerFax: "",
+  producerEmail: "quotes@roofingcontractorinsurancedirect.com",
   // Agency Customer ID
   agencyCustomerId: "",
   code: "",
@@ -45,11 +45,11 @@ const defaults = {
   crimePremium: "",
   commercialGeneralLiability: true,
   commercialGeneralLiabilityPremium: "",
-  liquorLiability: true,
+  liquorLiability: false,
   liquorLiabilityPremium: "",
-  commercialProperty: true,
+  commercialProperty: false,
   commercialPropertyPremium: "",
-  umbrella: true,
+  umbrella: false,
   umbrellaPremium: "",
   // Attachments toggles
   accountsReceivable: false,
@@ -1065,7 +1065,7 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
         <span class="check"></span> CONDOMINIUMS
       </div>
       <div class="cell w20">
-        <span class="check"></span> CONTRACTOR
+        <span class="check">X</span> CONTRACTOR
         <span class="check"></span> INSTITUTIONAL
       </div>
       <div class="cell w20">
@@ -1073,7 +1073,7 @@ const remarks140 = data.remarks_140 || data.remarks140 || "";
         <span class="check"></span> OFFICE
       </div>
       <div class="cell w20">
-        <span class="check">X</span> RESTAURANT
+        <span class="check"></span> RESTAURANT
         <span class="check"></span> RETAIL / WHOLESALE
       </div>
     </div>
