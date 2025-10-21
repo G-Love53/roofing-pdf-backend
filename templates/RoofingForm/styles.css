@@ -461,3 +461,14 @@ h2 { page-break-after: avoid; margin-top: 8pt; margin-bottom: 4pt; }
 @media print {
   @page { margin: 0.35in; }                /* was 0.4in */
 }
+/* === Show ONLY the final footer; remove all forced breaks === */
+@media print {
+  /* Hide all footers... */
+  .page-footer { display: none !important; }
+
+  /* ...but show the last one (your page 6 footer) */
+  .page-footer:last-of-type { display: block !important; }
+
+  /* Disable all hard page breaks so content flows */
+  .page-break { display: none !important; }
+}
