@@ -1,7 +1,26 @@
-import nodemailer from "nodemailer";
-
 // Generate formatted HTML email summary
 function generateEmailSummary(formData) {
+  // helpers (local to this function)
+  const fmtUSD  = v => {
+    const n = Number(String(v ?? '').replace(/[^0-9.-]/g, '')) || 0;
+    return n ? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'N/A';
+  };
+  const fmtDate = s => (s ? new Date(s).toLocaleDateString('en-US') : 'N/A');
+
+  // normalize fields from your form payload
+  const name   = formData.applicant_name || 'N/A';
+  const street = formData.applicant_address || formData.applicant_street || '';
+  const city   = formData.applicant_city || '';
+  const state  = formData.applicant_state || '';
+  const zip    = formData.applicant_zip || '';
+  const addressLine = [street, [city, state].filter(Boolean).join(', '), zip].filter(Boolean).join(', ');
+
+  const phone  = formData.business_phone || formData.applicant_phone || 'N/A';
+  const email  = formData.contact_email || 'N/A';
+
+  const effectiveDisp = fmtDate(formData.policy_period_from || formData.effective_date);
+  const grossRevenue  = fmtUSD(formData.total_gross_sales || formData.total_sales);
+
   return `
     <!DOCTYPE html>
     <html>
@@ -23,36 +42,19 @@ function generateEmailSummary(formData) {
 
       <div class="content">
         <h3>Applicant Information:</h3>
-        
-        <div class="field">
-          <span class="label">Business Name:</span> ${formData.applicant_name || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Address:</span> ${formData.applicant_address || 'N/A'}, ${formData.applicant_state || ''} ${formData.applicant_zip || ''}
-        </div>
-        
-        <div class="field">
-          <span class="label">Phone:</span> ${formData.applicant_phone || formData.business_phone || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Email:</span> ${formData.contact_email || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Effective Date:</span> ${formData.effective_date || formData.policy_period_from || 'N/A'}
-        </div>
-        
-        <div class="field">
-          <span class="label">Total Sales:</span> ${formData.total_sales || formData.total_gross_sales || 'N/A'}
-        </div>
+
+        <div class="field"><span class="label">Business Name:</span> ${name}</div>
+        <div class="field"><span class="label">Address:</span> ${addressLine || 'N/A'}</div>
+        <div class="field"><span class="label">Phone:</span> ${phone}</div>
+        <div class="field"><span class="label">Email:</span> ${email}</div>
+        <div class="field"><span class="label">Effective Date:</span> ${effectiveDisp}</div>
+        <div class="field"><span class="label">Gross Revenue:</span> ${grossRevenue}</div>
       </div>
-      
+
       <p style="text-align: center; padding: 20px;">
         Please find the completed application forms attached. We look forward to your competitive quote.
       </p>
-      
+
       <div class="footer">
         <strong>Commercial Insurance Direct LLC</strong><br/>
         Phone: (303) 932-1700<br/>
@@ -61,23 +63,4 @@ function generateEmailSummary(formData) {
     </body>
     </html>
   `;
-}
-
-export async function sendWithGmail({ to, cc, subject, html, formData, attachments }) {
-    const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD }
-    });
-
-    // Use generated summary if formData provided, otherwise use provided html
-    const emailHtml = formData ? generateEmailSummary(formData) : html;
-
-    await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to,
-        cc,
-        subject,
-        html: emailHtml,
-        attachments: attachments.map(a => ({ filename: a.filename, content: a.buffer }))
-    });
 }
