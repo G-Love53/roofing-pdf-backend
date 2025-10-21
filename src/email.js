@@ -64,3 +64,18 @@ function generateEmailSummary(formData) {
     </html>
   `;
 }
+// --- add these lines at the bottom of src/email.js ---
+export { generateEmailSummary };
+
+export async function sendWithGmail({ to, subject, html, text, attachments = [] }) {
+  // TODO: plug in your actual send logic (nodemailer or Gmail API) here.
+  // Example (pseudo):
+  // const transporter = getTransport();
+  // await transporter.sendMail({
+  //   from: process.env.MAIL_FROM || "quote@roofingcontractorinsurancedirect.com",
+  //   to, subject, html, text, attachments
+  // });
+
+  // Temporary no-op to avoid crashes if you haven't wired the transport yet:
+  return { ok: true, skipped: true };
+}
