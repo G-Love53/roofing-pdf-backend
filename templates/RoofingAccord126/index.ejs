@@ -162,6 +162,33 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
     data.c_paidToSubs = data.paid_to_subcontractors;
   }
 
+<%
+  // ---- Exposure field aliases for Schedule of Hazards ----
+  // Gross Revenue
+  if (data.total_gross_sales && !data.total_sales) {
+    data.total_sales = data.total_gross_sales;
+  }
+
+  // Subcontractor Cost
+  // (also feed the contractors section "$ PAID TO SUB-CONTRACTORS")
+  if (data.subcontractor_cost) {
+    data.c_paidToSubs = data.subcontractor_cost;
+  }
+
+  // Payroll = owner/partner + employees
+  const payrollSum =
+    (Number(data.owner_partner_payroll) || 0) +
+    (Number(data.employee_payroll) || 0);
+  if (payrollSum && !data.payroll_exposure) {
+    data.payroll_exposure = payrollSum;
+  }
+
+  // money helper (if not already in scope)
+  const money = (v) =>
+    (Number(v) || 0).toLocaleString("en-US", { style: "currency", currency: "USD" });
+%>
+
+
   // Handle additional interest / certificate recipients
   if (data.certificate_recipients_name_1 && !data.ai_name_1) {
     data.ai_name_1 = data.certificate_recipients_name_1;
@@ -473,7 +500,7 @@ const applZip    = data.applicant_zip || data.premise_zip || "";
         <div class="cell w10 center"></div>
         <div class="cell w15 center">GROSS REV</div>
         <div class="cell w25"></div>
-        <div class="cell w10 right num"><%= data.total_sales ? "$" + money(data.total_sales) : "" %></div>
+        <div class="cell w10 right num"><%= data.total_sales ? money(data.total_sales) : "" %></div>
         <div class="cell w5 center"></div>
         <div class="cell w10 center"></div>
         <div class="cell w5 center"></div>
@@ -481,14 +508,14 @@ const applZip    = data.applicant_zip || data.premise_zip || "";
         <div class="cell w5 right"></div>
       </div>
 
-      <!-- Row 2: LIQ REV -->
+      <!-- Row 2: SUB COST -->
       <div class="row">
         <div class="cell w5 center">1</div>
         <div class="cell w5 center">2</div>
         <div class="cell w10 center"></div>
         <div class="cell w15 center">SUB COST</div>
         <div class="cell w25"></div>
-        <div class="cell w10 right num"><%= data.alcohol_sales ? "$" + money(data.alcohol_sales) : "" %></div>
+        <div class="cell w10 right num"><%= data.subcontractor_cost ? money(data.subcontractor_cost) : "" %></div>
         <div class="cell w5 center"></div>
         <div class="cell w10 center"></div>
         <div class="cell w5 center"></div>
@@ -496,14 +523,14 @@ const applZip    = data.applicant_zip || data.premise_zip || "";
         <div class="cell w5 right"></div>
       </div>
 
-      <!-- Row 3: SQUARE FT -->
+      <!-- Row 3: PAYROLL -->
       <div class="row">
         <div class="cell w5 center">1</div>
         <div class="cell w5 center">3</div>
         <div class="cell w10 center"></div>
         <div class="cell w15 center">PAYROLL</div>
         <div class="cell w25"></div>
-        <div class="cell w10 right num"><%= data.square_footage || "" %></div>
+        <div class="cell w10 right num"><%= data.payroll_exposure ? money(data.payroll_exposure) : "" %></div>
         <div class="cell w5 center"></div>
         <div class="cell w10 center"></div>
         <div class="cell w5 center"></div>
