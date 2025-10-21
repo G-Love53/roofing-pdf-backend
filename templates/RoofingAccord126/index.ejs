@@ -155,14 +155,10 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
   }
 
   // Handle subcontractor costs
-  if (data.subcontractor_cost && !data.c_paidToSubs) {
-    data.c_paidToSubs = data.subcontractor_cost;
-  }
-  if (data.paid_to_subcontractors && !data.c_paidToSubs) {
+    if (data.paid_to_subcontractors && !data.c_paidToSubs) {
     data.c_paidToSubs = data.paid_to_subcontractors;
   }
 
-<%
   // ---- Exposure field aliases for Schedule of Hazards ----
   // Gross Revenue
   if (data.total_gross_sales && !data.total_sales) {
@@ -182,12 +178,6 @@ const data = Object.assign({}, defaults, (typeof formData === "object" && formDa
   if (payrollSum && !data.payroll_exposure) {
     data.payroll_exposure = payrollSum;
   }
-
-  // money helper (if not already in scope)
-  const money = (v) =>
-    (Number(v) || 0).toLocaleString("en-US", { style: "currency", currency: "USD" });
-%>
-
 
   // Handle additional interest / certificate recipients
   if (data.certificate_recipients_name_1 && !data.ai_name_1) {
