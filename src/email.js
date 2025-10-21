@@ -71,15 +71,30 @@ export function generateEmailSummary(formData = {}) {
 }
 
 // ===== Required named export so server.js import works =====
-// Wire your real transport later; this stub lets the service boot cleanly.
-export async function sendWithGmail({ to, subject, html, text, attachments = [] } = {}) {
-  // TODO: plug in nodemailer or Gmail API here when you're ready.
-  // Example (pseudo):
-  // const transporter = getTransport();
-  // await transporter.sendMail({ from: process.env.MAIL_FROM, to, subject, html, text, attachments });
+// keep the rest of the file exactly as-is
 
-  return { ok: true, skipped: true, to, subject };
+// REPLACE ONLY THIS FUNCTION:
+export async function sendWithGmail({ to, subject, html, text, attachments = [] } = {}) {
+  // dynamic import so we don't change top-level imports or package.json
+  const nodemailer = (await import("nodemailer")).default;
+
+  const from = process.env.MAIL_FROM || "quote@roofingcontractorinsurancedirect.com";
+  const pass = process.env.MAIL_APP_PASSWORD; // should already be set on Render
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: from, pass },
+  });
+
+  await transporter.sendMail({
+    from,
+    to,
+    subject,
+    html,
+    text,
+    attachments,
+  });
+
+  return { ok: true, sent: true, to };
 }
 
-// Optional default export (harmless if unused)
-export default generateEmailSummary;
