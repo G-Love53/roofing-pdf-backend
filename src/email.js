@@ -1,4 +1,5 @@
 // src/email.js
+import nodemailer from "nodemailer";
 
 // ===== Generate formatted HTML email summary =====
 export function generateEmailSummary(formData = {}) {
@@ -73,33 +74,22 @@ export function generateEmailSummary(formData = {}) {
 // ===== Required named export so server.js import works =====
 
 // REPLACE ONLY THIS FUNCTION
-export async function sendWithGmail({ to, subject, html, text, attachments = [] } = {}) {
-  const nodemailer = (await import("nodemailer")).default;
-
-  // Prefer the creds you were likely already using before today
-  const user = process.env.SMTP_USER || process.env.MAIL_FROM;
-  const pass = process.env.SMTP_PASS || process.env.MAIL_APP_PASSWORD;
-  const from = process.env.MAIL_FROM || process.env.SMTP_USER;
-
-  if (!user || !pass) {
-    throw new Error('EMAIL_CREDS_MISSING: set SMTP_USER/SMTP_PASS or MAIL_FROM/MAIL_APP_PASSWORD');
-  }
-
+export async function sendWithGmail({ to, subject, html, formData, attachments = [] }) {
   const transporter = nodemailer.createTransport({
-    service: process.env.SMTP_SERVICE || "gmail",
-    auth: { user, pass },
+    service: "gmail",
+    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD }
   });
+
+  // Use generated summary if formData provided, otherwise use provided html
+  const emailHtml = formData ? generateEmailSummary(formData) : html;
 
   await transporter.sendMail({
-    from,
+    from: process.env.GMAIL_USER,
     to,
     subject,
-    html,
-    text,
-    attachments,
+    html: emailHtml,
+    attachments: attachments.map(a => ({ filename: a.filename, content: a.buffer }))
   });
-
-  return { ok: true, sent: true, to };
 }
 
 
