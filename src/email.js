@@ -71,19 +71,23 @@ export function generateEmailSummary(formData = {}) {
 }
 
 // ===== Required named export so server.js import works =====
-// keep the rest of the file exactly as-is
 
-// REPLACE ONLY THIS FUNCTION:
+// REPLACE ONLY THIS FUNCTION
 export async function sendWithGmail({ to, subject, html, text, attachments = [] } = {}) {
-  // dynamic import so we don't change top-level imports or package.json
   const nodemailer = (await import("nodemailer")).default;
 
-  const from = process.env.MAIL_FROM || "quote@roofingcontractorinsurancedirect.com";
-  const pass = process.env.MAIL_APP_PASSWORD; // should already be set on Render
+  // Prefer the creds you were likely already using before today
+  const user = process.env.SMTP_USER || process.env.MAIL_FROM;
+  const pass = process.env.SMTP_PASS || process.env.MAIL_APP_PASSWORD;
+  const from = process.env.MAIL_FROM || process.env.SMTP_USER;
+
+  if (!user || !pass) {
+    throw new Error('EMAIL_CREDS_MISSING: set SMTP_USER/SMTP_PASS or MAIL_FROM/MAIL_APP_PASSWORD');
+  }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: from, pass },
+    service: process.env.SMTP_SERVICE || "gmail",
+    auth: { user, pass },
   });
 
   await transporter.sendMail({
@@ -97,4 +101,5 @@ export async function sendWithGmail({ to, subject, html, text, attachments = [] 
 
   return { ok: true, sent: true, to };
 }
+
 
