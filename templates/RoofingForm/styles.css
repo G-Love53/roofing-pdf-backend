@@ -436,3 +436,28 @@ ul, ol {
 li {
   margin: 2pt 0; /* Reduced from 3pt */
 }
+/* === PACK-TIGHT PATCH === */
+
+/* Allow tables to split across pages (keep rows intact, repeat headers) */
+table { page-break-inside: auto; break-inside: auto; }
+tr { page-break-inside: avoid; break-inside: avoid; }
+thead { display: table-header-group; }
+tfoot { display: table-footer-group; }
+
+/* Headings shouldn't cause big blanks if they fall at the page bottom */
+h2 { page-break-after: avoid; margin-top: 8pt; margin-bottom: 4pt; }
+
+/* Trim tall minimums that push content down */
+.jobs-table td { min-height: 30pt; }       /* was 40pt */
+.comments-box  { min-height: 40pt; }       /* was 60pt */
+
+/* Let sections split (we'll keep rows/tables intact) */
+.form-section { page-break-inside: auto; }
+
+/* Footers: smaller buffer so they don't reserve too much space */
+.page-footer { margin-top: 10pt; }         /* was 20pt */
+
+/* Slightly tighter page margins to reclaim space */
+@media print {
+  @page { margin: 0.35in; }                /* was 0.4in */
+}
