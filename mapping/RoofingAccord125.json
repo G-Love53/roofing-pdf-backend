@@ -1,46 +1,56 @@
 {
-  "_comment": "Maps Roofing HTML form to ACORD 125 EJS template fields",
-  
+  "_comment": "Maps Roofing HTML form to ACORD 125 EJS template fields (1-to-1 with front-end names)",
+
+  // Applicant (PG2)
   "applicant_name": "applicant_name",
-  "applicant_address": "applicant_mailing_address",
+  "applicant_street": "applicant_mailing_address",
+  "applicant_city": "applicant_city",
   "applicant_state": "applicant_state",
   "applicant_zip": "applicant_zip",
-  "applicant_phone": "business_phone",
-  "web_address": "premises_website",
-  
-  "location_1": "premise_address",
-  
-  "entity_type_corporation": "org_type_corporation",
-  "entity_type_llc": "org_type_llc",
-  "entity_type_partnership": "org_type_partnership",
-  "entity_type_individual": "org_type_individual",
-  
+  "business_phone": "business_phone",
+  "website_address": "web_address",
+
+  // Business type checkboxes (PG2)
+  "bt_corporation": "org_type_corporation",
+  "bt_llc":         "org_type_llc",
+  "bt_partnership": "org_type_partnership",
+  "bt_sole_prop":   "org_type_individual",
+
+  // Policy period (PG1)
   "policy_period_from": "effective_date",
-  "policy_period_to": "expiration_date",
-  
+  "policy_period_to":   "expiration_date",
+
+  // Premises address (PG2) — defaults to mailing unless location_1 present
+  "prem_street": "premise_address",
+  "prem_city":   "premise_city",
+  "prem_state":  "premise_state",
+  "prem_zip":    "premise_zip",
+
+  // Employees / Revenue (PG2)
   "full_time_employees": "full_time_employees",
   "part_time_employees": "part_time_employees",
-  "num_employees": "total_employees",
-  
-  "total_gross_sales": "total_sales",
-  
-  "certificate_recipients_name_1": "ai_name_1",
-  "certificate_recipients_name_2": "ai_name_2",
-  "certificate_recipients_name_3": "ai_name_3",
-  
-  "Additional_Insured_Type_1": "ai_additional_insured",
-  "Lienholder_1": "ai_lienholder",
-  "Loss_Payee_1": "ai_loss_payee",
-  "Mortgagee_1": "ai_mortgagee",
-  
-  "additional_comments": "remarks",
-  
-  "asbestos_work": "asbestos_exposure",
-  "asbestos_details": "asbestos_details",
-  
-  "cranes_used": "cranes_used",
+  "num_employees":       "total_employees",
+  "annual_revenues":     "total_sales",
+
+  // Additional Interest (PG3) — first entry
+  "ai_type_additional_insured": "ai_additional_insured",
+  "ai_type_mortgagee":          "ai_mortgagee",
+  "ai_type_loss_payee":         "ai_loss_payee",
+  "ai_name":    "ai_name_1",
+  "ai_street":  "ai_address_1",
+  "ai_city":    "ai_city_1",
+  "ai_state":   "ai_state_1",
+  "ai_zip":     "ai_zip_1",
+
+  // Loss summary + remarks (PG4)
+  "total_losses": "losses_total",
+  "remarks":      "remarks",
+
+  // Keep existing specialty flags (if you use them in template)
+  "asbestos_work":   "asbestos_exposure",
+  "asbestos_details":"asbestos_details",
+  "cranes_used":     "cranes_used",
   "crane_size_tons": "crane_tonnage",
-  
-  "years_in_business": "years_in_business",
+  "years_in_business":"years_in_business",
   "Years_of_Experience": "years_experience"
 }
