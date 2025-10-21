@@ -1,53 +1,46 @@
 {
-  "_comment": "Maps Roofing HTML form to ACORD 126 EJS template fields",
-  
-  "applicant_name": "applicant_name",
-  "applicant_address": "applicant_street",
-  "applicant_state": "applicant_state",
-  "applicant_zip": "applicant_zip",
-  "applicant_phone": "business_phone",
-  "web_address": "premises_website",
-  
-  "location_1": "premise_address",
-  
+  "_comment": "Roofing HTML -> ACORD 126 template (1-to-1 with front-end pre-submit keys)",
+
+  // PG1 – Policy period
   "policy_period_from": "effective_date",
-  "policy_period_to": "expiration_date",
-  
-  "entity_type_corporation": "org_type_corporation",
-  "entity_type_llc": "org_type_llc",
-  "entity_type_partnership": "org_type_partnership",
-  "entity_type_individual": "org_type_individual",
-  
-  "full_time_employees": "full_time_employees",
-  "part_time_employees": "part_time_employees",
-  "num_employees": "total_employees",
-  
-  "total_gross_sales": "total_sales",
-  
-  "certificate_recipients_name_1": "ai_name_1",
-  "certificate_recipients_relationship_1": "ai_relationship_1",
-  
-  "Additional_Insured_Type_1": "ai_additional_insured",
-  "Lienholder_1": "ai_lienholder",
-  "Loss_Payee_1": "ai_loss_payee",
-  "Mortgagee_1": "ai_mortgagee",
-  
-  "additional_comments": "remarks_126",
-  
-  "draw_plans_designs": "c_drawPlansDesigns",
-  "sub_lower_coverage": "c_subsLowerLimits",
-  "certificates_required": "certificates_required",
-  "subcontracted_work": "c_typeOfWorkSubcontracted",
-  "lease_equipment": "c_leaseEquipToOthers",
-  
-  "full_time_employees": "c_fullTimeStaff",
-  "part_time_employees": "c_partTimeStaff",
-  
-  "cranes_used": "gi_rentLoanEquipment",
-  
-  "asbestos_work": "gi_hazardousMaterials",
-  
-  "written_safety_program": "gi_safetySecurityPolicy",
-  
-  "years_in_business": "years_in_business"
+  "policy_period_to":   "expiration_date",
+
+  // PG1/PG2 – Applicant & Premises (Applicant shown stacked; Premises mirrors mailing unless location_1)
+  "applicant_name":   "applicant_name",
+  "applicant_street": "applicant_street",
+  "applicant_city":   "applicant_city",
+  "applicant_state":  "applicant_state",
+  "applicant_zip":    "applicant_zip",
+  "business_phone":   "business_phone",
+  "website_address":  "web_address",
+
+  "prem_street": "premise_address",
+  "prem_city":   "premise_city",
+  "prem_state":  "premise_state",
+  "prem_zip":    "premise_zip",
+
+  // PG1 – Schedule of Hazards exposures (we replaced LIQ REV + SQ FT with SUB COST + PAYROLL)
+  "exposure_gross_rev": "haz1_exposure",
+  "exposure_sub_cost":  "haz2_exposure",
+  "exposure_payroll":   "haz3_exposure",
+
+  // PG2 – Employees & $ Paid to Subcontractors
+  "num_employees":           "total_employees",
+  "full_time_employees":     "full_time_employees",
+  "part_time_employees":     "part_time_employees",
+  "paid_to_subcontractors":  "paid_to_subcontractors",
+
+  // PG3 – Additional Interest (first entry, with TYPE checks)
+  "ai_type_additional_insured": "ai_additional_insured",
+  "ai_type_mortgagee":          "ai_mortgagee",
+  "ai_type_loss_payee":         "ai_loss_payee",
+  "ai_name":   "ai_name_1",
+  "ai_street": "ai_address_1",
+  "ai_city":   "ai_city_1",
+  "ai_state":  "ai_state_1",
+  "ai_zip":    "ai_zip_1",
+
+  // General info / carryovers if your 126 template shows them
+  "years_in_business": "years_in_business",
+  "written_safety_program": "gi_safetySecurityPolicy"
 }
