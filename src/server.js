@@ -4,7 +4,13 @@ import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import { renderPdf } from "./pdf.js";
-import { sendWithGmail } from "./email.js";
+import * as Email from "./email.js";
+const sendWithGmail = Email.sendWithGmail || Email.default || Email.sendEmail;
+if (!sendWithGmail) {
+  throw new Error("email.js must export sendWithGmail (named) or a default sender.");
+}
+
+
 
 /* ----------------------------- helpers & consts ---------------------------- */
 
