@@ -486,6 +486,28 @@ h2 {
   font-size: 7.5pt !important;      /* Smaller for tables */
   text-transform: uppercase;
 }
+/* === STEP 2: TABLE REFINEMENTS === */
+.financial-table {
+  width: 70% !important;            /* Don't stretch full width */
+}
+
+.financial-table td:first-child {
+  background: #f8f8f8 !important;   /* Light gray for labels */
+}
+
+/* Tighten table spacing for cleaner look */
+.data-table td,
+.data-table th,
+.financial-table td,
+.jobs-table td,
+.certificate-table td {
+  padding: 3pt 5pt !important;      /* Tighter padding (was 4pt 6pt) */
+}
+
+/* Alternating row colors for better readability */
+.data-table tbody tr:nth-child(even) td {
+  background: #fafafa !important;
+}
 /* === STEP 1: BERKLEY-STYLE HEADERS (TEST) === */
 h2 {
   background: #e8e8e8 !important;  /* Professional gray like Berkley */
