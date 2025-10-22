@@ -472,3 +472,14 @@ h2 { page-break-after: avoid; margin-top: 8pt; margin-bottom: 4pt; }
   /* Disable all hard page breaks so content flows */
   .page-break { display: none !important; }
 }
+/* Show only the final footer; remove forced breaks */
+@media print {
+  .page-footer { display: none !important; }
+  .page-footer.final { display: block !important; }
+
+  /* Neutralize any hard breaks so pages fill naturally */
+  .page-break, .force-break { display: none !important; }
+  [style*="page-break-before"] { page-break-before: auto !important; break-before: auto !important; }
+  [style*="page-break-after"]  { page-break-after: auto !important;  break-after: auto !important; }
+}
+
