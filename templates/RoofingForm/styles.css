@@ -494,6 +494,13 @@ h2 {
 .financial-table td:first-child {
   background: #f8f8f8 !important;   /* Light gray for labels */
 }
+/* === STEP 3: CHECKBOX SIZING === */
+.checkbox {
+  width: 10pt !important;
+  height: 10pt !important;
+  line-height: 9pt !important;
+  font-size: 7pt !important;
+}
 
 /* Tighten table spacing for cleaner look */
 .data-table td,
