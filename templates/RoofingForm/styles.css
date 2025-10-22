@@ -472,5 +472,18 @@ h2 { page-break-after: avoid; margin-top: 8pt; margin-bottom: 4pt; }
   /* Disable all hard page breaks so content flows */
   .page-break { display: none !important; }
 }
+/* === STEP 1: BERKLEY-STYLE HEADERS === */
+h2 {
+  background: #e8e8e8 !important;  /* Gray background like Berkley */
+  padding: 4pt 6pt !important;       /* Horizontal padding */
+  font-size: 9pt !important;         /* Slightly smaller */
+}
 
+.data-table th,
+.certificate-table th,
+.jobs-table th {
+  background: #e8e8e8 !important;   /* Match headers */
+  font-size: 7.5pt !important;      /* Smaller for tables */
+  text-transform: uppercase;
+}
 
