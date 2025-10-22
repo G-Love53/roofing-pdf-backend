@@ -486,4 +486,23 @@ h2 {
   font-size: 7.5pt !important;      /* Smaller for tables */
   text-transform: uppercase;
 }
+/* === STEP 1: BERKLEY-STYLE HEADERS (TEST) === */
+h2 {
+  background: #e8e8e8 !important;  /* Professional gray like Berkley */
+  padding: 4pt 6pt !important;       /* Add horizontal padding */
+  font-size: 9pt !important;         /* Consistent size */
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+}
 
+/* Apply same gray to all table headers */
+.data-table th,
+.certificate-table th,
+.jobs-table th,
+.financial-table th,
+.material-table th {
+  background: #e8e8e8 !important;   /* Match section headers */
+  font-size: 7.5pt !important;      /* Slightly smaller for tables */
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+}
