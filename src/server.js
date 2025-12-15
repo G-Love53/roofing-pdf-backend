@@ -21,17 +21,24 @@ const enrichFormData = (d) => d || {};
 // NOTE: This map assumes 'Plumber' is the default segment structure. 
 // For Bar/Roofer, you will need to adjust your Templates/mapping folder structure.
 const FILENAME_MAP = {
-  PlumberAccord125: "ACORD-125.pdf",
-  PlumberAccord126: "ACORD-126.pdf",
-  PlumberSupp:       "Plumber-Contractor-Supplemental.pdf"
+  RoofingAccord125: "ACORD-125.pdf",
+  RoofingAccord126: "ACORD-126.pdf",
+  RoofingAccord140: "ACORD-140.pdf",
+  RoofingForm:      "Roofing-Supplemental.pdf",
+  WCRoofForm:       "WC-Application.pdf"
 };
 
+// 2. Map the generic names (from Netlify) to your actual Roofer folders
 const TEMPLATE_ALIASES = {
-  Accord125: "PlumberAccord125",
-  Accord126: "PlumberAccord126",
-  PlumberAccord125: "PlumberAccord125",
-  PlumberAccord126: "PlumberAccord126",
-  PlumberSupp: "PlumberSupp"
+  // Generic Name   :   Actual Folder Name (from your screenshot)
+  "Accord125":          "RoofingAccord125",
+  "Accord126":          "RoofingAccord126",
+  "Accord140":          "RoofingAccord140",
+  "RoofingAccord125":   "RoofingAccord125",
+  "RoofingAccord126":   "RoofingAccord126",
+  "RoofingAccord140":   "RoofingAccord140",
+  "RoofingForm":        "RoofingForm",
+  "WCForm":             "WCRoofForm"
 };
 const resolveTemplate = (name) => TEMPLATE_ALIASES[name] || name;
 
