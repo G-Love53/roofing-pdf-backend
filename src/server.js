@@ -28,7 +28,7 @@ const TEMPLATE_ALIASES = {
   "Accord140":         "RoofingAccord140", // <--- CHANGE THIS
   "WCForm":            "WCRoofForm",       // <--- CHANGE THIS
   "Supplemental":      "RoofingForm",      // <--- CHANGE THIS
-  
+  "Accord25":          "RooferAccord25",
   // Self-referencing aliases for safety (so code finds them even if full name is sent)
   "RoofingAccord125":  "RoofingAccord125",
   "RoofingAccord126":  "RoofingAccord126",
@@ -40,6 +40,7 @@ const FILENAME_MAP = {
   "RoofingAccord125": "ACORD-125.pdf",
   "RoofingAccord126": "ACORD-126.pdf",
   "RoofingAccord140": "ACORD-140.pdf",
+   "RooferAccord25": "ACORD-25-Certificate.pdf",
   "RoofingForm":      "Supplemental-Application.pdf",
   "WCRoofForm":       "WC-Application.pdf"
 };
@@ -232,3 +233,79 @@ APP.get("/bind-quote", async (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 APP.listen(PORT, () => console.log(`PDF service listening on ${PORT}`));
+// =====================================================
+// 🤖 THE ROBOT MANAGER (Automated Tasks)
+// =====================================================
+import cron from 'node-cron';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize the Brain (Supabase)
+// Note: You need BOTH the URL and the Key here
+const supabase = createClient(
+  process.env.SUPABASE_URL, 
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+console.log("🤖 Robot Scheduler: ONLINE and Listening...");
+
+// --- TASK 1: THE COI WATCHER (Check every 2 minutes) ---
+cron.schedule('*/2 * * * *', async () => {
+  // 1. Ask Supabase: "Any pending requests?"
+  const { data: requests, error } = await supabase
+    .from('coi_requests')
+    .select('*')
+    .eq('status', 'pending');
+
+  if (requests && requests.length > 0) {
+    console.log(`🔎 Found ${requests.length} new COI requests.`);
+    
+    // 2. Loop through each request
+    for (const req of requests) {
+      console.log(`Processing COI for: ${req.holder_name}`);
+      
+      try {
+        // [PLACEHOLDER] Simulate Success for now
+        const mockPdfUrl = "https://example.com/demo-cert.pdf";
+        
+        // 3. Mark as Complete in Supabase
+        await supabase
+          .from('coi_requests')
+          .update({ 
+            status: 'completed', 
+            generated_file_url: mockPdfUrl 
+          })
+          .eq('id', req.id);
+          
+        console.log(`✅ Request ${req.id} marked COMPLETED.`);
+      } catch (err) {
+        console.error("❌ Error processing COI:", err);
+      }
+    }
+  }
+});
+
+// --- TASK 2: THE LIBRARIAN (Check every hour) ---
+cron.schedule('0 * * * *', async () => {
+  // 1. Ask Supabase: "Any unread documents?"
+  const { data: docs } = await supabase
+    .from('carrier_resources')
+    .select('*')
+    .eq('is_indexed', false);
+
+  if (docs && docs.length > 0) {
+    console.log(`📚 Found ${docs.length} new documents to learn.`);
+    
+    for (const doc of docs) {
+      // 2. Mark them as 'Read' (Simulated)
+      await supabase
+        .from('carrier_resources')
+        .update({ 
+          is_indexed: true, 
+          indexed_at: new Date() 
+        })
+        .eq('id', doc.id);
+        
+      console.log(`🧠 Learned: ${doc.document_title}`);
+    }
+  }
+});
