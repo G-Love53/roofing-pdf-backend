@@ -19,8 +19,8 @@ if (OPENAI_API_KEY) {
     openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 }
 
-// 👇 SAFETY CHANGE: Defaults to 'roofer' for this project
-const SEGMENT = process.env.SEGMENT_NAME || 'roofer'; 
+// 👇 SAFETY CHANGE: Defaults to 'plumber' for this project
+const SEGMENT = process.env.SEGMENT_NAME || 'plumber'; 
 
 export async function processInbox(authClient) {
   console.log(`Starting Quote Ingestion for Segment: [ ${SEGMENT} ]`);
@@ -86,7 +86,7 @@ export async function processInbox(authClient) {
         .from('quote_opportunities')
         .insert({
           id: quoteId,
-          segment: SEGMENT, // Uses the safe 'roofer' variable
+          segment: SEGMENT, // Uses the safe 'plumber' variable
           carrier_name: aiContent.carrier,
           premium_amount: aiContent.premium, 
           extracted_data: aiContent,
