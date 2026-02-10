@@ -40,7 +40,7 @@ function resolveTemplateDir(templatePath = "") {
 function loadSvgPages(assetsDir) {
   if (!fsSync.existsSync(assetsDir)) return [];
 
-  return fs
+  return fsSync
     .readdirSync(assetsDir)
     .filter(f => /^page-\d+\.svg$/i.test(f))
     .sort((a, b) => {
