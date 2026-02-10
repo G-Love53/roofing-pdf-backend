@@ -571,6 +571,19 @@ APP.get("/bind-quote", async (req, res) => {
   }
 });
 
+// ------------------------------------------------------------
+// Deploy verification (avoid “old boot” guessing)
+// ------------------------------------------------------------
+app.get("/__version", (req, res) => {
+  res.json({
+    ok: true,
+    service: "roofing-pdf-backend",
+    commit: process.env.RENDER_GIT_COMMIT || null,
+    node: process.version,
+    time: new Date().toISOString(),
+  });
+});
+
 /* ============================================================
    🚀 SERVER START
    ============================================================ */
