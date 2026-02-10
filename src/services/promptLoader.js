@@ -15,7 +15,7 @@ function readFileCached(absPath) {
       throw new Error(`CRITICAL MISSING FILE: ${absPath}`);
   }
 
-  const stat = fs.statSync(absPath);
+  const stat = fsSync.statSync(absPath);
   const mtime = stat.mtimeMs;
 
   const cached = cache.get(key);
