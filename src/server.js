@@ -35,8 +35,7 @@ const TPL_DIR = path.join(PROJECT_ROOT, "CID_HomeBase", "templates");
 const bundlesPath = path.join(__dirname, "config", "bundles.json");
 const bundles = JSON.parse(fsSync.readFileSync(bundlesPath, "utf8"));
 
-console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js"); "deploy_bump=3" "deploy_bump=3"
-
+console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js")
 /* ============================================================
    🟢 CONFIG
    ============================================================ */
