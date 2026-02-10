@@ -134,6 +134,7 @@ async function renderTemplatesToAttachments(templateFolders, data) {
 const APP = express();
 APP.use(express.json({ limit: "20mb" }));
 
+
 APP.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -146,6 +147,16 @@ APP.use((req, res, next) => {
 });
 
 APP.get("/healthz", (_req, res) => res.status(200).send("ok"));
+
+APP.get("/__version", (req, res) => {
+  res.json({
+    ok: true,
+    service: "roofing-pdf-backend",
+    commit: process.env.RENDER_GIT_COMMIT || null,
+    node: process.version,
+    time: new Date().toISOString(),
+  });
+});
 
 /* ============================================================
    🧠 SUPABASE
