@@ -2,3 +2,6 @@
 # macOS junk
 .DS_Store
 **/.DS_Store
+
+# local pdf outputs
+*.pdf
