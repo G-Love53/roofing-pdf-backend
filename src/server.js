@@ -262,7 +262,24 @@ unified.segment = SEGMENT;
 // Render Bundle Endpoint
 APP.post("/render-bundle", async (req, res) => {
   try {
-    await renderBundleAndRespond(req.body || {}, res);
+    const body = req.body || {};
+
+    // Allow calling by bundle_id (no templates array needed)
+    if ((!Array.isArray(body.templates) || body.templates.length === 0) && body.bundle_id) {
+      const bundlesPath = path.join(__dirname, "config", "bundles.json");
+      const bundles = JSON.parse(fs.readFileSync(bundlesPath, "utf8"));
+
+      const list = bundles[body.bundle_id];
+      if (!Array.isArray(list) || list.length === 0) {
+        return res.status(400).json({ ok: false, error: "UNKNOWN_BUNDLE" });
+      }
+
+      // Use same data payload for each template in the bundle
+      const data = body.data || {};
+      body.templates = list.map((name) => ({ name, data }));
+    }
+
+    await renderBundleAndRespond(body, res);
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
   }
@@ -274,11 +291,27 @@ APP.post("/render-pdf", async (req, res) => {
     // Expect same payload shape as render-bundle:
     // { templates:[{name,data}], debug?:true }
     const body = req.body || {};
-    const templates = Array.isArray(body.templates) ? body.templates : [];
 
-    if (!templates.length) {
-      return res.status(400).json({ ok: false, error: "MISSING_TEMPLATES" });
-    }
+// 🔑 EXPAND bundle_id → templates[] FIRST
+if ((!Array.isArray(body.templates) || body.templates.length === 0) && body.bundle_id) {
+  const bundlesPath = path.join(__dirname, "config", "bundles.json");
+  const bundles = JSON.parse(fs.readFileSync(bundlesPath, "utf8"));
+
+  const list = bundles[body.bundle_id];
+  if (!Array.isArray(list) || list.length === 0) {
+    return res.status(400).json({ ok: false, error: "UNKNOWN_BUNDLE" });
+  }
+
+  const data = body.data || {};
+  body.templates = list.map((name) => ({ name, data }));
+}
+
+// ✅ NOW validate templates
+const templates = Array.isArray(body.templates) ? body.templates : [];
+if (!templates.length) {
+  return res.status(400).json({ ok: false, error: "MISSING_TEMPLATES" });
+}
+
 
     // If your system supports multiple templates, we keep it simple:
     // return the FIRST rendered PDF as the response body.
