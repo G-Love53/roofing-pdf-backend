@@ -1,4 +1,4 @@
-import fs from "fs";
+import fsSync from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -7,9 +7,9 @@ const __dirname = path.dirname(__filename);
 
 const loadAssetBase64 = (fullPath) => {
   try {
-    if (fs.existsSync(fullPath)) {
+    if (fsSync.existsSync(fullPath)) {
       const ext = path.extname(fullPath).toLowerCase();
-      const base64 = fs.readFileSync(fullPath).toString("base64");
+      const base64 = fsSync.readFileSync(fullPath).toString("base64");
       if (ext === ".svg") return `data:image/svg+xml;base64,${base64}`;
       if (ext === ".png") return `data:image/png;base64,${base64}`;
     }

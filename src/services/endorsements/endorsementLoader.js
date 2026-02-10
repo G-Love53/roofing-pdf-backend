@@ -1,14 +1,14 @@
 // src/services/endorsements/endorsementLoader.js
-import fs from "fs";
+import fsSync from "fs";
 import path from "path";
 
 let _cache = null;
 
 function readJsonOrThrow(filePath) {
-  if (!fs.existsSync(filePath)) {
+  if (!fsSync.existsSync(filePath)) {
     throw new Error(`Bible file missing: ${filePath}`);
   }
-  const raw = fs.readFileSync(filePath, "utf8");
+  const raw = fsSync.readFileSync(filePath, "utf8");
   try {
     return JSON.parse(raw);
   } catch (e) {

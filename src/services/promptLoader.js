@@ -1,4 +1,4 @@
-import fs from "fs";
+import fsSync from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -11,7 +11,7 @@ const cache = new Map();
 function readFileCached(absPath) {
   const key = absPath;
   // Check if file exists first
-  if (!fs.existsSync(absPath)) {
+  if (!fsSync.existsSync(absPath)) {
       throw new Error(`CRITICAL MISSING FILE: ${absPath}`);
   }
 
@@ -21,7 +21,7 @@ function readFileCached(absPath) {
   const cached = cache.get(key);
   if (cached && cached.mtime === mtime) return cached.content;
 
-  const content = fs.readFileSync(absPath, "utf8").trim();
+  const content = fsSync.readFileSync(absPath, "utf8").trim();
   cache.set(key, { mtime, content });
   return content;
 }

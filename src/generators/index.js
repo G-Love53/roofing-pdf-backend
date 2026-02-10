@@ -1,5 +1,5 @@
 // src/generators/index.js
-import fs from "fs";
+import fsSync from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 
 // Load forms.json safely (no JSON import headaches)
 const formsPath = path.join(__dirname, "../config/forms.json");
-const forms = JSON.parse(fs.readFileSync(formsPath, "utf8"));
+const forms = JSON.parse(fsSync.readFileSync(formsPath, "utf8"));
 
 
 function resolveFormsKey(formId, segment) {

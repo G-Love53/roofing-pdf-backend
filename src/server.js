@@ -267,7 +267,7 @@ APP.post("/render-bundle", async (req, res) => {
     // Allow calling by bundle_id (no templates array needed)
     if ((!Array.isArray(body.templates) || body.templates.length === 0) && body.bundle_id) {
       const bundlesPath = path.join(__dirname, "config", "bundles.json");
-      const bundles = JSON.parse(fs.readFileSync(bundlesPath, "utf8"));
+      const bundles = JSON.parse(fsSync.readFileSync(bundlesPath, "utf8"));
 
       const list = bundles[body.bundle_id];
       if (!Array.isArray(list) || list.length === 0) {
@@ -295,7 +295,7 @@ APP.post("/render-pdf", async (req, res) => {
 // 🔑 EXPAND bundle_id → templates[] FIRST
 if ((!Array.isArray(body.templates) || body.templates.length === 0) && body.bundle_id) {
   const bundlesPath = path.join(__dirname, "config", "bundles.json");
-  const bundles = JSON.parse(fs.readFileSync(bundlesPath, "utf8"));
+  const bundles = JSON.parse(fsSync.readFileSync(bundlesPath, "utf8"));
 
   const list = bundles[body.bundle_id];
   if (!Array.isArray(list) || list.length === 0) {

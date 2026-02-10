@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer-core";
 import path from "path";
-import fs from "fs";
+import fsSync from "fs";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,7 +38,7 @@ function resolveTemplateDir(templatePath = "") {
 /* ---------------------------- SVG + MAPPING ---------------------------- */
 
 function loadSvgPages(assetsDir) {
-  if (!fs.existsSync(assetsDir)) return [];
+  if (!fsSync.existsSync(assetsDir)) return [];
 
   return fs
     .readdirSync(assetsDir)
@@ -50,7 +50,7 @@ function loadSvgPages(assetsDir) {
     })
     .map(f => ({
       pageId: f.replace(".svg", ""),
-      svg: fs.readFileSync(path.join(assetsDir, f), "utf8"),
+      svg: fsSync.readFileSync(path.join(assetsDir, f), "utf8"),
     }));
 }
 
@@ -58,12 +58,12 @@ function loadMaps(mappingDir) {
   const maps = {};
 
   // ✅ Mapping is OPTIONAL: allow blank PDFs before mapper work starts
-  if (!fs.existsSync(mappingDir)) {
+  if (!fsSync.existsSync(mappingDir)) {
     console.log(`[SVG] mappingDir missing (ok): ${mappingDir}`);
     return maps;
   }
 
-  const files = fs.readdirSync(mappingDir);
+  const files = fsSync.readdirSync(mappingDir);
 
   // ✅ Empty mapping folder is OK
   if (!files.length) {
@@ -75,7 +75,7 @@ function loadMaps(mappingDir) {
     if (!file.endsWith(".map.json")) continue;
 
     const full = path.join(mappingDir, file);
-    const raw = fs.readFileSync(full, "utf8");
+    const raw = fsSync.readFileSync(full, "utf8");
 
     if (!raw || !raw.trim()) {
       throw new Error(`[SVG] EMPTY MAP FILE: ${full}`);
