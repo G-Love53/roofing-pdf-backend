@@ -1,14 +1,4 @@
 {
-  "_SHARED": {
-    "enabled": true,
-    "engine": "svg",
-    "templatePath": "CID_HomeBase/templates/_SHARED"
-  },
-  "ACORD25": {
-    "enabled": true,
-    "engine": "svg",
-    "templatePath": "CID_HomeBase/templates/ACORD25"
-  },
   "ACORD125": {
     "enabled": true,
     "engine": "svg",
@@ -28,6 +18,11 @@
     "enabled": true,
     "engine": "svg",
     "templatePath": "CID_HomeBase/templates/ACORD140"
+  },
+  "ACORD25": {
+    "enabled": true,
+    "engine": "svg",
+    "templatePath": "CID_HomeBase/templates/ACORD25"
   },
   "LESSOR_A129S": {
     "enabled": true,
@@ -53,5 +48,15 @@
     "enabled": true,
     "engine": "svg",
     "templatePath": "CID_HomeBase/templates/SUPP_CONTRACTOR"
+  },
+  "SUPP_ROOFER": {
+    "enabled": true,
+    "engine": "svg",
+    "templatePath": "CID_HomeBase/templates/SUPP_ROOFER"
+  },
+  "_SHARED": {
+    "enabled": true,
+    "engine": "svg",
+    "templatePath": "CID_HomeBase/templates/_SHARED"
   }
 }

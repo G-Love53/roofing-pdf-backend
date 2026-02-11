@@ -1,4 +1,12 @@
 {
-  "COI_STANDARD": ["ACORD25"],
-  "ROOFER_INTAKE": ["SUPP_ROOFER"]
+  "COI_STANDARD": [
+    "ACORD25"
+  ],
+  "ROOFER_INTAKE": [
+    "SUPP_ROOFER",
+    "ACORD125",
+    "ACORD126",
+    "ACORD130",
+    "ACORD140"
+  ]
 }
