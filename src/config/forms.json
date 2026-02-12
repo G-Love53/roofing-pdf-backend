@@ -42,7 +42,7 @@
   "SUPP_BERKLEY_PLUMBER": {
     "enabled": true,
     "engine": "svg",
-    "templatePath": "CID_HomeBase/templates/SUPP_BERKLEY_PLUMBER"
+    "templatePath": "CID_HomeBase/templates/SUPP_PLUMBER"
   },
   "SUPP_CONTRACTOR": {
     "enabled": true,
