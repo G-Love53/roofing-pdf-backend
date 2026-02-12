@@ -40,27 +40,27 @@ console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js
    🟢 CONFIG
    ============================================================ */
 
-const SEGMENT = process.env.SEGMENT || "plumber";
+const SEGMENT = process.env.SEGMENT || 
 
 // Netlify/front-end inbound -> template folder name
 const TEMPLATE_ALIASES = {
-  Accord125: "ACORD125",
-  Accord126: "ACORD126",
-  Accord140: "ACORD140",
-  WCForm: "ACORD130",
-  Accord25: "ACORD25",
-  ACORD25: "ACORD25",
-  Supplemental: "SUPP_BERKLEY_PLUMBER",
-
-  PlumberAccord125: "ACORD125",
-  PlumberAccord126: "ACORD126",
-  PlumberSupp: "SUPP_BERKLEY_PLUMBER",
-
+  // Canonical ACORD names
   ACORD125: "ACORD125",
   ACORD126: "ACORD126",
   ACORD130: "ACORD130",
   ACORD140: "ACORD140",
-  SUPP_BERKLEY_PLUMBER: "SUPP_BERKLEY_PLUMBER",
+  ACORD25:  "ACORD25",
+
+  // Roofer Supplemental
+  SUPP_ROOFER: "SUPP_ROOFER",
+
+  // Optional lowercase safety
+  acord125: "ACORD125",
+  acord126: "ACORD126",
+  acord130: "ACORD130",
+  acord140: "ACORD140",
+  acord25:  "ACORD25",
+  supp_roofer: "SUPP_ROOFER",
 };
 
 // Template folder -> output filename
@@ -69,26 +69,16 @@ const FILENAME_MAP = {
   ACORD126: "ACORD-126.pdf",
   ACORD130: "ACORD-130.pdf",
   ACORD140: "ACORD-140.pdf",
-  ACORD25: "ACORD-25.pdf",
-  SUPP_BERKLEY_PLUMBER: "Supplemental-Application.pdf",
+  ACORD25:  "ACORD-25.pdf",
+  SUPP_ROOFER: "Supplemental-Application.pdf",
 };
 
-const resolveTemplate = (name) => TEMPLATE_ALIASES[name] || name;
 
-// Convention-based form_id (no hardcoding required for new ACORD forms)
-function formIdForTemplateFolder(folderName) {
-  const n = String(folderName || "").trim();
+const resolveTemplate = (name) => {
+  const k = String(name || "").trim();
+  return TEMPLATE_ALIASES[k] || TEMPLATE_ALIASES[k.toUpperCase()] || TEMPLATE_ALIASES[k.toLowerCase()] || k.toUpperCase();
+};
 
-  // ACORD130 → acord130
-  const m = n.match(/^ACORD(\d+)$/i);
-  if (m) return `acord${m[1]}`;
-
-  // SUPP_BERKLEY_PLUMBER → supp_<segment>
-  if (/^SUPP_/i.test(n)) return `supp_${SEGMENT}`;
-
-  // EVERYTHING ELSE (LESSOR_A129S, HVAC_SUPP_01, etc.)
-  return n.toLowerCase();
-}
 
 async function renderTemplatesToAttachments(templateFolders, data) {
   const results = [];

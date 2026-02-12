@@ -17,13 +17,19 @@ const formsPath = path.join(__dirname, "../config/forms.json");
 const forms = JSON.parse(fsSync.readFileSync(formsPath, "utf8"));
 
 
-function resolveFormsKey(formId, segment) {
-  const id = String(formId || "");
-  let m = id.match(/^acord(\d+)$/i);
+function resolveFormsKey(formId) {
+  const id = String(formId || "").trim();
+
+  // acord125 -> ACORD125
+  const m = id.match(/^acord(\d+)$/i);
   if (m) return `ACORD${m[1]}`;
-  if (/^supp_/i.test(id)) return "SUPP_CONTRACTOR";
+
+  // SUPP_ROOFER / SUPP_BAR / SUPP_BERKLEY_PLUMBER etc
+  if (/^supp_/i.test(id)) return id.toUpperCase();
+
   return id.toUpperCase();
 }
+
 function getFormConfigOrThrow(formId, segment) {
   if (!formId) {
     throw new Error(
