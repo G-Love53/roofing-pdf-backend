@@ -24,7 +24,7 @@ function resolveFormsKey(formId) {
   const m = id.match(/^acord(\d+)$/i);
   if (m) return `ACORD${m[1]}`;
 
-  // SUPP_ROOFER / SUPP_BAR / SUPP_BERKLEY_PLUMBER etc
+  // SUPP_ROOFER / SUPP_BAR / SUPP_PLUMBER 
   if (/^supp_/i.test(id)) return id.toUpperCase();
 
   return id.toUpperCase();
