@@ -5,3 +5,8 @@
 
 # local pdf outputs
 *.pdf
+
+# deps
+node_modules/
+.env
+.DS_Store
