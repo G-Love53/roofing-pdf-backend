@@ -26,58 +26,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+// ------------------------------------------------------------
+// 🟢 CONFIG (RSS LOCKED)
+// ------------------------------------------------------------
+
 const PROJECT_ROOT = path.join(__dirname, "..", "..");
 const TPL_DIR = path.join(PROJECT_ROOT, "CID_HomeBase", "templates");
-/* ============================================================
-   📦 LOAD BUNDLES (NOW SAFE)
-   ============================================================ */
 
+// LOAD BUNDLES (SAFE)
 const bundlesPath = path.join(__dirname, "config", "bundles.json");
 const bundles = JSON.parse(fsSync.readFileSync(bundlesPath, "utf8"));
 
-console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js")
-/* ============================================================
-   🟢 CONFIG
-   ============================================================ */
+console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js");
 
-const SEGMENT = process.env.SEGMENT || 
+// Segment is env-driven (neutral default)
+const SEGMENT = process.env.SEGMENT || "";
 
-// Netlify/front-end inbound -> template folder name
-const TEMPLATE_ALIASES = {
-  // Canonical ACORD names
-  ACORD125: "ACORD125",
-  ACORD126: "ACORD126",
-  ACORD130: "ACORD130",
-  ACORD140: "ACORD140",
-  ACORD25:  "ACORD25",
+// ✅ RSS: NO TEMPLATE ALIASES. Name in request == template folder name.
+const resolveTemplate = (name) => String(name || "").trim();
 
-  // Roofer Supplemental
-  SUPP_ROOFER: "SUPP_ROOFER",
-
-  // Optional lowercase safety
-  acord125: "ACORD125",
-  acord126: "ACORD126",
-  acord130: "ACORD130",
-  acord140: "ACORD140",
-  acord25:  "ACORD25",
-  supp_roofer: "SUPP_ROOFER",
-};
-
-// Template folder -> output filename
-const FILENAME_MAP = {
-  ACORD125: "ACORD-125.pdf",
-  ACORD126: "ACORD-126.pdf",
-  ACORD130: "ACORD-130.pdf",
-  ACORD140: "ACORD-140.pdf",
-  ACORD25:  "ACORD-25.pdf",
-  SUPP_ROOFER: "Supplemental-Application.pdf",
-};
-
-
-const resolveTemplate = (name) => {
-  const k = String(name || "").trim();
-  return TEMPLATE_ALIASES[k] || TEMPLATE_ALIASES[k.toUpperCase()] || TEMPLATE_ALIASES[k.toLowerCase()] || k.toUpperCase();
-};
 
 
 async function renderTemplatesToAttachments(templateFolders, data) {
@@ -173,7 +140,18 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
   // SVG engine owns mapping via templateDir/mapping/page-*.map.json
   return rawData || {};
 }
+function formIdForTemplateFolder(folderName) {
+  const n = String(folderName || "").trim();
 
+  // ACORD125 -> acord125
+  const m = n.match(/^ACORD(\d+)$/i);
+  if (m) return `acord${m[1]}`;
+
+  // SUPP_ROOFER stays SUPP_ROOFER (must match forms.json key)
+  if (/^SUPP_/i.test(n)) return n.toUpperCase();
+
+  return n.toLowerCase();
+}
 
 /* ============================================================
    🧾 RENDER / EMAIL (SVG FACTORY)
