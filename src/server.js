@@ -61,7 +61,7 @@ async function renderTemplatesToAttachments(templateFolders, data) {
 
     try {
       const { buffer } = await generateDocument(unified);
-      const filename = FILENAME_MAP[name] || `${name}.pdf`;
+      const filename = `${name}.pdf`;
 
       results.push({
         status: "fulfilled",
@@ -180,7 +180,7 @@ unified.segment = SEGMENT;
 
     try {
       const { buffer } = await generateDocument(unified);
-      const prettyName = FILENAME_MAP[name] || t.filename || `${name}.pdf`;
+      const prettyName = t.filename || `${name}.pdf`;
       results.push({
         status: "fulfilled",
         value: { filename: prettyName, buffer, contentType: "application/pdf" },
@@ -314,7 +314,7 @@ if (!templates.length) {
 
     // Resolve the template folder(s) exactly like Factory would.
     // Your Factory path is driven by form_id and templatePath in config.
-    // For this endpoint, we rely on your existing "resolveTemplate" + "FILENAME_MAP"
+    // For this endpoint, we rely on your existing "resolveTemplate"
     // and the same "renderBundleAndRespond" logic would pick.
     //
     // BUT we want a direct PDF return, so we call the same internal renderer
@@ -428,7 +428,7 @@ APP.post("/submit-quote", async (req, res) => {
       const resolved = resolveTemplate(name); // keeps your aliasing logic consistent
       return {
         name,
-        filename: FILENAME_MAP[resolved] || `${name}.pdf`,
+        filename: `${name}.pdf`,
         data: formData,
       };
     });
