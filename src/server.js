@@ -39,11 +39,22 @@ const bundles = JSON.parse(fsSync.readFileSync(bundlesPath, "utf8"));
 
 console.log("[BOOT] commit=", process.env.RENDER_GIT_COMMIT, "file=src/server.js");
 
-// Segment is env-driven (neutral default)
-const SEGMENT = process.env.SEGMENT || "";
+// Segment is env-driven (RSS: default roofer for this backend)
+const SEGMENT = String(process.env.SEGMENT || "roofer").trim().toLowerCase();
 
 // ✅ RSS: NO TEMPLATE ALIASES. Name in request == template folder name.
-const resolveTemplate = (name) => String(name || "").trim();
+const resolveTemplate = (name) => String(name || "").trim().toUpperCase();
+
+// Pretty filenames for email attachments (RSS: match Bar pattern)
+const FILENAME_MAP = {
+  ACORD125: "ACORD-125.pdf",
+  ACORD126: "ACORD-126.pdf",
+  ACORD130: "ACORD-130.pdf",
+  ACORD140: "ACORD-140.pdf",
+  ACORD25: "ACORD-25.pdf",
+  SUPP_ROOFER: "Supplemental-Application.pdf",
+  SUPP_CONTRACTOR: "Supplemental-Application.pdf",
+};
 
 
 
@@ -393,11 +404,18 @@ if (
   }
 });
 
-// Submit Quote Endpoint (LEG 1) — CID RSS CANONICAL
+// Submit Quote Endpoint (LEG 1) — CID RSS CANONICAL (same contract as Bar)
 APP.post("/submit-quote", async (req, res) => {
   try {
     const body = req.body || {};
-    const formData = body.formData || {};
+    const formData =
+      body.data ||
+      body.formData ||
+      body.fields ||
+      body.requestRow?.data ||
+      body.requestRow?.fields ||
+      body.requestRow ||
+      {};
     const bundle_id = body.bundle_id;
     const segments = Array.isArray(body.segments) ? body.segments : [];
     const segment = String(body.segment || process.env.SEGMENT || "").trim().toLowerCase();
@@ -425,10 +443,10 @@ APP.post("/submit-quote", async (req, res) => {
 
     // 2) Build templates[] for renderBundleAndRespond
     const templates = templateNames.map((name) => {
-      const resolved = resolveTemplate(name); // keeps your aliasing logic consistent
+      const resolved = resolveTemplate(name);
       return {
         name,
-        filename: `${name}.pdf`,
+        filename: FILENAME_MAP[resolved] || `${name}.pdf`,
         data: formData,
       };
     });
