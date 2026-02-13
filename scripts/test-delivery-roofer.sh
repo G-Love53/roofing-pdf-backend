@@ -4,7 +4,7 @@
 # Usage: ./scripts/test-delivery-roofer.sh   (or set BASE_URL if Roofer Render URL differs)
 
 set -e
-BASE_URL="${BASE_URL:-https://cid-pdf-roofer.onrender.com}"
+BASE_URL="${BASE_URL:-https://roofing-pdf-backend.onrender.com}"
 TO="${TO:-quotes@roofingcontractorinsurancedirect.com}"
 
 echo "Roofer test delivery: POST $BASE_URL/submit-quote → $TO"
