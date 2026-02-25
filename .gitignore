@@ -8,6 +8,7 @@
 *.png
 tmp/
 output/
+SUPP_ROOFER PDF PAGES/
 
 # deps
 node_modules/
