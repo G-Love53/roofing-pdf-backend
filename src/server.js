@@ -144,12 +144,53 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 /* ============================================================
-   🧩 MAPPING
+   🧩 MAPPING — enrich form data for PDF field names
    ============================================================ */
-  async function maybeMapData(templateName, rawData) {
-  // RSS LOCK: Legacy mapping disabled.
-  // SVG engine owns mapping via templateDir/mapping/page-*.map.json
-  return rawData || {};
+
+// Netlify form Yes/No selects → SUPP_ROOFER checkbox field names (Yes box, No box)
+const SUPP_ROOFER_SELECT_TO_CHECKBOX = {
+  wrap_up_projects: ["check_box17", "check_box17_1"],
+  written_safety_program: ["check_box18", "check_box18_1"],
+  completion_inspection: ["check_box22", "check_box22_1"],
+  work_restricted_states: ["check_box23", "check_box23_1"],
+  asbestos_work: ["check_box24", "check_box24_1"],
+  cranes_used: ["check_box25", "check_box25_1"],
+  crane_maintenance: ["check_box26", "check_box26_1"],
+  crane_training: ["check_box27", "check_box27_1"],
+  osha_compliance: ["check_box30", "check_box30_1"],
+  draw_plans_designs: ["check_box31", "check_box31_1"],
+  sub_lower_coverage: ["check_box32", "check_box32_1"],
+  certificates_required: ["check_box33", "check_box33_1"],
+  lease_equipment: ["check_box36", "check_box36_1"],
+  warranties_offered: ["check_box37", "check_box37_1"],
+};
+
+async function maybeMapData(templateName, rawData) {
+  const d = { ...(rawData || {}) };
+
+  // ——— All templates: Roofer form applicant_* → ACORD-style keys (address on ACORDs) ———
+  if (d.applicant_name != null && d.insured_name == null) d.insured_name = d.applicant_name;
+  if (d.applicant_address != null && d.physical_address_1 == null) d.physical_address_1 = d.applicant_address;
+  if (d.applicant_city != null && d.physical_city == null) d.physical_city = d.applicant_city;
+  if (d.applicant_state != null && d.physical_state == null) d.physical_state = d.applicant_state;
+  if (d.applicant_zip != null && d.physical_zip == null) d.physical_zip = d.applicant_zip;
+
+  // ——— SUPP_ROOFER only: entity type checkboxes + Yes/No selects → checkboxes ———
+  if (String(templateName).toUpperCase() === "SUPP_ROOFER") {
+    if (d.entity_type_individual === "Yes") d.individual = "Yes";
+    if (d.entity_type_partnership === "Yes") d.partnership = "Yes";
+    if (d.entity_type_corporation === "Yes") d.corporation = "Yes";
+    if (d.entity_type_joint_venture === "Yes") d.joint_venture = "Yes";
+    if (d.entity_type_other === "Yes" || d.entity_type_llc === "Yes") d.other = "Yes";
+
+    for (const [formKey, [yesKey, noKey]] of Object.entries(SUPP_ROOFER_SELECT_TO_CHECKBOX)) {
+      const v = d[formKey];
+      if (v === "Yes") d[yesKey] = "Yes";
+      else if (v === "No") d[noKey] = "Yes";
+    }
+  }
+
+  return d;
 }
 function formIdForTemplateFolder(folderName) {
   const n = String(folderName || "").trim();
