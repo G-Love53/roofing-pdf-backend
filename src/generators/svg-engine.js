@@ -8,7 +8,6 @@ const __dirname = path.dirname(__filename);
 
 // Render root (/app on Render)
 const PROJECT_ROOT = path.join(__dirname, "..", "..");         // /app (Render) or repo root
-const VENDOR_ROOT  = path.join(PROJECT_ROOT, "vendor");        // legacy deployments
 
 // Letter (LOCKED) — 612×792 truth (points, matches mapper + SVG viewBox)
 const PAGE_W = 612;

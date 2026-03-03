@@ -273,7 +273,7 @@
     <h2>Basic Information</h2>
     <label>Applicant's Name:<input name="applicant_name" required type="text"/></label>
     <label>Applicant Mailing Address:<input name="applicant_address" required type="text"/></label>
-
+    <label>City:<input name="applicant_city" type="text"/></label>
 <div class="two-column">
     <label>State:
         <select name="applicant_state" required>
@@ -358,7 +358,15 @@
         <label><input type="checkbox" name="entity_type_other" value="Yes"/> Other</label>
     </div>
     
-    <label>Location #1:<input name="location_1" type="text"/></label>
+    <label>Location #1:</label>
+    <div class="two-column">
+        <label>Address:<input name="location_1_address" type="text"/></label>
+        <label>City:<input name="location_1_city" type="text"/></label>
+    </div>
+    <div class="two-column">
+        <label>State:<input name="location_1_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
+        <label>Zip:<input name="location_1_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
+    </div>
     <label>Do you have additional locations?
         <select name="Has_Additional_Locations" data-conditional="additional_locations">
             <option value="">-- Select --</option>
@@ -367,8 +375,24 @@
         </select>
     </label>
     <div class="conditional-section" data-show-when="additional_locations=Yes">
-        <label>Location #2:<input name="location_2" type="text"/></label>
-        <label>Location #3:<input name="location_3" type="text"/></label>
+        <label>Location #2:</label>
+        <div class="two-column">
+            <label>Address:<input name="location_2_address" type="text"/></label>
+            <label>City:<input name="location_2_city" type="text"/></label>
+        </div>
+        <div class="two-column">
+            <label>State:<input name="location_2_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
+            <label>Zip:<input name="location_2_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
+        </div>
+        <label>Location #3:</label>
+        <div class="two-column">
+            <label>Address:<input name="location_3_address" type="text"/></label>
+            <label>City:<input name="location_3_city" type="text"/></label>
+        </div>
+        <div class="two-column">
+            <label>State:<input name="location_3_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
+            <label>Zip:<input name="location_3_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
+        </div>
     </div>
 
     <h2>Experience & Operations</h2>
