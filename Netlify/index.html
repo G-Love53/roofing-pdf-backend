@@ -10,8 +10,11 @@
         padding: 20px;
         background-color: #f8f8f8;
         color: #333;
+        margin: 0;
     }
-    form {
+
+    /* Plumber-style card container */
+    .form-container {
         max-width: 800px;
         margin: 20px auto;
         padding: 30px;
@@ -19,20 +22,19 @@
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     h1 {
         color: #ff8c00;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         font-size: 2em;
         font-weight: bold;
     }
-    h2 {
-        color: #ff8c00;
-        margin-top: 30px;
-        margin-bottom: 15px;
-        font-size: 1.3em;
-        border-bottom: 2px solid #ff8c00;
-        padding-bottom: 5px;
+
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
     }
     label {
         display: block;
@@ -100,6 +102,44 @@
         text-align: center;
         margin-top: 40px;
         color: #999;
+    }
+
+    /* Accordion (Plumber style) */
+    details {
+        border: 1px solid #ddd;
+        background: #fff;
+        margin: 15px 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #ff8c00 0%, #f97316 100%);
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.1em;
+        user-select: none;
+        -webkit-user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    summary::after {
+        content: '+';
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    details[open] summary::after {
+        content: '-';
+    }
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    details > div {
+        padding: 22px 20px 24px 20px;
+        background: #fff;
     }
     
     /* Conditional sections styling */
@@ -263,14 +303,18 @@
 </style>
 </head>
 <body>
+<div class="form-container">
 <h1>Roofing Contractor Insurance Quote</h1>
+<p class="subtitle">Get your quote in minutes. No agent calls. No back-and-forth.</p>
 <form id="quoteForm" name="roofing-contractor-quote">
   <input type="hidden" name="trade" value="Roofing">
   <input type="hidden" name="naics" value="238160">
   <input type="hidden" name="sic" value="1761">
   <input type="hidden" name="segment" value="Roofing">
     
-    <h2>Basic Information</h2>
+    <details open>
+      <summary>Business Information</summary>
+      <div>
     <label>Applicant's Name:<input name="applicant_name" required type="text"/></label>
     <label>Applicant Mailing Address:<input name="applicant_address" required type="text"/></label>
     <label>City:<input name="applicant_city" type="text"/></label>
@@ -394,14 +438,18 @@
             <label>Zip:<input name="location_3_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
         </div>
     </div>
+      </div>
+    </details>
 
-    <h2>Experience & Operations</h2>
+    <details>
+      <summary>Experience & Operations</summary>
+      <div>
     <div class="two-column">
         <label>Years in Business?<input name="years_in_business" type="number" min="0"/></label>
         <label>Years of Experience in this field?<input name="Years_of_Experience" type="number" min="0"/></label>
     </div>
     
-    <h2>Types of Roofing Operations</h2>
+    <h3>Types of Roofing Operations</h3>
     <div class="info-box">
         Indicate the percent of each type of roofing performed. Must equal 100%.
         <span id="operationsTotalDisplay" class="total-indicator">Current Total: 0%</span>
@@ -567,7 +615,7 @@
         Warning: The total percentage must equal 100%. Please adjust your selections.
     </div>
     
-    <h2>Types of Roofing Materials</h2>
+    <h3>Types of Roofing Materials</h3>
     <div class="info-box">
         Please indicate the percentage of each material type used. The total should equal 100%.
         <span id="materialsTotalDisplay" class="total-indicator">Current Total: 0%</span>
@@ -835,7 +883,12 @@
 -->
     <label>Other - Describe:<input name="other_roofing_describe" type="text"/></label>
 
-    <h2>Additional Operations & Safety</h2>
+      </div>
+    </details>
+
+    <details>
+      <summary>Additional Operations & Safety</summary>
+      <div>
     <label>Describe any other operations or work done other than roofing (e.g., waterproofing, siding, asbestos removal, rain gutters, carpentry, etc):<textarea name="other_operations"></textarea></label>
     
     <label>Has or will any work involve the new construction of condominiums, townhouses, multi-family homes, apartments or tract homes?
@@ -878,23 +931,27 @@
         </select>
     </label>
 
-    <h2>Financial Information</h2>
-    <div class="two-column">
-        <label>Owner/Partner Payroll $<input name="owner_partner_payroll" type="text"/></label>
-        <label>Employee Payroll $<input name="employee_payroll" type="text"/></label>
+    <label>Does applicant draw plans, designs or specifications?
+        <select name="draw_plans_designs" data-conditional="draw_plans_designs">
+            <option value="">-- Select --</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </label>
+    <div class="conditional-section" data-show-when="draw_plans_designs=Yes">
+        <label>If yes, describe.<textarea name="plans_description"></textarea></label>
     </div>
     
-    <div class="two-column">
-        <label>Subcontractor Cost $<input name="subcontractor_cost" type="text"/></label>
-        <label>Uninsured Subcontractor Payroll $<input name="uninsured_sub_payroll" type="text"/></label>
+    <label>Does applicant lease equipment to others with or without operators?
+        <select name="lease_equipment" data-conditional="lease_equipment">
+            <option value="">-- Select --</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </label>
+    <div class="conditional-section" data-show-when="lease_equipment=Yes">
+        <label>If yes, describe equipment and forward copy of lease agreement:<textarea name="lease_equipment_description"></textarea></label>
     </div>
-    
-    <div class="two-column">
-        <label>Number of Employees:<input name="num_employees" type="number" min="0"/></label>
-        <label>Leased Employees Payroll $<input name="leased_employee_payroll" type="text"/></label>
-    </div>
-    
-    <label>Total Gross Sales $<input name="total_gross_sales" type="text"/></label>
 
     <h2>Safety & Procedures</h2>
     <label>How do you protect the general public from potential injury?<textarea name="protect_public"></textarea></label>
@@ -988,18 +1045,12 @@
         </select>
     </label>
 
-    <h2>Roofing Contractors</h2>
-    
-    <label>Does applicant draw plans, designs or specifications?
-        <select name="draw_plans_designs" data-conditional="draw_plans_designs">
-            <option value="">-- Select --</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
-    </label>
-    <div class="conditional-section" data-show-when="draw_plans_designs=Yes">
-        <label>If yes, describe.<textarea name="plans_description"></textarea></label>
-    </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Financial & Subcontractors</summary>
+      <div>
     
     <label>Do your subcontractors carry coverage or limits less than yours?
         <select name="sub_lower_coverage" data-conditional="sub_lower_coverage">
@@ -1044,23 +1095,30 @@
     
     <label>Describe the type of work subcontracted indicating percent for each category:<textarea name="Subcontracted_Work"></textarea></label>
     
-    <label>Does applicant lease equipment to others with or without operators?
-        <select name="lease_equipment" data-conditional="lease_equipment">
-            <option value="">-- Select --</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select>
-    </label>
-    <div class="conditional-section" data-show-when="lease_equipment=Yes">
-        <label>If yes, describe equipment and forward copy of lease agreement:<textarea name="lease_equipment_description"></textarea></label>
+    <h3>Financial Information</h3>
+    <div class="two-column">
+        <label>Owner/Partner Payroll $<input name="owner_partner_payroll" type="text"/></label>
+        <label>Employee Payroll $<input name="employee_payroll" type="text"/></label>
     </div>
+    
+    <div class="two-column">
+        <label>Subcontractor Cost $<input name="subcontractor_cost" type="text"/></label>
+        <label>Uninsured Subcontractor Payroll $<input name="uninsured_sub_payroll" type="text"/></label>
+    </div>
+    
+    <div class="two-column">
+        <label>Number of Employees:<input name="num_employees" type="number" min="0"/></label>
+        <label>Leased Employees Payroll $<input name="leased_employee_payroll" type="text"/></label>
+    </div>
+    
+    <label>Total Gross Sales $<input name="total_gross_sales" type="text"/></label>
     
     <div class="two-column">
         <label>Full-time Employees:<input name="full_time_employees" type="number" min="0"/></label>
         <label>Part-time Employees:<input name="part_time_employees" type="number" min="0"/></label>
     </div>
     
-    <h2>Three-Year Sales History</h2>
+    <h3>Three-Year Sales History</h3>
     <div class="two-column">
         <label>Year 2025 Gross Sales $<input name="gross_sales_year_1" type="text"/></label>
         <label>Year 2024 Gross Sales $<input name="gross_sales_year_2" type="text"/></label>
@@ -1079,105 +1137,10 @@
         <label>Describe warranty coverage:<textarea name="Warranty_Description"></textarea></label>
     </div>
     
-    <h2>Contractual Liability</h2>
+    <h3>Contractual Liability</h3>
     <label>Describe All Hold Harmless Agreements (Dates, Contracting Party, Cost) and attach copies.<textarea name="hold_harmless_agreements"></textarea></label>
     
-    <h2>Certificate Recipients / Additional Interests</h2>
-    
-    <div id="certificateRecipients">
-        <div class="certificate-recipient">
-            <label>Name and Address #1:<input name="certificate_recipients_name_1" type="text"/></label>
-            <label>Relationship to Applicant:<input name="certificate_recipients_relationship_1" type="text"/></label>
-            <label>Is this recipient an Additional Insured?
-                <select name="certificate_recipients_additional_1" data-conditional="additional_insured_1">
-                    <option value="">-- Select --</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </label>
-            <div class="additional-insured-options" id="additionalOptions1">
-                <label>Additional Insured Type:</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" name="Additional_Insured_Type_1" value="Additional Insured"/> Additional Insured</label>
-                    <label><input type="checkbox" name="Lienholder_1" value="Yes"/> Lienholder</label>
-                    <label><input type="checkbox" name="Loss_Payee_1" value="Yes"/> Loss Payee</label>
-                    <label><input type="checkbox" name="Mortgagee_1" value="Yes"/> Mortgagee</label>
-                </div>
-            </div>
-            <label>Certificate Required?<input type="checkbox" name="certificate_recipients_certificate_1" value="Yes"/> </label>
-        </div>
-        </div>
-
-<button type="button" class="add-more-btn" id="addMoreRecipients">Add More Recipients</button>
-<div id="additionalRecipients" style="display:none;">
-    <div class="certificate-recipient">
-        <label>Name and Address #2:<input name="certificate_recipients_name_2" type="text"/></label>
-        <label>Relationship to Applicant:<input name="certificate_recipients_relationship_2" type="text"/></label>
-        <label>Is this recipient an Additional Insured?
-            <select name="certificate_recipients_additional_2" data-conditional="additional_insured_2">
-                <option value="">-- Select --</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </label>
-        <div class="additional-insured-options" id="additionalOptions2">
-            <label>Additional Insured Type:</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="Additional_Insured_Type_2" value="Additional Insured"/> Additional Insured</label>
-                <label><input type="checkbox" name="Lienholder_2" value="Yes"/> Lienholder</label>
-                <label><input type="checkbox" name="Loss_Payee_2" value="Yes"/> Loss Payee</label>
-                <label><input type="checkbox" name="Mortgagee_2" value="Yes"/> Mortgagee</label>
-            </div>
-        </div>
-        <label>Certificate Required?<input type="checkbox" name="certificate_recipients_certificate_2" value="Yes"/> </label>
-    </div>
-    
-    <div class="certificate-recipient">
-        <label>Name and Address #3:<input name="certificate_recipients_name_3" type="text"/></label>
-        <label>Relationship to Applicant:<input name="certificate_recipients_relationship_3" type="text"/></label>
-        <label>Is this recipient an Additional Insured?
-            <select name="certificate_recipients_additional_3" data-conditional="additional_insured_3">
-                <option value="">-- Select --</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </label>
-        <div class="additional-insured-options" id="additionalOptions3">
-            <label>Additional Insured Type:</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="Additional_Insured_Type_3" value="Additional Insured"/> Additional Insured</label>
-                <label><input type="checkbox" name="Lienholder_3" value="Yes"/> Lienholder</label>
-                <label><input type="checkbox" name="Loss_Payee_3" value="Yes"/> Loss Payee</label>
-                <label><input type="checkbox" name="Mortgagee_3" value="Yes"/> Mortgagee</label>
-            </div>
-        </div>
-        <label>Certificate Required?<input type="checkbox" name="certificate_recipients_certificate_3" value="Yes"/> </label>
-    </div>
-
-     <div class="certificate-recipient">
-        <label>Name and Address #4:<input name="certificate_recipients_name_4" type="text"/></label>
-        <label>Relationship to Applicant:<input name="certificate_recipients_relationship_4" type="text"/></label>
-        <label>Is this recipient an Additional Insured?
-            <select name="certificate_recipients_additional_4" data-conditional="additional_insured_4">
-                <option value="">-- Select --</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </label>
-        <div class="additional-insured-options" id="additionalOptions4">
-            <label>Additional Insured Type:</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="Additional_Insured_Type_4" value="Additional Insured"/> Additional Insured</label>
-                <label><input type="checkbox" name="Lienholder_4" value="Yes"/> Lienholder</label>
-                <label><input type="checkbox" name="Loss_Payee_4" value="Yes"/> Loss Payee</label>
-                <label><input type="checkbox" name="Mortgagee_4" value="Yes"/> Mortgagee</label>
-            </div>
-        </div>
-        <label>Certificate Required?<input type="checkbox" name="certificate_recipients_certificate_4" value="Yes"/> </label>
-    </div>
-</div>
-    
-    <h2>List Three (3) of Your Largest Jobs and Type of Process Used in the Last Five (5) Years</h2>
+    <h3>List Three (3) of Your Largest Jobs and Type of Process Used in the Last Five (5) Years</h3>
     <div class="certificate-recipient">
         <div class="two-column">
             <label>Jobs #1:<input name="largest_job_1" type="text"/></label>
@@ -1199,16 +1162,71 @@
         </div>
     </div>
     
-    <h2>Additional Information or Comments</h2>
+    <h3>Additional Information or Comments</h3>
     <textarea name="additional_comments" style="width: 100%; height: 100px;"></textarea>
     
     <div class="info-box" style="margin-top: 30px;">
     <strong>Please send a copy of Hold Harmless Agreements, Warranties and Sub Contractor agreements to Quotes@RoofingContractorInsuranceDirect.com</strong>
 </div>
 
+      </div>
+    </details>
+
+    <details>
+      <summary>Additional Insured & Certificates</summary>
+      <div>
+        <label>Do you have any Additional Insureds?
+          <select name="additional_insureds_present" data-conditional="additional_insureds_present">
+            <option value="">-- Select --</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+        <div class="conditional-section" data-show-when="additional_insureds_present=Yes">
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="ai_loss_payee" value="Yes"/> Loss Payee</label>
+            <label><input type="checkbox" name="ai_lienholder" value="Yes"/> Lienholder</label>
+            <label><input type="checkbox" name="ai_mortgagee" value="Yes"/> Mortgagee</label>
+            <label><input type="checkbox" name="ai_additional_insured" value="Yes"/> Additional Insured</label>
+          </div>
+          <label>Name:<input name="ai_name_1" type="text"/></label>
+          <label>Address:<input name="ai_address_1" type="text"/></label>
+          <div class="two-column">
+            <label>City:<input name="ai_city_1" type="text"/></label>
+            <label>State:<input name="ai_state_1" type="text"/></label>
+          </div>
+          <label>Zip:<input name="ai_zip_1" type="text"/></label>
+          
+          <label>Do you have additional Names?
+            <select name="additional_names" data-conditional="additional_names">
+              <option value="">-- Select --</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+          <div class="conditional-section" data-show-when="additional_names=Yes">
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="ai_loss_payee_2" value="Yes"/> Loss Payee</label>
+              <label><input type="checkbox" name="ai_lienholder_2" value="Yes"/> Lienholder</label>
+              <label><input type="checkbox" name="ai_mortgagee_2" value="Yes"/> Mortgagee</label>
+              <label><input type="checkbox" name="ai_additional_insured_2" value="Yes"/> Additional Insured</label>
+            </div>
+            <label>Name:<input name="ai_name_2" type="text"/></label>
+            <label>Address:<input name="ai_address_2" type="text"/></label>
+            <div class="two-column">
+              <label>City:<input name="ai_city_2" type="text"/></label>
+              <label>State:<input name="ai_state_2" type="text"/></label>
+            </div>
+            <label>Zip:<input name="ai_zip_2" type="text"/></label>
+          </div>
+        </div>
+      </div>
+    </details>
+
     <button type="submit">Submit Quote Request</button>
 </form>
 <div class="small-text">© Commercial Insurance Direct LLC, 2025. All rights reserved.</div>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // ROBUST GHOST SUBMIT PREVENTION
