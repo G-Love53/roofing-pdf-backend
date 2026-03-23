@@ -205,11 +205,34 @@ function formIdForTemplateFolder(folderName) {
   return n.toLowerCase();
 }
 
+async function buildClientSubmissionAttachment({ segment, submissionPublicId, formData }) {
+  try {
+    const requestRow = {
+      ...(formData || {}),
+      segment: segment || SEGMENT,
+      submission_public_id: submissionPublicId || formData?.submission_public_id || "",
+      form_id: "CLIENT_SUBMISSION",
+    };
+    const { buffer } = await generateDocument(requestRow);
+    return {
+      filename: "Client-Submission.pdf",
+      buffer,
+      contentType: "application/pdf",
+    };
+  } catch (err) {
+    console.error("[submit-quote] client_submission generate failed:", err?.message || err);
+    return null;
+  }
+}
+
 /* ============================================================
    🧾 RENDER / EMAIL (SVG FACTORY)
    ============================================================ */
 
-async function renderBundleAndRespond({ templates, email, debug = false }, res) {
+async function renderBundleAndRespond(
+  { templates, email, debug = false, extraAttachments = [] },
+  res,
+) {
   if (!Array.isArray(templates) || templates.length === 0) {
     return res.status(400).json({ ok: false, error: "NO_TEMPLATES" });
   }
@@ -242,9 +265,10 @@ unified.segment = SEGMENT;
     }
   }
 
-  const attachments = results
+  const baseAttachments = results
     .filter((r) => r.status === "fulfilled")
     .map((r) => r.value);
+  const attachments = [...baseAttachments, ...(extraAttachments || [])];
 
    // ✅ ADD THIS BLOCK
   if (debug) {
@@ -516,7 +540,17 @@ APP.post("/submit-quote", async (req, res) => {
     };
 
     // 4) One call does it all (render + attach + email)
-    await renderBundleAndRespond({ templates, email: emailBlock }, res);
+    let extraAttachments = [];
+    const submissionAttachment = await buildClientSubmissionAttachment({
+      segment,
+      submissionPublicId: formData.submission_public_id,
+      formData,
+    });
+    if (submissionAttachment) {
+      extraAttachments.push(submissionAttachment);
+    }
+
+    await renderBundleAndRespond({ templates, email: emailBlock, extraAttachments }, res);
   } catch (e) {
     res.status(500).json({ ok: false, success: false, error: e.message });
   }
