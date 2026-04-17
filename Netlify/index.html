@@ -394,7 +394,7 @@
   <input type="hidden" name="trade" value="Roofing">
   <input type="hidden" name="naics" value="238160">
   <input type="hidden" name="sic" value="1761">
-  <input type="hidden" name="segment" value="Roofing">
+  <input type="hidden" name="segment" value="roofer"/>
     
     <details open>
       <summary>Business Information</summary>
@@ -1626,9 +1626,7 @@
                 const formData = new FormData(form);
                 const formDataObj = Object.fromEntries(formData.entries());
 
-                // Add segments for form mapping
-                const segments = ["RoofingForm", "Roofing125", "Roofing126"];
-
+                // Canonical: same pattern as Plumber/HVAC — cid-pdf-api bundle + explicit segment + quotes inbox
                 const api_key = "CID9200$";
 
                 const response = await fetch("https://cid-pdf-api.onrender.com/submit-quote", {
@@ -1638,8 +1636,10 @@
                         "X-API-Key": api_key
                     },
                     body: JSON.stringify({
+                        bundle_id: "ROOFER_INTAKE",
                         formData: formDataObj,
-                        segments
+                        segment: "roofer",
+                        email: { to: ["quotes@roofingcontractorinsurancedirect.com"] }
                     })
                 });
 
@@ -1673,15 +1673,6 @@
             }
             
             return false;
-        });
-        
-        form.addEventListener("submit", function(e) {
-            if (isSubmitting) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                return false;
-            }
         });
     });
 </script>
