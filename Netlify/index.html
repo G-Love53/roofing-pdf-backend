@@ -1581,8 +1581,7 @@
             });
         });
 
-        // ROBUST AJAX FORM SUBMIT
-        const form = document.getElementById("quoteForm");
+        // ROBUST AJAX FORM SUBMIT (reuse `form` from start of DOMContentLoaded)
         const submitButton = form.querySelector('button[type="submit"]');
         
         form.addEventListener("submit", async function (event) {
