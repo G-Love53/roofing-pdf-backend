@@ -103,6 +103,10 @@
         margin-top: 40px;
         color: #999;
     }
+    .small-text a {
+        color: #ea580c;
+        font-weight: 600;
+    }
 
     /* Accordion (Plumber style) */
     details {
@@ -400,6 +404,7 @@
       <summary>Business Information</summary>
       <div>
     <label>Applicant's Name:<input name="applicant_name" required type="text"/></label>
+    <label>Business / Entity Name:<input name="insured_name" type="text"/></label>
     <label>Applicant Mailing Address:<input name="applicant_address" required type="text"/></label>
     <label>City:<input name="applicant_city" type="text"/></label>
 <div class="two-column">
@@ -465,6 +470,7 @@
     <label>Applicant's Phone Number:<input name="applicant_phone" type="text"/></label>
     <label>Web Address:<input name="web_address" type="text"/></label>
 </div>
+    <label>Contact Email*:<input name="contact_email" required type="email"/></label>
     
     <div class="two-column">
         <label>Inspection Contact:<input name="inspection_contact" type="text"/></label>
@@ -487,6 +493,7 @@
     </div>
     
     <label>Location #1:</label>
+    <label><input id="locationSameAsMailing" name="location_same_as_mailing" type="checkbox" value="Yes"/> Check if same as mailing address</label>
     <div class="two-column">
         <label>Address:<input name="location_1_address" type="text"/></label>
         <label>City:<input name="location_1_city" type="text"/></label>
@@ -1309,7 +1316,7 @@
 
     <button type="submit">Submit Quote Request</button>
 </form>
-<div class="small-text">© Commercial Insurance Direct LLC, 2025. All rights reserved.</div>
+<div class="small-text">© Commercial Insurance Direct LLC, 2025. All rights reserved. · <a href="https://barinsurancedirect.com/privacy" rel="noopener noreferrer">Privacy Policy</a></div>
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -1323,7 +1330,7 @@
 
             const prefillMap = {
                 bn: "applicant_name",
-                em: "applicant_email",
+                em: "contact_email",
                 ph: "applicant_phone",
                 ad: "applicant_address",
                 ct: "applicant_city",
@@ -1383,6 +1390,71 @@
                 if (!select.value || values.includes(String(select.value).toLowerCase())) {
                     select.value = "";
                 }
+            });
+        }
+
+        // Auto-fill Policy Period To one year after From (user can still override To)
+        function setupPolicyPeriodAutoFill() {
+            const fromInput = document.querySelector('[name="policy_period_from"]');
+            const toInput = document.querySelector('[name="to"]');
+            if (!fromInput || !toInput) return;
+
+            let toManuallyEdited = false;
+
+            toInput.addEventListener("input", () => {
+                toManuallyEdited = true;
+            });
+
+            fromInput.addEventListener("change", () => {
+                if (!fromInput.value || toManuallyEdited) return;
+                const fromDate = new Date(fromInput.value + "T00:00:00");
+                if (Number.isNaN(fromDate.getTime())) return;
+                fromDate.setFullYear(fromDate.getFullYear() + 1);
+                toInput.value = fromDate.toISOString().slice(0, 10);
+            });
+        }
+
+        // Copy mailing address into Location #1 when checked.
+        function setupLocationSameAsMailing() {
+            const sameCheckbox = document.getElementById("locationSameAsMailing");
+            if (!sameCheckbox) return;
+
+            const applicantAddress = document.querySelector('[name="applicant_address"]');
+            const applicantCity = document.querySelector('[name="applicant_city"]');
+            const applicantState = document.querySelector('[name="applicant_state"]');
+            const applicantZip = document.querySelector('[name="applicant_zip"]');
+            const locationAddress = document.querySelector('[name="location_1_address"]');
+            const locationCity = document.querySelector('[name="location_1_city"]');
+            const locationState = document.querySelector('[name="location_1_state"]');
+            const locationZip = document.querySelector('[name="location_1_zip"]');
+
+            if (
+                !applicantAddress || !applicantCity || !applicantState || !applicantZip ||
+                !locationAddress || !locationCity || !locationState || !locationZip
+            ) {
+                return;
+            }
+
+            const copyMailingToLocation = () => {
+                locationAddress.value = applicantAddress.value || "";
+                locationCity.value = applicantCity.value || "";
+                locationState.value = applicantState.value || "";
+                locationZip.value = applicantZip.value || "";
+            };
+
+            sameCheckbox.addEventListener("change", () => {
+                if (sameCheckbox.checked) {
+                    copyMailingToLocation();
+                }
+            });
+
+            [applicantAddress, applicantCity, applicantState, applicantZip].forEach((input) => {
+                input.addEventListener("input", () => {
+                    if (sameCheckbox.checked) copyMailingToLocation();
+                });
+                input.addEventListener("change", () => {
+                    if (sameCheckbox.checked) copyMailingToLocation();
+                });
             });
         }
 
@@ -1529,6 +1601,8 @@
         
         // Initialize conditional logic
         normalizeYesNoSelectDefaults();
+        setupPolicyPeriodAutoFill();
+        setupLocationSameAsMailing();
         setupConditionalLogic();
         setupPercentageValidation();
 
@@ -1676,5 +1750,7 @@
         });
     });
 </script>
+<!-- Connect renewal: load prior intake from CID-PDF-API when ?renewal_token= is present -->
+<script src="https://cid-pdf-api.onrender.com/static/renewal-intake-prefill.js" defer></script>
 </body>
 </html>
