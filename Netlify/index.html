@@ -467,8 +467,8 @@
 </div>
 
 <div class="two-column">
-    <label>Applicant's Phone Number:<input name="applicant_phone" type="text"/></label>
-    <label>Web Address:<input name="web_address" type="text"/></label>
+    <label>Applicant's Phone Number:<input name="business_phone" type="text"/></label>
+    <label>Web Address:<input name="business_website" type="text"/></label>
 </div>
     <label>Contact Email*:<input name="contact_email" required type="email"/></label>
     
@@ -478,7 +478,7 @@
     </div>
     
     <div class="two-column">
-        <label>Policy Period From:<input name="policy_period_from" type="date"/></label>
+        <label>Policy Period From:<input name="policy_effective_date" type="date"/></label>
         <label>Policy Period To:<input name="to" type="date"/></label>
     </div>
     
@@ -495,12 +495,12 @@
     <label>Location #1:</label>
     <label><input id="locationSameAsMailing" name="location_same_as_mailing" type="checkbox" value="Yes"/> Check if same as mailing address</label>
     <div class="two-column">
-        <label>Address:<input name="location_1_address" type="text"/></label>
-        <label>City:<input name="location_1_city" type="text"/></label>
+        <label>Address:<input name="premise_address_1" type="text"/></label>
+        <label>City:<input name="premise_city_1" type="text"/></label>
     </div>
     <div class="two-column">
-        <label>State:<input name="location_1_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
-        <label>Zip:<input name="location_1_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
+        <label>State:<input name="physical_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
+        <label>Zip:<input name="physical_zip" type="text" pattern="[0-9]{5}" maxlength="5"/></label>
     </div>
     <label>Do you have additional locations?
         <select name="Has_Additional_Locations" data-conditional="additional_locations">
@@ -512,8 +512,8 @@
     <div class="conditional-section" data-show-when="additional_locations=Yes">
         <label>Location #2:</label>
         <div class="two-column">
-            <label>Address:<input name="location_2_address" type="text"/></label>
-            <label>City:<input name="location_2_city" type="text"/></label>
+            <label>Address:<input name="premise_address_2" type="text"/></label>
+            <label>City:<input name="premise_city_2" type="text"/></label>
         </div>
         <div class="two-column">
             <label>State:<input name="location_2_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
@@ -521,8 +521,8 @@
         </div>
         <label>Location #3:</label>
         <div class="two-column">
-            <label>Address:<input name="location_3_address" type="text"/></label>
-            <label>City:<input name="location_3_city" type="text"/></label>
+            <label>Address:<input name="premise_address_3" type="text"/></label>
+            <label>City:<input name="premise_city_3" type="text"/></label>
         </div>
         <div class="two-column">
             <label>State:<input name="location_3_state" type="text" maxlength="2" placeholder="e.g. CA"/></label>
@@ -1331,7 +1331,7 @@
             const prefillMap = {
                 bn: "applicant_name",
                 em: "contact_email",
-                ph: "applicant_phone",
+                ph: "business_phone",
                 ad: "applicant_address",
                 ct: "applicant_city",
                 st: "applicant_state",
@@ -1395,7 +1395,7 @@
 
         // Auto-fill Policy Period To one year after From (user can still override To)
         function setupPolicyPeriodAutoFill() {
-            const fromInput = document.querySelector('[name="policy_period_from"]');
+            const fromInput = document.querySelector('[name="policy_effective_date"]');
             const toInput = document.querySelector('[name="to"]');
             if (!fromInput || !toInput) return;
 
@@ -1423,10 +1423,10 @@
             const applicantCity = document.querySelector('[name="applicant_city"]');
             const applicantState = document.querySelector('[name="applicant_state"]');
             const applicantZip = document.querySelector('[name="applicant_zip"]');
-            const locationAddress = document.querySelector('[name="location_1_address"]');
-            const locationCity = document.querySelector('[name="location_1_city"]');
-            const locationState = document.querySelector('[name="location_1_state"]');
-            const locationZip = document.querySelector('[name="location_1_zip"]');
+            const locationAddress = document.querySelector('[name="premise_address_1"]');
+            const locationCity = document.querySelector('[name="premise_city_1"]');
+            const locationState = document.querySelector('[name="physical_state"]');
+            const locationZip = document.querySelector('[name="physical_zip"]');
 
             if (
                 !applicantAddress || !applicantCity || !applicantState || !applicantZip ||
